@@ -16,7 +16,34 @@ export default {
   tags: ["autodocs"],
   //👇 Our exports that end in "Data" are not stories.
   excludeStories: /.*Data$/,
-  args: {},
+  args: {
+    headerLeft: <div>Left</div>,
+    headerRight: <div>Right</div>,
+    headerCenter: <div>Center</div>,
+    children: (
+      <div>
+        <div>Head</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Column Content</div>
+        <div>Tail</div>
+      </div>
+    ),
+  },
 };
 
 export const Default = {
@@ -24,41 +51,10 @@ export const Default = {
     (story) => {
       applyTheme(light);
       return (
-        <div
-          className="bg-rs-background-1 
-          w-screen max-h-screen overflow-y-auto"
-        >
-          {story()}
+        <div className="w-full h-full bg-rs-background-1 ">
+          <div className="flex flex-row justify-center">{story()}</div>
         </div>
       );
     },
   ],
-  args: {
-    headerLeft: <div>Left</div>,
-    headerRight: <div>Right</div>,
-    headerCenter: <div>Center</div>,
-    children: (
-      <div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-        <div>Column Content</div>
-      </div>
-    ),
-  },
 };
