@@ -1,0 +1,70 @@
+.column {
+  @apply max-w-[640px] w-full flex flex-col;
+}
+
+.column-header {
+  @apply w-full flex items-center 
+    justify-center sticky top-0 min-h-[60px] z-[1];
+}
+
+.column-header > .left-corner {
+  @apply block absolute -left-3 top-12 h-9 w-9 z-[1] overflow-hidden;
+}
+
+.column-header > .left-corner > * {
+  @apply border-l border-t border-r rounded-tr-[24px] 
+    rounded-tl-[24px] shadow-side
+    w-12 h-12 absolute left-3 top-3;
+}
+
+.column-header > .right-corner {
+  @apply block absolute -right-3 top-12 h-9 w-9 z-[1] overflow-hidden;
+}
+
+.column-header > .right-corner > * {
+  @apply border-x border-t rounded-tr-[24px] 
+    rounded-tl-[24px] shadow-side
+    w-12 h-12 absolute right-3 top-3;
+}
+
+.column-header > .center {
+  @apply block absolute left-6 top-12 h-3 w-[594px]
+          border-b bg-rs-background-1 z-[1] overflow-hidden box-content;
+}
+
+.column-header > .center > * {
+  @apply block relative h-3 top-3 w-[594px] shadow-top;
+}
+
+.shadow-top {
+  box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.04);
+}
+
+.shadow-side {
+  box-shadow:
+    0 0 12px 0 rgba(0, 0, 0, 0.04),
+    0 0 0 48px rgb(var(--rs-color-background-1));
+}
+
+.header-grid {
+  @apply absolute h-full grid gap-x-4 px-4 
+    -left-3 -right-3 top-0 bg-rs-background-1 z-0;
+  grid-template-columns: 1fr minmax(auto, 65%) 1fr;
+}
+
+.header-grid > div:nth-child(1) {
+  @apply flex items-center justify-start gap-x-2;
+}
+
+.header-grid > div:nth-child(2) {
+  @apply flex flex-row gap-x-2 items-center justify-center;
+}
+
+.header-grid > div:nth-child(3) {
+  @apply flex items-center justify-end gap-x-2;
+}
+
+.column-content {
+  @apply flex flex-col border-x box-border shadow-top
+    overflow-y-auto overflow-x-hidden pt-2 w-full z-0 bg-rs-background-2;
+}
