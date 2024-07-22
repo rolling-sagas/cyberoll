@@ -12,16 +12,18 @@ export const ActionsData = {
 
 export default {
   component: Column,
-  title: "column",
+  title: "Column",
   tags: ["autodocs"],
-  //👇 Our exports that end in "Data" are not stories.
+  parameters: {
+    layout: "fullscreen",
+  },
   excludeStories: /.*Data$/,
   args: {
     headerLeft: <div>Left</div>,
     headerRight: <div>Right</div>,
     headerCenter: <div>Center</div>,
     children: (
-      <div>
+      <div className="px-2">
         <div>Head</div>
         <div>Column Content</div>
         <div>Column Content</div>
@@ -52,7 +54,7 @@ export const Default = {
       applyTheme(light);
       return (
         <div className="w-full h-full bg-rs-background-1 ">
-          <div className="flex flex-row justify-center">{story()}</div>
+          <div className="flex flex-row justify-center gap-6">{story()}</div>
         </div>
       );
     },

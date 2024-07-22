@@ -5,4 +5,6 @@
 body {
   @apply transition-colors duration-200 bg-rs-background-1 text-rs-text 
   antialiased w-screen h-screen;
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
 }
