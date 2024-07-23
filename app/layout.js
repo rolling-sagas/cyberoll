@@ -12,7 +12,8 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     if (
       theme === "dark" ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
+      (theme === "system" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
       applyTheme(dark);
     } else {

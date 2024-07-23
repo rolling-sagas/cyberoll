@@ -52,3 +52,33 @@ export const Default = {
     },
   ],
 };
+
+export const SingleColumn = {
+  args: {
+    // Shaping the stories through args composition.
+    // The data was inherited from the Default story in Task.stories.jsx.
+    columns: [
+      {
+        ...ColumnStories.default.args,
+        id: "1",
+        headerCenter: <div>Column 1</div>,
+        headerLeft: null,
+        headerRight: null,
+      },
+    ],
+  },
+
+  decorators: [
+    (story) => {
+      applyTheme(light);
+      return (
+        <div
+          className="w-full h-screen bg-rs-background-1 
+          overflow-y-hidden px-4"
+        >
+          {story()}
+        </div>
+      );
+    },
+  ],
+};

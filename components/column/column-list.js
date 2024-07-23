@@ -2,8 +2,8 @@ import Column from "./column";
 export default function ColumnList({ columns }) {
   return (
     <div
-      className="flex flex-row overflow-x-auto 
-      gap-6 h-full overflow-y-clip"
+      className="flex flex-row overflow-x-auto justify-start
+      gap-6 h-full overflow-y-hidden"
     >
       {columns.map((column) => (
         <Column

@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { light, dark } from "./themeColors";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 function validateRGB(rgb) {
   if (!rgb) return true;
