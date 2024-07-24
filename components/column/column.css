@@ -57,7 +57,7 @@
 }
 
 .header-grid > div:nth-child(1) {
-  @apply flex items-center justify-start gap-x-2;
+  @apply flex items-center justify-start gap-x-2 pl-2;
 }
 
 .header-grid > div:nth-child(2) {
@@ -65,7 +65,7 @@
 }
 
 .header-grid > div:nth-child(3) {
-  @apply flex items-center justify-end gap-x-2;
+  @apply flex items-center justify-end gap-x-2 pr-2;
 }
 
 .column-content {
