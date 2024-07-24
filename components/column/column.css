@@ -1,9 +1,13 @@
 .column {
-  @apply max-w-[640px] min-w-[460px] w-full h-full flex flex-col;
+  @apply max-w-[640px] w-full h-full flex flex-col;
+}
+
+.column:not(:only-child) {
+  @apply !max-w-[460px];
 }
 
 .column-header {
-  @apply w-full flex items-center 
+  @apply w-full flex items-center font-semibold
     justify-center sticky top-0 min-h-[60px] z-[1];
 }
 

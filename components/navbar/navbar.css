@@ -1,0 +1,16 @@
+.navbar {
+  @apply fixed left-0 top-0 h-full bg-rs-background-1/85 
+        w-[76px] z-10 backdrop-blur flex flex-col items-center;
+}
+
+.navbar > .logo {
+  @apply shrink-0 py-4;
+}
+
+.navbar > .logo > svg {
+  @apply w-8 h-8 transition hover:scale-110;
+}
+
+.navbar > .nav {
+  @apply flex flex-col justify-center gap-1;
+}

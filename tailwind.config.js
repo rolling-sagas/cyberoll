@@ -21,6 +21,9 @@ const config = {
         ...theme("colors"),
         DEFAULT: theme("colors.rs.border", "currentColor"),
       }),
+      fontSize: {
+        base: ["15px", { lineHeight: "21px" }],
+      },
       colors: {
         rs: {
           text: "rgb(var(--rs-color-text) / <alpha-value>)",
@@ -31,6 +34,7 @@ const config = {
           },
           border: "rgb(var(--rs-color-border) / <alpha-value>)",
           blue: "rgb(var(--rs-color-blue) / <alpha-value>)",
+          primary: "rgb(var(--rs-color-primary) / <alpha-value>)",
         },
       },
     },

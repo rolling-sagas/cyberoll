@@ -6,6 +6,7 @@ export const light = {
   "--rs-color-text": "0 0 0",
   "--rs-color-blue": "0 149 246",
   "--rs-color-content-background": "0 0 0",
+  "--rs-color-primary": "239 90 211",
 };
 
 export const dark = {
@@ -15,4 +16,5 @@ export const dark = {
   "--rs-color-border": "45 45 45",
   "--rs-color-text": "234 235 237",
   "--rs-color-blue": "0 149 246",
+  "--rs-color-primary": "239 90 211",
 };
