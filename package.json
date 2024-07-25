@@ -29,6 +29,8 @@
     "@chromatic-com/storybook": "^1.6.1",
     "@headlessui/react": "^2.1.2",
     "@hugeicons/react": "^0.5.2",
+    "@prisma/adapter-d1": "^5.17.0",
+    "@prisma/client": "^5.17.0",
     "@storybook/addon-essentials": "^8.2.4",
     "@storybook/addon-interactions": "^8.2.4",
     "@storybook/addon-links": "^8.2.4",
@@ -42,6 +44,7 @@
     "eslint-config-next": "14.2.5",
     "eslint-plugin-storybook": "^0.8.0",
     "postcss": "^8.4.39",
+    "prisma": "^5.17.0",
     "storybook": "^8.2.4",
     "tailwindcss": "^3.4.6",
     "wrangler": "^3.66.0"
