@@ -11,6 +11,8 @@ NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 
 [env.production.vars]
 SITE_URL = "https://lab.rollingsagas.com"
+NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 
 [env.preview.vars]
 SITE_URL = "https://cyberoll.pages.dev"
+NPM_CONFIG_USERCONFIG = ".npmrc.pages"
