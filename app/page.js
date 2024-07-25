@@ -1,24 +1,13 @@
-"use client";
-
 import Messages from "@/components/play/messages";
-import Prompts from "@/components/play/prompts";
+import PinnedColumns from "@/components/play/pinned-columns";
 
-import { usePinStore } from "@/components/play/stores";
+export const runtime = "edge";
 
-export default function Page() {
-  const pinned = usePinStore((state) => state.pinned);
-
+export default async function Page() {
   return (
     <>
       <Messages />
-      {pinned.map((name) => {
-        switch (name) {
-          case "prompts":
-            return <Prompts key={name} />;
-          default:
-            return null;
-        }
-      })}
+      <PinnedColumns />
     </>
   );
 }

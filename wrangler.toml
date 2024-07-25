@@ -16,14 +16,8 @@ NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 SITE_URL = "https://cyberoll.pages.dev"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 
-[[d1_namespaces]]
-binding = "db"
-id = "d0ff16a8-ecce-43a2-9481-6273e8334b8f"
-
-[[env.preview.d1_namespaces]]
-binding = "db"
-id = "d0ff16a8-ecce-43a2-9481-6273e8334b8f"
-
-[[env.production.d1_namespaces]]
-binding = "db"
-id = "69a1ff9a-825a-446a-a54e-05ad78294c9b"
+[[d1_databases]]
+binding = "rsDb"
+database_name = "rsDb"
+database_id = "d0ff16a8-ecce-43a2-9481-6273e8334b8f"
+preview_database_id = "rsDb"
