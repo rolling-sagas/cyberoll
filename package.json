@@ -11,7 +11,7 @@
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:build": "pnpm prisma generate && npx @cloudflare/next-on-pages",
     "preview": "pnpm run pages:build && wrangler pages dev",
     "deploy": "pnpm run pages:build && wrangler pages deploy"
   },
