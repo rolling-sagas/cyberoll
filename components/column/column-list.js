@@ -11,8 +11,9 @@ export default function ColumnList({ columns }) {
           headerLeft={column.headerLeft}
           headerCenter={column.headerCenter}
           headerRight={column.headerRight}
-          children={column.children}
-        />
+        >
+          {column.children}
+        </Column>
       ))}
     </div>
   );
