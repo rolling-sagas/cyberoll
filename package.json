@@ -4,12 +4,16 @@
   "description": "lab for rollingsagas.com",
   "type": "module",
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "pnpm run pages:build && wrangler pages dev",
+    "deploy": "pnpm run pages:build && wrangler pages deploy"
   },
   "keywords": [],
   "author": "aspirin2d@outlook.com",
