@@ -1,9 +1,11 @@
 .column {
-  @apply max-w-[640px] w-full h-full flex flex-col;
+  @apply max-w-[640px] w-full h-full flex flex-col duration-150
+  transition ease-in data-[enter]:data-[closed]:opacity-0 
+  data-[enter]:data-[closed]:scale-75 origin-center;
 }
 
 .column:not(:only-child) {
-  @apply !max-w-[460px];
+  @apply max-w-[460px];
 }
 
 .column-header {

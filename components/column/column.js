@@ -1,34 +1,38 @@
-import ColumnMenuButton from "./column-menu-button";
 import "./column.css";
 
 import PropTypes from "prop-types";
+import { Transition } from "@headlessui/react";
 
 export default function Column({
   children,
   headerLeft,
   headerRight,
   headerCenter,
+  afterLeave,
+  show = true,
 }) {
   return (
-    <div className="column">
-      <div className="column-header">
-        <div className="left-corner">
-          <div />
+    <Transition show={show} afterLeave={afterLeave} appear={true}>
+      <div className="column">
+        <div className="column-header">
+          <div className="left-corner">
+            <div />
+          </div>
+          <div className="center">
+            <div />
+          </div>
+          <div className="right-corner">
+            <div />
+          </div>
+          <div className="header-grid">
+            <div>{headerLeft}</div>
+            <div>{headerCenter}</div>
+            <div>{headerRight}</div>
+          </div>
         </div>
-        <div className="center">
-          <div />
-        </div>
-        <div className="right-corner">
-          <div />
-        </div>
-        <div className="header-grid">
-          <div>{headerLeft}</div>
-          <div>{headerCenter}</div>
-          <div>{headerRight}</div>
-        </div>
+        <div className="column-content">{children}</div>
       </div>
-      <div className="column-content">{children}</div>
-    </div>
+    </Transition>
   );
 }
 

@@ -6,7 +6,6 @@ import {
   FavouriteIcon,
   Home02Icon,
   Menu08Icon,
-  PinIcon,
   Search01Icon,
   UserIcon,
 } from "@hugeicons/react";
@@ -18,11 +17,11 @@ import NavButton from "./nav-button";
 
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
+
 import PinButton from "./pin-button";
 
 export default function NavBar() {
   const pathname = usePathname();
-
   const [active, setActive] = useState(null);
 
   useEffect(() => {
@@ -62,13 +61,7 @@ export default function NavBar() {
         </NavButton>
       </div>
       <div className="nav mb-6">
-        <PinButton
-          items={[
-            { label: "Prompts" },
-            { label: "Occupations" },
-            { label: "Skills" },
-          ]}
-        />
+        <PinButton />
         <NavButton href="/">
           <CrownIcon
             strokeWidth="2"

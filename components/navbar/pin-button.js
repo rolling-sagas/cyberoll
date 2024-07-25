@@ -1,14 +1,27 @@
 import { Fragment } from "react";
 
+import { usePinStore } from "@/components/play/stores";
+
 import {
   Popover,
   PopoverButton,
   PopoverPanel,
   Button,
 } from "@headlessui/react";
-import { PinIcon } from "@hugeicons/react";
+import { PinIcon, PinOffIcon } from "@hugeicons/react";
 
-export default function PinButton({ items }) {
+const items = [
+  { label: "Prompts", id: "prompts" },
+  { label: "Occupations", id: "occupations" },
+  { label: "Skills", id: "skills" },
+];
+
+export default function PinButton() {
+  const pin = usePinStore((state) => state.pin);
+  const unpin = usePinStore((state) => state.unpin);
+
+  const pinned = usePinStore((state) => state.pinned);
+
   return (
     <Popover className="relative">
       <PopoverButton className="outline-none">
@@ -42,25 +55,42 @@ export default function PinButton({ items }) {
           "
         transition
       >
-        <div className="flex items-center font-semibold justify-center h-12">
-          Pin to home
-        </div>
-        <div className="px-2 flex flex-col">
-          {items.map((item, index) => (
-            <button
-              key={index}
-              className="w-full h-[52px] rounded-2xl p-3
+        {({ close }) => {
+          return (
+            <>
+              <div className="flex items-center font-semibold justify-center h-12">
+                Pin to home
+              </div>
+              <div className="px-2 pb-2 flex flex-col h-full overflow-y-auto">
+                {items.map((item, index) => (
+                  <button
+                    key={index}
+                    className="w-full h-[52px] rounded-2xl p-3
             hover:bg-neutral-100 flex flex-row items-center justify-start
-            font-semibold"
-              onClick={item.onClick}
-            >
-              <span className={`flex-grow text-left ${item.className || ""}`}>
-                {item.label}
-              </span>
-              {item.right}
-            </button>
-          ))}
-        </div>
+            font-semibold group"
+                    onClick={() => {
+                      if (pinned.includes(item.id)) {
+                        unpin(item.id);
+                      } else {
+                        pin(item.id);
+                      }
+                      close();
+                    }}
+                  >
+                    <span
+                      className={`flex-grow text-left ${item.className || ""}`}
+                    >
+                      {item.label}
+                    </span>
+                    <span className="hidden group-hover:flex">
+                      {pinned.includes(item.id) ? <PinOffIcon /> : <PinIcon />}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </>
+          );
+        }}
       </PopoverPanel>
     </Popover>
   );
