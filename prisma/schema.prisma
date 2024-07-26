@@ -1,9 +1,23 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
-// Query D1 using Prisma ORM: https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm/
+// Query D1 using Prisma ORM: 
+// https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm/
+
+// pnpm wrangler d1 migrations create rsDb __YOUR_TABLE_NAME__
+
+// pnpm npx prisma migrate diff \
+//   --from-local-d1 \
+//   --to-schema-datamodel ./prisma/schema.prisma \
+//   --script \
+//   --output migrations/__YOUR_TABLE_SQL
+
+// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --local
+// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --remote
+// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --remote --preview
+// pnpm prisma generate
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
 }
 
@@ -12,8 +26,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model System {
+  id       Int       @id @default(autoincrement())
+  template String
+
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId Int @unique
+}
+
+model Chapter {
+  id       Int  @id @default(autoincrement())
+  template String
+  rules    String?
+
+  session   Session @relation(fields: [sessionId], references: [id])
+  sessionId Int
+}
+
+model Session {
+  id     Int     @id @default(autoincrement())
+  name   String  @unique
+  author String?
+
+  createdAt DateTime
+  updatedAt DateTime?
+
+  system System?
+
+  chapters Chapter[]
 }

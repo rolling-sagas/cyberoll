@@ -1,7 +1,7 @@
 {
   "name": "rs-lab",
   "version": "0.0.1",
-  "description": "lab for rollingsagas.com",
+  "description": "lab for rollingsagas",
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -9,43 +9,35 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "pages:build": "pnpm prisma generate && npx @cloudflare/next-on-pages",
     "preview": "pnpm run pages:build && wrangler pages dev",
     "deploy": "pnpm run pages:build && wrangler pages deploy"
   },
-  "keywords": [],
+  "keywords": [
+    "rollingsagas",
+    "lab.rollingsagas.com"
+  ],
   "author": "aspirin2d@outlook.com",
   "license": "MIT",
   "dependencies": {
-    "@cloudflare/next-on-pages": "^1.12.1",
     "next": "^14.2.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "zustand": "^4.5.4"
+    "zustand": "^4.5.4",
+    "@headlessui/react": "^2.1.2",
+    "@hugeicons/react": "^0.5.2"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^1.6.1",
-    "@headlessui/react": "^2.1.2",
-    "@hugeicons/react": "^0.5.2",
+    "prisma": "^5.17.0",
     "@prisma/adapter-d1": "^5.17.0",
     "@prisma/client": "^5.17.0",
-    "@storybook/addon-essentials": "^8.2.4",
-    "@storybook/addon-interactions": "^8.2.4",
-    "@storybook/addon-links": "^8.2.4",
-    "@storybook/addon-styling-webpack": "^1.0.0",
-    "@storybook/blocks": "^8.2.4",
-    "@storybook/nextjs": "^8.2.4",
-    "@storybook/react": "^8.2.4",
-    "@storybook/test": "^8.2.4",
+    "@cloudflare/next-on-pages": "^1.12.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "eslint-plugin-storybook": "^0.8.0",
     "postcss": "^8.4.39",
-    "prisma": "^5.17.0",
-    "storybook": "^8.2.4",
     "tailwindcss": "^3.4.6",
     "wrangler": "^3.66.0"
   }
