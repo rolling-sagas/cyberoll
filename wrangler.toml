@@ -20,7 +20,7 @@ NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 binding = "rsDb"
 database_name = "rs-db"
 database_id = "d0ff16a8-ecce-43a2-9481-6273e8334b8f"
-preview_database_id = "69a1ff9a-825a-446a-a54e-05ad78294c9b"
+preview_database_id = "43083216-5c21-4c42-a89f-1c36567943d6"
 
 [[env.production.d1_databases]]
 binding = "rsDb"
@@ -30,4 +30,4 @@ database_id = "d0ff16a8-ecce-43a2-9481-6273e8334b8f"
 [[env.preview.d1_databases]]
 binding = "rsDb"
 database_name = "rs-db-preview"
-database_id = "69a1ff9a-825a-446a-a54e-05ad78294c9b"
+database_id = "43083216-5c21-4c42-a89f-1c36567943d6"

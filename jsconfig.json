@@ -4,6 +4,12 @@
     "paths": {
       "@/components/*": [
         "components/*"
+      ],
+      "@/prisma/*": [
+        "prisma/*"
+      ],
+      "@/auth/*": [
+        "auth/*"
       ]
     }
   }
