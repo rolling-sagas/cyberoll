@@ -5,7 +5,7 @@
 }
 
 .column:not(:only-child) {
-  @apply max-w-[460px];
+  @apply min-w-[420px] max-w-[500px];
 }
 
 .column-header {
