@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import { usePinStore } from "@/components/play/stores";
+import { usePinStore } from "@/components/columns/stores";
 
 import {
   Popover,
@@ -40,7 +40,7 @@ export default function PinButton() {
             <div
               className="transition absolute w-full h-full rounded-lg
             top-0 left-0 bg-neutral-200/0 scale-50 duration-200 
-            group-data-[hover]:scale-100 group-data-[hover]:bg-neutral-200/50"
+            group-data-[hover]:scale-100 group-data-[hover]:bg-rs-background-hover"
             />
           </div>
         </Button>

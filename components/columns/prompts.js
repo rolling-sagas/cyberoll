@@ -4,11 +4,32 @@ import ColumnMenuButton from "../column/column-menu-button";
 
 import { usePinStore } from "./stores";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import { create } from "zustand";
+
+const store = create((set) => ({
+  prompts: [],
+  list: async () => {
+    await fetch("/api/story")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        set({ prompts: data });
+      });
+  },
+}));
 
 export default function Prompts() {
   const [show, setShow] = useState(true);
   const unpin = usePinStore((state) => state.unpin);
+
+  const list = store((state) => state.list);
+  const prompts = store((state) => state.prompts);
+
+  useEffect(() => {
+    list();
+  }, [list]);
 
   return (
     <Column

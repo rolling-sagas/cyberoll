@@ -1,12 +1,12 @@
-import Messages from "@/components/play/messages";
-import PinnedColumns from "@/components/play/pinned-columns";
+import PinnedColumns from "@/components/columns/pinned-columns";
+import Threads from "@/components/columns/threads/threads";
 
 export const runtime = "edge";
 
 export default async function Page() {
   return (
     <>
-      <Messages />
+      <Threads />
       <PinnedColumns />
     </>
   );

@@ -64,15 +64,17 @@ model Story {
   systemId Int?
 
   chapters Chapter[]
-  sessions Session[]
 }
 
 model Message {
   id      Int    @id @default(autoincrement())
   role    String
-  content String
 
-  createdAt DateTime
+  content String?
+  template String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId Int
@@ -81,8 +83,11 @@ model Message {
 model Session {
   id Int @id @default(autoincrement())
 
-  story   Story? @relation(fields: [storyId], references: [id], onDelete: SetNull)
-  storyId Int?
+  name        String  @unique
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   messages Message[]
 }

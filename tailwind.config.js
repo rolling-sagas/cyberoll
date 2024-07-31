@@ -15,7 +15,7 @@ const config = {
       },
       backgroundColor: ({ theme }) => ({
         ...theme("colors"),
-        DEFAULT: theme("colors.rs.background", "currentColor"),
+        DEFAULT: theme("colors.rs.background.1", "currentColor"),
       }),
       borderColor: ({ theme }) => ({
         ...theme("colors"),
@@ -26,11 +26,16 @@ const config = {
       },
       colors: {
         rs: {
-          text: "rgb(var(--rs-color-text) / <alpha-value>)",
+          text: {
+            primary: "rgb(var(--rs-color-text-primary) / <alpha-value>)",
+            secondary: "rgb(var(--rs-color-text-secondary) / <alpha-value>)",
+            tertiary: "rgb(var(--rs-color-text-tertiary) / <alpha-value>)",
+          },
           background: {
             1: "rgb(var(--rs-color-background-1) / <alpha-value>)",
             2: "rgb(var(--rs-color-background-2) / <alpha-value>)",
             3: "rgb(var(--rs-color-background-3) / <alpha-value>)",
+            hover: "rgba(var(--rs-color-background-hover))",
           },
           border: "rgb(var(--rs-color-border) / <alpha-value>)",
           blue: "rgb(var(--rs-color-blue) / <alpha-value>)",

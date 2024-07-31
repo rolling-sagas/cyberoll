@@ -12,10 +12,10 @@ export function applyTheme(themeColors) {
 
   Object.keys(themeColors).forEach((key) => {
     const val = themeColors[key];
-    const validation = validateRGB(val);
-    if (!validation) {
-      throw new Error(`Invalid RGB value for ${key}: ${val}`);
-    }
+    // const validation = validateRGB(val);
+    // if (!validation) {
+    //   throw new Error(`Invalid RGB value for ${key}: ${val}`);
+    // }
 
     root.style.setProperty(key, val);
   });

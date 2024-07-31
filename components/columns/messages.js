@@ -1,4 +1,4 @@
-import Column from "../column/column";
+import Column from "@/components//column/column";
 
 export default function Play() {
   return (

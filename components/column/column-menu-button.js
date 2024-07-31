@@ -28,7 +28,7 @@ export default function ColumnMenuButton({ items }) {
           <button
             key={index}
             className="w-full h-[52px] rounded-2xl p-3
-            hover:bg-neutral-100 flex flex-row items-center justify-start
+            hover:bg-rs-background-hover flex flex-row items-center justify-start
             font-semibold"
             onClick={item.onClick}
           >

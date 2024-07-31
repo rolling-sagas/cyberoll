@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect } from "react";
 import Head from "next/head";
 import NavBar from "@/components/navbar/navbar";
@@ -6,10 +7,34 @@ import NavBar from "@/components/navbar/navbar";
 import { useThemeStore, applyTheme } from "@/components/tailwind/store";
 import { light, dark } from "@/components/tailwind/themeColors";
 
+import {
+  Description,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  DialogBackdrop,
+} from "@headlessui/react";
+
+import { create } from "zustand";
+
 import "./global.css";
+
+export const useModalStore = create((set) => ({
+  content: null,
+  isOpen: false,
+
+  open: (content) => set({ content, isOpen: true }),
+  close: () => set({ content: null, isOpen: false }),
+}));
 
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
+
+  const closeModal = useModalStore((state) => state.close);
+  const openModal = useModalStore((state) => state.open);
+  const ModalContent = useModalStore((state) => state.content);
+
+  const isOpen = useModalStore((state) => state.isOpen);
 
   useEffect(() => {
     if (
@@ -40,6 +65,17 @@ export default function RootLayout({ children }) {
             <div className="w-[76px]" />
           </div>
         </div>
+        <Dialog
+          open={isOpen}
+          transition
+          onClose={closeModal}
+          className="z-10 transition duration-300
+            ease-out data-[closed]:opacity-0 fixed inset-0 
+            flex w-screen items-center justify-center p-2"
+        >
+          <DialogPanel className="z-20">{ModalContent}</DialogPanel>
+          <DialogBackdrop className="fixed inset-0 bg-black/70 z-10" />
+        </Dialog>
       </body>
     </html>
   );

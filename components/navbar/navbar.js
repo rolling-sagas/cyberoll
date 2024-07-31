@@ -40,24 +40,26 @@ export default function NavBar() {
         <CinnamonRollIcon strokeWidth="2.5" />
       </Link>
       <div className="nav flex-1">
-        <NavButton href="/">
+        <NavButton href="/" active={active === "home"}>
           <Home02Icon
             strokeWidth="2"
             variant={active === "home" ? "solid" : "stroke"}
-            className={active === "home" ? "!text-rs-text" : ""}
           />
         </NavButton>
         <NavButton href="/">
-          <Search01Icon
-            strokeWidth={active === "search" ? "3" : "2"}
-            className={active === "search" ? "!text-rs-text" : ""}
+          <Search01Icon strokeWidth={active === "search" ? "3" : "2"} />
+        </NavButton>
+        <NavButton href="/">
+          <FavouriteIcon
+            strokeWidth="2"
+            variant={active === "search" ? "solid" : "stroke"}
           />
         </NavButton>
-        <NavButton href="/">
-          <FavouriteIcon strokeWidth="2" />
-        </NavButton>
-        <NavButton href="/">
-          <UserIcon strokeWidth="2" />
+        <NavButton href="/" active={active === "search"}>
+          <UserIcon
+            strokeWidth="2"
+            variant={active === "user" ? "solid" : "stroke"}
+          />
         </NavButton>
       </div>
       <div className="nav mb-6">

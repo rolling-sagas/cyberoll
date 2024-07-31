@@ -1,8 +1,8 @@
 "use client";
 
-import { usePinStore } from "@/components/play/stores";
+import { usePinStore } from "@/components/columns/stores";
 
-import Prompts from "@/components/play/prompts";
+import Prompts from "@/components/columns/prompts";
 
 export default function PinnedColumns() {
   const pinned = usePinStore((state) => state.pinned);
