@@ -2,27 +2,23 @@ import BaseButton from "@/components/buttons/base-button";
 
 import { useModalStore } from "@/app/layout";
 
-import TextareaAutosize from "react-textarea-autosize";
-import { useEffect, useRef, useState } from "react";
+import {
+  MessageProgrammingIcon,
+  RoboticIcon,
+  UserCircle02Icon,
+  Wrench01Icon,
+} from "@hugeicons/react";
 
-import { TextIcon, Menu01Icon } from "@hugeicons/react";
+import Dialog, { Input } from "@/components/modal/dialog";
 
-const Input = function ({
-  name,
-  placeholder,
-  icon,
-  value,
-  onChange,
-  autoFocus = false,
-  autoSize = false,
-}) {
-  const inputEl = useRef(null);
+import SwitchTabs from "@/components/tabs/switch-tabs";
 
-  useEffect(() => {
-    if (autoFocus) {
-      inputEl.current.focus();
-    }
-  }, []);
+import { useState } from "react";
+
+const roles = ["system", "assistant", "user"];
+
+const RoleSwitch = function () {
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   return (
     <div
@@ -31,52 +27,29 @@ const Input = function ({
       w-full"
     >
       <div className="pt-1 relative col-start-1 row-span-2">
-        <div className="w-9 h-9">{icon}</div>
-      </div>
-      <div className="font-semibold col-start-2 rows-start-1">{name}</div>
-      {autoSize ? (
-        <TextareaAutosize
-          ref={inputEl}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          autoFocus={autoFocus}
-          className="outline-none col-start-2 rows-start-1 resize-none"
-          placeholder={placeholder}
-        />
-      ) : (
-        <input
-          ref={inputEl}
-          type="text"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="outline-none col-start-2 rows-start-1"
-          placeholder={placeholder}
-        />
-      )}
-    </div>
-  );
-};
-
-const Dialog = function ({ title, header, body, footer }) {
-  return (
-    <div className="flex flex-col">
-      <div
-        className="w-full h-[46px] flex flex-row 
-        items-center justify-center"
-      >
-        <div className="font-semibold text-white text-[16px]">{title}</div>
-      </div>
-      <div className="px-6 mt-2 mb-4 ">
-        <div
-          className="bg-rs-background-2 
-          border border-rs-border rounded-2xl w-[460px]"
-        >
-          <div className="pt-6 px-6">{header}</div>
-          <div className="px-6 py-4">{body}</div>
-          <div className="pb-6 px-6 flex flex-row-reverse items-center w-full">
-            {footer}
-          </div>
+        <div className="w-9 h-9 text-rs-text-secondary">
+          <UserCircle02Icon />
         </div>
+      </div>
+      <div className="col-start-2 rows-start-1">
+        <div className="px-1">
+          <span className="font-semibold capitalize">
+            Role: {roles[selectedIndex]}
+          </span>
+        </div>
+      </div>
+      <div className="col-start-2 mt-1">
+        <SwitchTabs
+          onChange={(idx) => {
+            setSelectedIndex(idx);
+          }}
+          index={selectedIndex}
+          items={[
+            <Wrench01Icon size={20} />,
+            <RoboticIcon size={20} />,
+            <UserCircle02Icon size={20} />,
+          ]}
+        />
       </div>
     </div>
   );
@@ -92,23 +65,17 @@ export default function CreateMessageDialog({ createAction }) {
 
   return (
     <Dialog
-      title="New thread"
-      header={
-        <Input
-          name="name"
-          autoFocus={true}
-          value={tName}
-          onChange={setTName}
-          icon=<TextIcon className="text-rs-text-secondary" size={24} />
-          placeholder="Unique, start with a letter"
-        />
-      }
+      title="New message"
+      header={<RoleSwitch />}
       body={
         <Input
-          name="description"
+          name="Content"
           value={tDesc}
           onChange={setTDesc}
-          icon=<Menu01Icon className="text-rs-text-secondary" size={24} />
+          icon=<MessageProgrammingIcon
+            className="text-rs-text-secondary"
+            size={20}
+          />
           placeholder="Optional, can be changed later"
           autoSize={true}
         />
