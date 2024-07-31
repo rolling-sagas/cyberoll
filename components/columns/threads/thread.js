@@ -1,126 +1,89 @@
-import relativeTime from "dayjs/plugin/relativeTime";
-import updateLocale from "dayjs/plugin/updateLocale";
+import { useRef, useEffect } from "react";
+import { createStore, useStore } from "zustand";
+import Spinner from "../spinner";
+import BaseButton from "@/components/buttons/base-button";
+import { useModalStore } from "@/app/layout";
+import CreateMessageDialog from "./create-message-dialog";
 
-import dayjs from "dayjs";
+const createThreadStore = (data) =>
+  createStore((set) => ({
+    id: data.id,
+    name: data.name,
+    createdAt: data.createdAt,
 
-dayjs.extend(relativeTime);
-dayjs.extend(updateLocale);
+    loading: "pending",
 
-dayjs.updateLocale("en", {
-  relativeTime: {
-    future: "in %s",
-    past: "%s ago",
-    s: "1m",
-    m: "1m",
-    mm: "%dm",
-    h: "1h",
-    hh: "%dh",
-    d: "1d",
-    dd: "%dd",
-    M: "1m",
-    MM: "%dm",
-    y: "1y",
-    yy: "%dy",
-  },
-});
+    messages: [],
 
-import {
-  BubbleChatNotificationIcon,
-  Edit02Icon,
-  FavouriteIcon,
-  Message02Icon,
-  MoreHorizontalIcon,
-  Share01Icon,
-} from "@hugeicons/react";
+    listMessages: async () => {
+      const response = await fetch(`/api/session/${data.id}/message`);
+      const messages = await response.json();
+      set({ messages, loading: "loaded" });
+      console.log("messages", data.id, messages);
+    },
 
-import ToolButton from "./tool-button";
+    newMessage: async (data) => {
+      const response = await fetch(`/api/session/${data.id}/message`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ data: data }),
+      });
+      const message = await response.json();
+      console.log(message);
+    },
+  }));
 
-export default function Thread({ thread }) {
-  return (
-    <div
-      className="grid grid-cols-[48px_auto] px-6 py-3 cursor-pointer
-      grid-rows-[21px_19px_max-content_max-conent] w-full border-b"
-      onClick={(evt) => {
-        evt.preventDefault();
-        console.log("enter thread");
-      }}
-    >
-      <div
-        className="pt-1 relative col-start-1 
-        row-span-2 text-rs-text-secondary"
-      >
-        {thread._count.messages > 0 ? (
-          <BubbleChatNotificationIcon variant="duotone" strokeWidth={1} />
-        ) : (
-          <BubbleChatNotificationIcon strokeWidth={1} />
-        )}
-      </div>
-      <div className="col-start-2 rows-start-1">
-        <div className="flex flex-row items-start">
-          <div className="flex-1">
-            <span className="font-semibold">{thread.name}</span>
-            <span className="text-rs-text-secondary ml-2">
-              {dayjs(thread.createdAt).fromNow(true)}
-            </span>
-          </div>
-          <ToolButton className="flex-0 text-rs-text-secondary">
-            <MoreHorizontalIcon size={20} />
-          </ToolButton>
-        </div>
-      </div>
-      <div className="col-start-2 rows-start-2 row-span-2">
-        {thread.description ? (
-          <div>{thread.description}</div>
-        ) : (
-          <div className="text-rs-text-secondary">Empty description</div>
-        )}
-        <div
-          className="flex flex-row mt-[6px] -ml-2 -mb-1 
-          text-rs-text-tertiary"
-        >
-          <div className="w-9 h-9 flex justify-center items-center">
-            <ToolButton
-              onClick={(evt) => {
-                evt.stopPropagation();
-                console.log("message");
-              }}
-            >
-              <Message02Icon size={18} strokeWidth={1.5} />
-              {thread._count.messages > 0 && (
-                <span className="text-[13px] ml-1 font-light">
-                  {thread._count.messages}
-                </span>
-              )}
-            </ToolButton>
-          </div>
-          <div
-            className="w-9 h-9 flex justify-center 
-            items-center text-rs-text-tertiary"
-          >
-            <ToolButton>
-              <Edit02Icon size={18} strokeWidth={1.5} />
-              {thread._count.messages > 0 && (
-                <span className="text-[13px] ml-1 font-light">
-                  {thread._count.messages}
-                </span>
-              )}
-            </ToolButton>
-          </div>
-          <div
-            className="w-9 h-9 flex justify-center 
-            items-center text-rs-text-tertiary"
-          >
-            <ToolButton>
-              <Share01Icon size={18} strokeWidth={1.5} />
-              {thread._count.messages > 0 && (
-                <span className="text-[13px] ml-1 font-light">
-                  {thread._count.messages}
-                </span>
-              )}
-            </ToolButton>
-          </div>
-        </div>
-      </div>
-    </div>
+export default function Thread({ data }) {
+  const storeRef = useRef(null);
+  const openModal = useModalStore((state) => state.open);
+
+  if (!storeRef.current) {
+    storeRef.current = createThreadStore(data);
+  }
+
+  const listMessages = useStore(
+    storeRef.current,
+    (state) => state.listMessages,
   );
+
+  const newMessage = useStore(storeRef.current, (state) => state.newMessage);
+
+  const messages = useStore(storeRef.current, (state) => state.messages);
+
+  const loading = useStore(storeRef.current, (state) => state.loading);
+
+  useEffect(() => {
+    if (listMessages) {
+      listMessages();
+    }
+  }, [listMessages]);
+
+  if (loading === "pending") {
+    return (
+      <div className="flex w-full h-full items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (messages.length === 0) {
+    return (
+      <div className="flex flex-col w-full h-full items-center justify-center">
+        <div className="text-rs-text-secondary text-[16px]">
+          No messages here.
+        </div>
+        <BaseButton
+          label="Create"
+          className="mt-2"
+          onClick={() => {
+            openModal(<CreateMessageDialog createAction={newMessage} />);
+          }}
+        />
+      </div>
+    );
+  }
+
+  return <div>Thread</div>;
 }

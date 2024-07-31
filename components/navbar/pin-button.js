@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import { usePinStore } from "@/components/columns/stores";
+import { usePinStore } from "@/components/columns/pinned-columns";
 
 import {
   Popover,

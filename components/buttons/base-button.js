@@ -1,4 +1,4 @@
-export default function Button({
+export default function BaseButton({
   label,
   className,
   onClick,

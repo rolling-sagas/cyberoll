@@ -82,7 +82,7 @@ const Dialog = function ({ title, header, body, footer }) {
   );
 };
 
-export default function CreateSessionDialog({ createAction }) {
+export default function CreateMessageDialog({ createAction }) {
   const closeModal = useModalStore((state) => state.close);
 
   const [tName, setTName] = useState("");
@@ -119,7 +119,6 @@ export default function CreateSessionDialog({ createAction }) {
           disabled={!canCreate}
           onClick={async () => {
             closeModal();
-            console.log(createAction);
             await createAction(tName, tDesc);
           }}
         />
