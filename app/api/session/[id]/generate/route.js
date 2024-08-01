@@ -29,8 +29,9 @@ export async function GET(req, { params }) {
       },
     });
 
-    console.log(chatCompletion);
-    return Response.json(chatCompletion);
+    const data = await chatCompletion.json();
+    console.log(data);
+    return Response.json(data);
   } catch (e) {
     console.log(e.code, e.message);
     return Response.json(
