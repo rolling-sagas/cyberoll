@@ -26,13 +26,14 @@ export async function GET(req, { params }) {
         "Content-type": "application/json",
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
       },
-      data: {
+      body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: res.map((m) => ({ role: m.role, content: m.content })),
-      },
+      }),
       signal: AbortSignal.timeout(60000),
     });
 
+    console.log(chatCompletion.status);
     const data = await chatCompletion.json();
     console.log(data);
     return Response.json(data);
