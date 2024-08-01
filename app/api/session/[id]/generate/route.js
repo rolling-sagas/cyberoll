@@ -2,7 +2,6 @@ import prisma from "@/prisma/client";
 export const runtime = "edge";
 
 const LIST_LIMIT = 512;
-const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/cyberoll/openai`;
 
 export async function GET(req, { params }) {
   const id = parseInt(params.id);
@@ -16,6 +15,8 @@ export async function GET(req, { params }) {
       where: { sessionId: id },
       orderBy: { createdAt: "asc" },
     });
+
+    const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/cyberoll/openai`;
 
     const chatCompletion = await fetch(url, {
       method: "POST",
