@@ -11,6 +11,7 @@ import { DialogPlaceholder } from "@/components/modal/dialog-placeholder";
 
 import "./global.css";
 import { ToastPlaceholder } from "@/components/modal/toast-placeholder";
+import { AlertPlaceholder } from "@/components/modal/alert-placeholder";
 
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
@@ -44,8 +45,9 @@ export default function RootLayout({ children }) {
             <div className="hidden md:flex w-[76px]" />
           </div>
         </div>
-        <DialogPlaceholder />
         <ToastPlaceholder />
+        <DialogPlaceholder />
+        <AlertPlaceholder />
       </body>
     </html>
   );

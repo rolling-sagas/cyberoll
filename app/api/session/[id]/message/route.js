@@ -1,8 +1,7 @@
 import prisma from "@/prisma/client";
-
 export const runtime = "edge";
 
-const LIST_LIMIT = 12;
+const LIST_LIMIT = 512;
 
 export async function GET(req, { params }) {
   const id = parseInt(params.id);
@@ -14,7 +13,7 @@ export async function GET(req, { params }) {
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
       where: { sessionId: id },
-      orderBy: { updatedAt: "desc" },
+      orderBy: { createdAt: "desc" },
     });
     return Response.json(res);
   } catch (e) {

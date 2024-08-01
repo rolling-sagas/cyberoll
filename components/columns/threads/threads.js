@@ -6,6 +6,9 @@ import { useEffect } from "react";
 import { create } from "zustand";
 
 import { useModalStore } from "@/components/modal/dialog-placeholder";
+import { useAlertStore } from "@/components/modal/alert-placeholder";
+import Alert from "@/components/modal/alert";
+
 import { useColumnsStore } from "../pinned-columns";
 
 import Spinner from "../spinner";
@@ -15,9 +18,8 @@ import Thread from "./thread";
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import CreateSessionDialog from "./create-session-dialog";
-import ColumnBackButton from "@/components/column/column-back-button";
 
-const store = create((set) => ({
+const useThreadsStore = create((set) => ({
   threads: [],
   errors: [],
 
@@ -40,6 +42,7 @@ const store = create((set) => ({
     const thread = await response.json();
     console.log(thread);
   },
+
   updateThread: async (id, name, description) => {
     const response = await fetch("/api/session/" + id, {
       method: "POST",
@@ -51,12 +54,23 @@ const store = create((set) => ({
     const thread = await response.json();
     console.log(thread);
   },
+
+  deleteThread: async (id) => {
+    const response = await fetch("/api/session/" + id, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    const res = await response.json();
+    console.log(res);
+  },
 }));
 
 const CreateThread = function () {
   const openModal = useModalStore((state) => state.open);
-  const newThread = store((state) => state.newThread);
-  const listThreads = store((state) => state.listThreads);
+  const newThread = useThreadsStore((state) => state.newThread);
+  const listThreads = useThreadsStore((state) => state.listThreads);
 
   return (
     <div className="w-full px-6 border-b">
@@ -91,34 +105,31 @@ const CreateThread = function () {
 };
 
 export default function Threads() {
-  const loading = store((state) => state.loading);
-  const listThreads = store((state) => state.listThreads);
-  const newThread = store((state) => state.newThread);
-  const updateThread = store((state) => state.updateThread);
-  const threads = store((state) => state.threads);
+  const loading = useThreadsStore((state) => state.loading);
+
+  const listThreads = useThreadsStore((state) => state.listThreads);
+  const newThread = useThreadsStore((state) => state.newThread);
+  const updateThread = useThreadsStore((state) => state.updateThread);
+  const deleteThread = useThreadsStore((state) => state.deleteThread);
+
+  const threads = useThreadsStore((state) => state.threads);
 
   const openModal = useModalStore((state) => state.open);
+  const openAlert = useAlertStore((state) => state.open);
+
   const setColumn = useColumnsStore((state) => state.setColumn);
+  const setHeader = useColumnsStore((state) => state.setHeader);
 
   useEffect(() => {
     listThreads();
   }, [listThreads]);
 
+  useEffect(() => {
+    setHeader("threads", null, "Threads", null);
+  });
+
   const onEnterThread = (thread) => {
-    setColumn(
-      "threads",
-      {
-        headerCenter: <div>{thread.name}</div>,
-        headerLeft: (
-          <ColumnBackButton
-            backId="threads"
-            backProps={{ headerCenter: <div>Threads</div> }}
-            backChildren=<Threads />
-          />
-        ),
-      },
-      <Thread data={thread} />,
-    );
+    setColumn("threads", <Thread data={thread} column="threads" />);
   };
 
   if (loading === "pending") {
@@ -180,6 +191,26 @@ export default function Threads() {
                   await updateThread(thread.id, name, desc);
                   await listThreads();
                   toast.success("Thread updated", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                }}
+              />,
+            );
+          }}
+          onDeleteClick={async () => {
+            openAlert(
+              <Alert
+                title="Delete thread?"
+                message="If you delete this thread, 
+                you won't be able to restore it."
+                onConfirm={async () => {
+                  const tid = toast.loading("Deleting thread...", {
+                    icon: <Spinner />,
+                  });
+                  await deleteThread(thread.id);
+                  await listThreads();
+                  toast.success("Thread deleted", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });

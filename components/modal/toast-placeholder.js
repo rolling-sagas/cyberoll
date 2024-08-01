@@ -9,7 +9,7 @@ export function ToastPlaceholder() {
     <div
       onMouseEnter={startPause}
       onMouseLeave={endPause}
-      className="relative z-30"
+      className="relative z-20"
     >
       <div
         className="flex flex-col-reverse gap-2
@@ -24,7 +24,7 @@ export function ToastPlaceholder() {
             >
               <div
                 className="bg-rs-text-primary text-rs-background-2 flex flex-row
-                items-center justify-start font-semibold gap-2 transition-all
+                items-center justify-start font-semibold gap-2 transition
                 max-w-full w-[320px]
                 rounded-2xl shadow-[0_2px_8px_0_rgba(0,0,0,0.4)] px-6 py-4"
               >

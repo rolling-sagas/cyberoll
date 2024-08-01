@@ -1,3 +1,4 @@
+import toast from "react-hot-toast/headless";
 import { useRef, useEffect } from "react";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
@@ -33,11 +34,76 @@ const createThreadStore = (data) =>
       const message = await response.json();
       console.log(message);
     },
+
+    updateMessage: async (mid, role, content) => {
+      const response = await fetch(
+        "/api/session/" + data.id + "/message/" + mid,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            data: { role: role, content: content },
+          }),
+        },
+      );
+      const message = await response.json();
+      console.log(message);
+    },
+
+    deleteMessage: async (mid) => {
+      const response = await fetch(
+        "/api/session/" + data.id + "/message/" + mid,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      );
+      // const res = await response.json();
+      console.log(response);
+    },
+
+    generate: async () => {
+      const response = await fetch("/api/session/" + data.id + "/generate", {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      const res = await response.json();
+      console.log(res);
+    },
   }));
 
-export default function Thread({ data }) {
+import { useColumnsStore } from "../pinned-columns";
+import Threads from "./threads";
+import ColumnBackButton from "@/components/column/column-back-button";
+import {
+  AiChat02Icon,
+  BubbleChatAddIcon,
+  CheckmarkCircle01Icon,
+} from "@hugeicons/react";
+import MessageItem from "./message-item";
+import { useAlertStore } from "@/components/modal/alert-placeholder";
+import Alert from "@/components/modal/alert";
+
+export default function Thread({ data, column }) {
   const storeRef = useRef(null);
   const openModal = useModalStore((state) => state.open);
+  const openAlert = useAlertStore((state) => state.open);
+  const setHeader = useColumnsStore((state) => state.setHeader);
+
+  useEffect(() => {
+    setHeader(
+      column,
+      <ColumnBackButton backId={column} backChildren=<Threads /> />,
+      data.name,
+      null,
+    );
+  });
 
   if (!storeRef.current) {
     storeRef.current = createThreadStore(data);
@@ -50,8 +116,19 @@ export default function Thread({ data }) {
 
   const newMessage = useStore(storeRef.current, (state) => state.newMessage);
 
-  const messages = useStore(storeRef.current, (state) => state.messages);
+  const deleteMessage = useStore(
+    storeRef.current,
+    (state) => state.deleteMessage,
+  );
 
+  const updateMessage = useStore(
+    storeRef.current,
+    (state) => state.updateMessage,
+  );
+
+  const generate = useStore(storeRef.current, (state) => state.generate);
+
+  const messages = useStore(storeRef.current, (state) => state.messages);
   const loading = useStore(storeRef.current, (state) => state.loading);
 
   useEffect(() => {
@@ -78,7 +155,21 @@ export default function Thread({ data }) {
           label="Create"
           className="mt-2"
           onClick={() => {
-            openModal(<CreateMessageDialog createAction={newMessage} />);
+            openModal(
+              <CreateMessageDialog
+                onConfirm={async (role, content) => {
+                  const tid = toast.loading("Creating message...", {
+                    icon: <Spinner />,
+                  });
+                  await newMessage(role, content);
+                  await listMessages();
+                  toast.success("Message created", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                }}
+              />,
+            );
           }}
         />
       </div>
@@ -86,10 +177,101 @@ export default function Thread({ data }) {
   }
 
   return (
-    <>
-      {messages.map((msg) => (
-        <div key={msg.id}>{msg.content}</div>
-      ))}
-    </>
+    <div className="flex flex-col h-full">
+      <div className="flex-1 flex flex-col-reverse overflow-y-auto">
+        {messages.map((msg) => (
+          <MessageItem
+            key={msg.id}
+            isFirst={msg.id === messages[0].id}
+            message={msg}
+            onDeleteClick={() => {
+              openAlert(
+                <Alert
+                  title="Delete message?"
+                  message="If you delete this message, 
+                you won't be able to restore it."
+                  onConfirm={async () => {
+                    const tid = toast.loading("Deleting message...", {
+                      icon: <Spinner />,
+                    });
+                    await deleteMessage(msg.id);
+                    await listMessages();
+                    toast.success("Message deleted", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }}
+                />,
+              );
+            }}
+            onUpdateClick={() => {
+              openModal(
+                <CreateMessageDialog
+                  role={msg.role}
+                  content={msg.content}
+                  onConfirm={async (role, content) => {
+                    const tid = toast.loading("Updating message...", {
+                      icon: <Spinner />,
+                    });
+                    console.log(role, content);
+                    await updateMessage(msg.id, role, content);
+                    await listMessages();
+                    toast.success("Message updated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }}
+                />,
+              );
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="w-full px-6 border-b">
+        <div
+          className="flex flex-row py-4 items-center"
+          onClick={() =>
+            openModal(
+              <CreateMessageDialog
+                onConfirm={async (name, desc) => {
+                  const tid = toast.loading("Creating message...", {
+                    icon: <Spinner />,
+                  });
+                  await newMessage(name, desc);
+                  await listMessages();
+                  toast.success("Message created", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                }}
+              />,
+            )
+          }
+        >
+          <BubbleChatAddIcon
+            className="text-rs-text-secondary"
+            strokeWidth={1}
+          />
+          <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
+            Create a new message
+          </div>
+          <BaseButton
+            label={<AiChat02Icon />}
+            onClick={async (evt) => {
+              evt.stopPropagation();
+              const tid = toast.loading("Generating...", {
+                icon: <Spinner />,
+              });
+              await generate();
+              toast.success("Message generated", {
+                id: tid,
+                icon: <CheckmarkCircle01Icon />,
+              });
+            }}
+          />
+        </div>
+      </div>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
-export const useModalStore = create((set) => ({
+export const useAlertStore = create((set) => ({
   content: null,
   isOpen: false,
 
@@ -10,23 +10,23 @@ export const useModalStore = create((set) => ({
   close: () => set({ content: null, isOpen: false }),
 }));
 
-export function DialogPlaceholder() {
-  const closeModal = useModalStore((state) => state.close);
+export function AlertPlaceholder() {
+  const closeModal = useAlertStore((state) => state.close);
 
-  const ModalContent = useModalStore((state) => state.content);
+  const content = useAlertStore((state) => state.content);
 
-  const isOpen = useModalStore((state) => state.isOpen);
+  const isOpen = useAlertStore((state) => state.isOpen);
 
   return (
     <Dialog
       open={isOpen}
       transition
       onClose={closeModal}
-      className="z-30 transition duration-300
+      className="z-40 transition duration-300
             ease-out data-[closed]:opacity-0 fixed inset-0 
             flex w-screen items-center justify-center p-2"
     >
-      <DialogPanel className="z-20">{ModalContent}</DialogPanel>
+      <DialogPanel className="z-20">{content}</DialogPanel>
       <DialogBackdrop className="fixed inset-0 bg-black/70 z-10" />
     </Dialog>
   );

@@ -45,13 +45,41 @@ export const useColumnsStore = create((set) => ({
     });
   },
 
-  setColumn: (id, props, children) => {
+  setColumn: (id, children) => {
     return set((state) => {
       if (!state.columns.find((n) => n.id === id))
         console.warn("Column not found");
       return {
         columns: state.columns.map((n) =>
-          n.id === id ? { id, props, children } : n,
+          n.id === id
+            ? {
+                id,
+                props: {
+                  headerLeft: null,
+                  headerCenter: null,
+                  headerRight: null,
+                },
+                children,
+              }
+            : n,
+        ),
+      };
+    });
+  },
+
+  setHeader: (id, headerLeft, headerCenter, headerRight) => {
+    return set((state) => {
+      if (!state.columns.find((n) => n.id === id))
+        console.warn("Column not found");
+      return {
+        columns: state.columns.map((n) =>
+          n.id === id
+            ? {
+                id,
+                props: { ...n.props, headerLeft, headerCenter, headerRight },
+                children: n.children,
+              }
+            : n,
         ),
       };
     });

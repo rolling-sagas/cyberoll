@@ -50,17 +50,19 @@ const RoleSwitch = function ({ index, onChange }) {
   );
 };
 
-export default function CreateMessageDialog({ createAction }) {
+export default function CreateMessageDialog({ role, content, onConfirm }) {
   const closeModal = useModalStore((state) => state.close);
 
-  const [roleIndex, setRoleIndex] = useState(lastRoleIndex);
-  const [content, setContent] = useState("");
+  const [roleIndex, setRoleIndex] = useState(
+    role ? roles.indexOf(role) : lastRoleIndex,
+  );
+  const [mContent, setMContent] = useState(content || "");
 
-  const canCreate = content.trim().length > 0;
+  const canCreate = mContent.trim().length > 0;
 
   return (
     <Dialog
-      title="New message"
+      title={role ? "Edit mesage" : "New message"}
       header={
         <RoleSwitch
           index={roleIndex}
@@ -73,8 +75,8 @@ export default function CreateMessageDialog({ createAction }) {
       body={
         <Input
           name="Content"
-          value={content}
-          onChange={setContent}
+          value={mContent}
+          onChange={setMContent}
           icon=<MessageProgrammingIcon
             className="text-rs-text-secondary"
             size={20}
@@ -86,11 +88,11 @@ export default function CreateMessageDialog({ createAction }) {
       }
       footer={
         <BaseButton
-          label="Create"
+          label={role ? "Update" : "Create"}
           disabled={!canCreate}
           onClick={async () => {
             closeModal();
-            await createAction(roles[roleIndex], content);
+            onConfirm(roles[roleIndex], mContent);
           }}
         />
       }
