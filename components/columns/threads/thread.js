@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
-import { useModalStore } from "@/app/layout";
+import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
 
 const createThreadStore = (data) =>

@@ -1,6 +1,6 @@
 import BaseButton from "@/components/buttons/base-button";
 
-import { useModalStore } from "@/app/layout";
+import { useModalStore } from "@/components/modal/dialog-placeholder";
 
 import { useState } from "react";
 

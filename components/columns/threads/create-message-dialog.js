@@ -1,6 +1,6 @@
 import BaseButton from "@/components/buttons/base-button";
 
-import { useModalStore } from "@/app/layout";
+import { useModalStore } from "@/components/modal/dialog-placeholder";
 
 import {
   MessageProgrammingIcon,
@@ -40,9 +40,9 @@ const RoleSwitch = function ({ index, onChange }) {
           onChange={onChange}
           index={index}
           items={[
-            <Wrench01Icon size={20} />,
-            <RoboticIcon size={20} />,
-            <UserCircle02Icon size={20} />,
+            <Wrench01Icon size={20} key={0} />,
+            <RoboticIcon size={20} key={1} />,
+            <UserCircle02Icon size={20} key={2} />,
           ]}
         />
       </div>

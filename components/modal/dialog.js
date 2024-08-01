@@ -16,7 +16,7 @@ export const Input = function ({
     if (autoFocus) {
       inputEl.current.focus();
     }
-  }, []);
+  }, [autoFocus]);
 
   return (
     <div

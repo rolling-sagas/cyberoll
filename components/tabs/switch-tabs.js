@@ -8,9 +8,9 @@ export default function SwitchTabs({ items, index, onChange }) {
         className="flex flex-row items-center justify-between
         rounded-xl w-fit bg-rs-background-1 relative"
       >
-        {items.map((item, index) => (
+        {items.map((item, idx) => (
           <Tab
-            key={index}
+            key={idx}
             className="w-[96px] h-[44px] flex justify-center items-center
             data-[selected]:text-rs-text-primary text-rs-text-secondary z-10
             outline-none"
