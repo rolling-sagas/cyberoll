@@ -12,7 +12,8 @@ export default function SwitchTabs({ items, index, onChange }) {
           <Tab
             key={index}
             className="w-[96px] h-[44px] flex justify-center items-center
-            data-[selected]:text-rs-text-primary text-rs-text-secondary z-10"
+            data-[selected]:text-rs-text-primary text-rs-text-secondary z-10
+            outline-none"
           >
             {item}
           </Tab>

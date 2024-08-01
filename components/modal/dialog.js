@@ -50,22 +50,29 @@ export const Input = function ({
     </div>
   );
 };
-const Dialog = function ({ title, header, body, footer }) {
+const Dialog = function ({ title, header, body, footer, width = 460 }) {
   return (
-    <div className="flex flex-col">
+    <div
+      className="flex flex-col 
+      "
+    >
       <div
-        className="w-full h-[46px] flex flex-row 
+        className="h-[46px] flex flex-row 
         items-center justify-center"
       >
         <div className="font-semibold text-white text-[16px]">{title}</div>
       </div>
-      <div className="px-6 mt-2 mb-4 ">
+      <div className="px-6 mt-2 mb-4">
         <div
-          className="bg-rs-background-2 
-          border border-rs-border rounded-2xl w-[460px]"
+          className="bg-rs-background-2 flex flex-col
+          border border-rs-border rounded-2xl
+          max-w-[calc(100vw-32px)]"
+          style={{ width: `${width}px` }}
         >
-          <div className="pt-6 px-6">{header}</div>
-          <div className="px-6 py-4">{body}</div>
+          <div className="max-h-[calc(100svh-193px)] overflow-y-auto">
+            <div className="pt-6 px-6">{header}</div>
+            <div className="px-6 py-4 overflow-auto">{body}</div>
+          </div>
           <div className="pb-6 px-6 flex flex-row-reverse items-center w-full">
             {footer}
           </div>

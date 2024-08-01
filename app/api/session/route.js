@@ -16,10 +16,10 @@ export async function GET(req) {
         _count: {
           select: { messages: true },
         },
-        messages: {
-          take: 2,
-          orderBy: { updatedAt: "desc" },
-        },
+        // messages: {
+        //   take: 2,
+        //   orderBy: { updatedAt: "desc" },
+        // },
       },
       orderBy: { updatedAt: "desc" },
     });

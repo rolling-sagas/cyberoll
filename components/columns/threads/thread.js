@@ -22,13 +22,13 @@ const createThreadStore = (data) =>
       console.log("messages", data.id, messages);
     },
 
-    newMessage: async (data) => {
+    newMessage: async (role, content) => {
       const response = await fetch(`/api/session/${data.id}/message`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ data: data }),
+        body: JSON.stringify({ data: { role: role, content: content } }),
       });
       const message = await response.json();
       console.log(message);
@@ -85,5 +85,11 @@ export default function Thread({ data }) {
     );
   }
 
-  return <div>Thread</div>;
+  return (
+    <>
+      {messages.map((msg) => (
+        <div key={msg.id}>{msg.content}</div>
+      ))}
+    </>
+  );
 }

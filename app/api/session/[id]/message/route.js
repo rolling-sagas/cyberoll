@@ -33,9 +33,10 @@ export async function POST(req, { params }) {
   const id = parseInt(params.id);
   try {
     const { data, include } = await req.json();
+    console.log("new message", data.role, data.content);
     const res = await prisma.message.create({
       data: { ...data, sessionId: id },
-      include: include,
+      include: include || null,
     });
     return Response.json({ ok: true, id: res.id });
   } catch (e) {

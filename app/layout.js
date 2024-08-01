@@ -7,13 +7,7 @@ import NavBar from "@/components/navbar/navbar";
 import { useThemeStore, applyTheme } from "@/components/tailwind/store";
 import { light, dark } from "@/components/tailwind/themeColors";
 
-import {
-  Description,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  DialogBackdrop,
-} from "@headlessui/react";
+import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
 import { create } from "zustand";
 
@@ -31,7 +25,6 @@ export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
 
   const closeModal = useModalStore((state) => state.close);
-  const openModal = useModalStore((state) => state.open);
   const ModalContent = useModalStore((state) => state.content);
 
   const isOpen = useModalStore((state) => state.isOpen);
@@ -58,11 +51,11 @@ export default function RootLayout({ children }) {
         <div className="flex h-svh relative">
           <NavBar />
           <div className="flex overflow-y-hidden overflow-x-auto px-5 w-full">
-            <div className="w-[76px]" />
+            <div className="hidden md:flex w-[76px]" />
             <div className="flex flex-row flex-grow h-full gap-3 justify-center">
               {children}
             </div>
-            <div className="w-[76px]" />
+            <div className="hidden md:flex w-[76px]" />
           </div>
         </div>
         <Dialog

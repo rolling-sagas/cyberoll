@@ -24,21 +24,22 @@ export async function GET(_, { params }) {
     console.log(e.code, e.message);
     return Response.json(
       {
-        message: "Error get story",
+        message: "Error get session",
         code: e.code ?? "UNKNOWN",
       },
-      { status: 500 },
+      { status: 400 },
     );
   }
 }
 
 export async function POST(req, { params }) {
   const id = parseInt(params.id);
+  console.log("update id", params.id);
   try {
     const { data, include } = await req.json();
-    const res = await prisma.story.update({
+    const res = await prisma.session.update({
       data: data,
-      include: include,
+      include: include || null,
       where: {
         id: id,
       },
@@ -48,10 +49,10 @@ export async function POST(req, { params }) {
     console.log(e.code, e.message);
     return Response.json(
       {
-        message: "Error update story",
+        message: "Error update session",
         code: e.code ?? "UNKNOWN",
       },
-      { status: 500 },
+      { status: 400 },
     );
   }
 }
@@ -59,7 +60,7 @@ export async function POST(req, { params }) {
 export async function DELETE(_, { params }) {
   const id = parseInt(params.id);
   try {
-    await prisma.story.delete({
+    await prisma.session.delete({
       where: { id: id },
     });
     return Response.json({ ok: true });
@@ -67,10 +68,10 @@ export async function DELETE(_, { params }) {
     console.log(e.code, e.message);
     return Response.json(
       {
-        message: "Error delete story",
+        message: "Error delete session",
         code: e.code ?? "UNKNOWN",
       },
-      { status: 500 },
+      { status: 400 },
     );
   }
 }

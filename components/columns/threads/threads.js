@@ -38,6 +38,17 @@ const store = create((set) => ({
     const thread = await response.json();
     console.log(thread);
   },
+  updateThread: async (id, name, description) => {
+    const response = await fetch("/api/session/" + id, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ data: { name: name, description: description } }),
+    });
+    const thread = await response.json();
+    console.log(thread);
+  },
 }));
 
 const CreateThread = function () {
@@ -66,6 +77,7 @@ export default function Threads() {
   const loading = store((state) => state.loading);
   const listThreads = store((state) => state.listThreads);
   const newThread = store((state) => state.newThread);
+  const updateThread = store((state) => state.updateThread);
   const threads = store((state) => state.threads);
 
   const openModal = useModalStore((state) => state.open);
@@ -110,7 +122,7 @@ export default function Threads() {
           label="Create"
           className="mt-2"
           onClick={() => {
-            openModal(<CreateSessionDialog createAction={newThread} />);
+            openModal(<CreateSessionDialog onConfirm={newThread} />);
           }}
         />
       </div>
@@ -125,6 +137,17 @@ export default function Threads() {
           key={thread.id}
           thread={thread}
           onEnterThread={onEnterThread}
+          onUpdateClick={() => {
+            openModal(
+              <CreateSessionDialog
+                name={thread.name}
+                desc={thread.description}
+                onConfirm={(name, desc) => {
+                  updateThread(thread.id, name, desc);
+                }}
+              />,
+            );
+          }}
         />
       ))}
     </>

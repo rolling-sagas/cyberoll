@@ -8,17 +8,17 @@ import { TextIcon, Menu01Icon } from "@hugeicons/react";
 
 import Dialog, { Input } from "@/components/modal/dialog";
 
-export default function CreateSessionDialog({ createAction }) {
+export default function CreateSessionDialog({ name, desc, onConfirm }) {
   const closeModal = useModalStore((state) => state.close);
 
-  const [tName, setTName] = useState("");
-  const [tDesc, setTDesc] = useState("");
+  const [tName, setTName] = useState(name || "");
+  const [tDesc, setTDesc] = useState(desc || "");
 
   const canCreate = tName.trim().length > 0;
 
   return (
     <Dialog
-      title="New thread"
+      title={name ? "Edit thread" : "New thread"}
       header={
         <Input
           name="name"
@@ -41,12 +41,11 @@ export default function CreateSessionDialog({ createAction }) {
       }
       footer={
         <BaseButton
-          label="Create"
+          label="Done"
           disabled={!canCreate}
           onClick={async () => {
             closeModal();
-            console.log(createAction);
-            await createAction(tName, tDesc);
+            onConfirm(tName, tDesc);
           }}
         />
       }

@@ -10,7 +10,7 @@ dayjs.updateLocale("en", {
   relativeTime: {
     future: "in %s",
     past: "%s ago",
-    s: "1m",
+    s: "few secs",
     m: "1m",
     mm: "%dm",
     h: "1h",
@@ -34,7 +34,7 @@ import {
 
 import ToolButton from "./tool-button";
 
-export default function ThreadItem({ thread, onEnterThread }) {
+export default function ThreadItem({ thread, onEnterThread, onUpdateClick }) {
   return (
     <div
       className="grid grid-cols-[48px_auto] px-6 py-3 cursor-pointer
@@ -48,8 +48,8 @@ export default function ThreadItem({ thread, onEnterThread }) {
         className="pt-1 relative col-start-1 
         row-span-2 text-rs-text-secondary"
       >
-        {thread._count.messages > 0 ? (
-          <BubbleChatNotificationIcon variant="duotone" strokeWidth={1} />
+        {thread._count.messages === 0 ? (
+          <BubbleChatNotificationIcon variant="twotone" strokeWidth={1} />
         ) : (
           <BubbleChatNotificationIcon strokeWidth={1} />
         )}
@@ -59,7 +59,7 @@ export default function ThreadItem({ thread, onEnterThread }) {
           <div className="flex-1">
             <span className="font-semibold">{thread.name}</span>
             <span className="text-rs-text-secondary ml-2">
-              {dayjs(thread.createdAt).fromNow(true)}
+              {dayjs(thread.updatedAt).fromNow(true)}
             </span>
           </div>
           <ToolButton className="flex-0 text-rs-text-secondary">
@@ -75,15 +75,10 @@ export default function ThreadItem({ thread, onEnterThread }) {
         )}
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
-          text-rs-text-tertiary"
+          text-rs-text-tertiary gap-2"
         >
           <div className="w-9 h-9 flex justify-center items-center">
-            <ToolButton
-              onClick={(evt) => {
-                evt.stopPropagation();
-                console.log("message");
-              }}
-            >
+            <ToolButton>
               <Message02Icon size={18} strokeWidth={1.5} />
               {thread._count.messages > 0 && (
                 <span className="text-[13px] ml-1 font-light">
@@ -96,13 +91,13 @@ export default function ThreadItem({ thread, onEnterThread }) {
             className="w-9 h-9 flex justify-center 
             items-center text-rs-text-tertiary"
           >
-            <ToolButton>
+            <ToolButton
+              onClick={(evt) => {
+                evt.stopPropagation();
+                onUpdateClick();
+              }}
+            >
               <Edit02Icon size={18} strokeWidth={1.5} />
-              {thread._count.messages > 0 && (
-                <span className="text-[13px] ml-1 font-light">
-                  {thread._count.messages}
-                </span>
-              )}
             </ToolButton>
           </div>
           <div
@@ -111,11 +106,6 @@ export default function ThreadItem({ thread, onEnterThread }) {
           >
             <ToolButton>
               <Share01Icon size={18} strokeWidth={1.5} />
-              {thread._count.messages > 0 && (
-                <span className="text-[13px] ml-1 font-light">
-                  {thread._count.messages}
-                </span>
-              )}
             </ToolButton>
           </div>
         </div>

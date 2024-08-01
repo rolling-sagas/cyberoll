@@ -16,10 +16,9 @@ import SwitchTabs from "@/components/tabs/switch-tabs";
 import { useState } from "react";
 
 const roles = ["system", "assistant", "user"];
+let lastRoleIndex = 0;
 
-const RoleSwitch = function () {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
+const RoleSwitch = function ({ index, onChange }) {
   return (
     <div
       className="grid grid-cols-[48px_auto] 
@@ -33,17 +32,13 @@ const RoleSwitch = function () {
       </div>
       <div className="col-start-2 rows-start-1">
         <div className="px-1">
-          <span className="font-semibold capitalize">
-            Role: {roles[selectedIndex]}
-          </span>
+          <span className="font-semibold capitalize">Role: {roles[index]}</span>
         </div>
       </div>
       <div className="col-start-2 mt-1">
         <SwitchTabs
-          onChange={(idx) => {
-            setSelectedIndex(idx);
-          }}
-          index={selectedIndex}
+          onChange={onChange}
+          index={index}
           items={[
             <Wrench01Icon size={20} />,
             <RoboticIcon size={20} />,
@@ -58,26 +53,35 @@ const RoleSwitch = function () {
 export default function CreateMessageDialog({ createAction }) {
   const closeModal = useModalStore((state) => state.close);
 
-  const [tName, setTName] = useState("");
-  const [tDesc, setTDesc] = useState("");
+  const [roleIndex, setRoleIndex] = useState(lastRoleIndex);
+  const [content, setContent] = useState("");
 
-  const canCreate = tName.trim().length > 0;
+  const canCreate = content.trim().length > 0;
 
   return (
     <Dialog
       title="New message"
-      header={<RoleSwitch />}
+      header={
+        <RoleSwitch
+          index={roleIndex}
+          onChange={(idx) => {
+            lastRoleIndex = idx;
+            setRoleIndex(idx);
+          }}
+        />
+      }
       body={
         <Input
           name="Content"
-          value={tDesc}
-          onChange={setTDesc}
+          value={content}
+          onChange={setContent}
           icon=<MessageProgrammingIcon
             className="text-rs-text-secondary"
             size={20}
           />
-          placeholder="Optional, can be changed later"
+          placeholder="Required, can be template or plain text"
           autoSize={true}
+          autoFocus={true}
         />
       }
       footer={
@@ -86,7 +90,7 @@ export default function CreateMessageDialog({ createAction }) {
           disabled={!canCreate}
           onClick={async () => {
             closeModal();
-            await createAction(tName, tDesc);
+            await createAction(roles[roleIndex], content);
           }}
         />
       }
