@@ -16,9 +16,7 @@ export async function GET(req, { params }) {
       orderBy: { createdAt: "asc" },
     });
 
-    // const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/cyberoll/openai`;
-    const url =
-      "https://gateway.ai.cloudflare.com/v1/542b0e9f0f5f5883ac3c5f297789bd6b/cyberoll/openai/chat/completions";
+    const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/cyberoll/openai/chat/completions`;
 
     const chatCompletion = await fetch(url, {
       method: "POST",
