@@ -56,21 +56,45 @@ export async function POST(req, { params }) {
   }
 }
 
-export async function DELETE(_, { params }) {
+export async function DELETE(req, { params }) {
+  const sid = parseInt(params.id);
   const id = parseInt(params.mid);
-  try {
-    await prisma.message.delete({
-      where: { id: id },
-    });
-    return Response.json({ ok: true });
-  } catch (e) {
-    console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error delete message",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+
+  const url = new URL(req.url);
+  const below = new URLSearchParams(url.search).get("below") === "true";
+
+  if (below) {
+    console.log("delete below", id);
+    try {
+      await prisma.message.deleteMany({
+        where: { AND: [{ sessionId: sid }, { id: { gt: id } }] },
+      });
+      return Response.json({ ok: true });
+    } catch (e) {
+      console.log(e.code, e.message);
+      return Response.json(
+        {
+          message: "Error delete messages",
+          code: e.code ?? "UNKNOWN",
+        },
+        { status: 400 },
+      );
+    }
+  } else {
+    try {
+      await prisma.message.delete({
+        where: { id: id },
+      });
+      return Response.json({ ok: true });
+    } catch (e) {
+      console.log(e.code, e.message);
+      return Response.json(
+        {
+          message: "Error delete message",
+          code: e.code ?? "UNKNOWN",
+        },
+        { status: 400 },
+      );
+    }
   }
 }

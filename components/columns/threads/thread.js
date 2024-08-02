@@ -62,6 +62,20 @@ const createThreadStore = (data) =>
           },
         },
       );
+      const res = await response.json();
+      console.log(res);
+    },
+
+    deleteMessagesBelow: async (mid) => {
+      const response = await fetch(
+        "/api/session/" + data.id + "/message/" + mid + "?below=true",
+        {
+          method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      );
       // const res = await response.json();
       console.log(response);
     },
@@ -133,6 +147,11 @@ export default function Thread({ data, column }) {
   const deleteMessage = useStore(
     storeRef.current,
     (state) => state.deleteMessage,
+  );
+
+  const deleteMessagesBelow = useStore(
+    storeRef.current,
+    (state) => state.deleteMessagesBelow,
   );
 
   const updateMessage = useStore(
@@ -208,25 +227,46 @@ export default function Thread({ data, column }) {
             key={msg.id}
             isFirst={msg.id === messages[0].id}
             message={msg}
-            onDeleteClick={() => {
-              openAlert(
-                <Alert
-                  title="Delete message?"
-                  message="If you delete this message, 
+            onDeleteClick={(below) => {
+              if (below) {
+                openAlert(
+                  <Alert
+                    title="Delete messages?"
+                    message="If you delete all these messages, 
                 you won't be able to restore it."
-                  onConfirm={async () => {
-                    const tid = toast.loading("Deleting message...", {
-                      icon: <Spinner />,
-                    });
-                    await deleteMessage(msg.id);
-                    await listMessages();
-                    toast.success("Message deleted", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                  }}
-                />,
-              );
+                    onConfirm={async () => {
+                      const tid = toast.loading("Deleting messages...", {
+                        icon: <Spinner />,
+                      });
+                      await deleteMessagesBelow(msg.id);
+                      await listMessages();
+                      toast.success("Messages deleted", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    }}
+                  />,
+                );
+              } else {
+                openAlert(
+                  <Alert
+                    title="Delete message?"
+                    message="If you delete this message, 
+                you won't be able to restore it."
+                    onConfirm={async () => {
+                      const tid = toast.loading("Deleting message...", {
+                        icon: <Spinner />,
+                      });
+                      await deleteMessage(msg.id);
+                      await listMessages();
+                      toast.success("Message deleted", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    }}
+                  />,
+                );
+              }
             }}
             onUpdateClick={() => {
               openModal(

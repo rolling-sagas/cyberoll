@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 
 import {
+  ArrowDown02Icon,
   ArrowReloadHorizontalIcon,
   Copy01Icon,
   Delete01Icon,
@@ -47,9 +48,19 @@ export default function MessageItem({
                   className: "text-red-500",
                   label: "Delete",
                   right: <Delete01Icon size={24} />,
-                  onClick: (evt) => {
-                    evt.stopPropagation();
+                  onClick: () => {
                     onDeleteClick();
+                  },
+                },
+                {
+                  label: "divider",
+                },
+                {
+                  className: "text-red-500",
+                  label: "Delete below",
+                  right: <ArrowDown02Icon size={24} />,
+                  onClick: () => {
+                    onDeleteClick(true);
                   },
                 },
               ]}

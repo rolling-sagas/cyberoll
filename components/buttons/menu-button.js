@@ -31,25 +31,30 @@ export default function MenuButton({ items }) {
       <PopoverPanel
         anchor="bottom end"
         transition
-        className="flex flex-col bg-rs-background-2 p-2 rounded-2xl border
-          w-60 mt-2 origin-top-right ml-1 z-20
+        className="flex flex-col bg-rs-background-2 rounded-2xl border
+          w-60 origin-top-right z-20 [--anchor-gap:6px]
           transition duration-200 ease-out
           data-[closed]:scale-75 data-[closed]:opacity-0
           shadow-[0_10px_20px_0_rgba(0,0,0,0.08)] 
           "
       >
-        {items.map((item, index) => (
-          <CloseButton
-            key={index}
-            className={`w-full h-[52px] rounded-2xl p-3
+        {items.map((item, index) =>
+          item.label === "divider" ? (
+            <div key={index} className="w-full border-b" />
+          ) : (
+            <div className="p-2" key={index}>
+              <CloseButton
+                className={`w-full h-[52px] rounded-2xl p-3
             hover:bg-rs-background-hover flex flex-row items-center justify-start
             font-semibold  ${item.className || ""}`}
-            onClick={item.onClick}
-          >
-            <span className="flex-grow text-left">{item.label}</span>
-            {item.right}
-          </CloseButton>
-        ))}
+                onClick={item.onClick}
+              >
+                <span className="flex-grow text-left">{item.label}</span>
+                {item.right}
+              </CloseButton>
+            </div>
+          ),
+        )}
       </PopoverPanel>
     </Popover>
   );
