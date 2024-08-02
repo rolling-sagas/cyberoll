@@ -43,6 +43,7 @@ async function generateWithAzureAPI(messages, cache) {
       "cf-skip-cache": `${!cache}`,
     },
     body: JSON.stringify({
+      response_format: { type: "json_object" },
       messages: messages.map((m) => ({ role: m.role, content: m.content })),
     }),
   });

@@ -106,9 +106,6 @@ const createThreadStore = (data) =>
     },
   }));
 
-import { useColumnsStore } from "../pinned-columns";
-import Threads from "./threads";
-import ColumnBackButton from "@/components/column/column-back-button";
 import {
   AiChat02Icon,
   BubbleChatAddIcon,
@@ -122,16 +119,6 @@ export default function Thread({ data, column }) {
   const storeRef = useRef(null);
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
-  const setHeader = useColumnsStore((state) => state.setHeader);
-
-  useEffect(() => {
-    setHeader(
-      column,
-      <ColumnBackButton backId={column} backChildren=<Threads /> />,
-      data.name,
-      null,
-    );
-  });
 
   if (!storeRef.current) {
     storeRef.current = createThreadStore(data);
@@ -232,8 +219,8 @@ export default function Thread({ data, column }) {
                 openAlert(
                   <Alert
                     title="Delete messages?"
-                    message="If you delete all these messages, 
-                you won't be able to restore it."
+                    message="If you delete all the messages, 
+                you won't be able to restore them."
                     onConfirm={async () => {
                       const tid = toast.loading("Deleting messages...", {
                         icon: <Spinner />,

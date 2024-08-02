@@ -6,6 +6,8 @@ import {
   Copy01Icon,
   Delete01Icon,
   Edit02Icon,
+  UnfoldLessIcon,
+  UnfoldMoreIcon,
 } from "@hugeicons/react";
 
 import ToolButton from "./tool-button";
@@ -15,13 +17,47 @@ import RoleIcon from "./role-icon";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 
+import { useEffect, useState } from "react";
+
 export default function MessageItem({
   message,
   onUpdateClick,
   onDeleteClick,
   onGenerateClick,
+  isFirst,
 }) {
   const openAlert = useAlertStore((state) => state.open);
+
+  const [contextMenu, setContextMenu] = useState([]);
+
+  const [foldContent, setFoldContent] = useState(false);
+
+  useEffect(() => {
+    const del = {
+      className: "text-red-500",
+      label: "Delete",
+      right: <Delete01Icon size={24} />,
+      onClick: () => {
+        onDeleteClick();
+      },
+    };
+
+    const delBelow = {
+      className: "text-red-500",
+      label: "Delete below",
+      right: <ArrowDown02Icon size={24} />,
+      onClick: () => {
+        onDeleteClick(true);
+      },
+    };
+
+    if (isFirst) {
+      setContextMenu([del]);
+    } else {
+      setContextMenu([del, delBelow]);
+    }
+  }, [isFirst, onDeleteClick]);
+
   return (
     <div
       className="grid grid-cols-[48px_auto] px-6 py-3 h-fit
@@ -42,37 +78,13 @@ export default function MessageItem({
             </span>
           </div>
           <div className="flex-0">
-            <MenuButton
-              items={[
-                {
-                  className: "text-red-500",
-                  label: "Delete",
-                  right: <Delete01Icon size={24} />,
-                  onClick: () => {
-                    onDeleteClick();
-                  },
-                },
-                {
-                  label: "divider",
-                },
-                {
-                  className: "text-red-500",
-                  label: "Delete below",
-                  right: <ArrowDown02Icon size={24} />,
-                  onClick: () => {
-                    onDeleteClick(true);
-                  },
-                },
-              ]}
-            />
+            <MenuButton items={contextMenu} />
           </div>
         </div>
       </div>
       <div className="col-start-2 rows-start-2 row-span-2 h-ful">
-        {message.content ? (
+        {foldContent ? null : (
           <div className="whitespace-pre-wrap">{message.content}</div>
-        ) : (
-          <div className="text-rs-text-secondary">Empty content</div>
         )}
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
@@ -123,6 +135,22 @@ export default function MessageItem({
               }}
             >
               <Copy01Icon size={18} strokeWidth={1.5} />
+            </ToolButton>
+          </div>
+          <div
+            className="w-9 h-9 flex justify-center 
+            items-center text-rs-text-tertiary"
+          >
+            <ToolButton
+              onClick={() => {
+                setFoldContent(!foldContent);
+              }}
+            >
+              {foldContent ? (
+                <UnfoldMoreIcon size={18} strokeWidth={1.5} />
+              ) : (
+                <UnfoldLessIcon size={18} strokeWidth={1.5} />
+              )}
             </ToolButton>
           </div>
         </div>
