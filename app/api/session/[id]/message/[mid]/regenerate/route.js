@@ -1,4 +1,6 @@
 import prisma from "@/prisma/client";
+import { generate } from "@/app/api/common";
+
 export const runtime = "edge";
 
 const LIST_LIMIT = 512;
@@ -11,7 +13,7 @@ export async function GET(req, { params }) {
 
   console.log("regenerate message:", mid);
   try {
-    const prevSessions = await prisma.message.findMany({
+    const prevMessages = await prisma.message.findMany({
       skip: skip ? parseInt(skip) : 0,
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
@@ -19,31 +21,14 @@ export async function GET(req, { params }) {
       orderBy: { createdAt: "asc" },
     });
 
-    console.log("prev sessions:", prevSessions.length);
+    console.log("prev messages:", prevMessages.length);
 
-    const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/rollingsagas/openai/chat/completions`;
+    const message = await generate(prevMessages, false);
 
-    const chatCompletion = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: prevSessions.map((m) => ({
-          role: m.role,
-          content: m.content,
-        })),
-      }),
-      redirect: "manual",
-      duplex: "half",
-      signal: AbortSignal.timeout(60000),
-    });
+    if (message.error) {
+      throw new Error(message.error);
+    }
 
-    // console.log(chatCompletion.status);
-    const data = await chatCompletion.json();
-    const message = data.choices[0].message;
     const update = await prisma.message.update({
       data: {
         content: message.content,

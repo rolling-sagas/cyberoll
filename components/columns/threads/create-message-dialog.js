@@ -98,7 +98,7 @@ export default function CreateMessageDialog({ role, content, onConfirm }) {
             className="flex-1 text-rs-text-secondary 
             flex flex-row items-center"
           >
-            {roleIndex === 2 && (
+            {!role && roleIndex === 2 && (
               <>
                 <Switch
                   value={autoGen}
@@ -116,7 +116,11 @@ export default function CreateMessageDialog({ role, content, onConfirm }) {
             disabled={!canCreate}
             onClick={async () => {
               closeModal();
-              onConfirm(roles[roleIndex], mContent, roleIndex === 2 && autoGen);
+              onConfirm(
+                roles[roleIndex],
+                mContent,
+                !role && roleIndex === 2 && autoGen,
+              );
             }}
           />
         </div>

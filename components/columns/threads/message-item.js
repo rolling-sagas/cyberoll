@@ -67,18 +67,41 @@ export default function MessageItem({
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
           text-rs-text-tertiary gap-2"
         >
-          <div
-            className="w-9 h-9 flex justify-center 
+          {(message.role === "user" || message.role === "system") && (
+            <div
+              className="w-9 h-9 flex justify-center 
             items-center text-rs-text-tertiary"
-          >
-            <ToolButton
-              onClick={() => {
-                onUpdateClick();
-              }}
             >
-              <Edit02Icon size={18} strokeWidth={1.5} />
-            </ToolButton>
-          </div>
+              <ToolButton
+                onClick={() => {
+                  onUpdateClick();
+                }}
+              >
+                <Edit02Icon size={18} strokeWidth={1.5} />
+              </ToolButton>
+            </div>
+          )}
+          {message.role === "assistant" && (
+            <div
+              className="w-9 h-9 flex justify-center 
+            items-center text-rs-text-tertiary"
+            >
+              <ToolButton
+                onClick={() => {
+                  openAlert(
+                    <Alert
+                      title="Regenerate"
+                      message="If you regenerate this message, then all subsequent messages will be effected."
+                      confirmLabel="Proceed"
+                      onConfirm={onGenerateClick}
+                    />,
+                  );
+                }}
+              >
+                <ArrowReloadHorizontalIcon size={18} strokeWidth={1.5} />
+              </ToolButton>
+            </div>
+          )}
           <div
             className="w-9 h-9 flex justify-center 
             items-center text-rs-text-tertiary"
@@ -89,25 +112,6 @@ export default function MessageItem({
               }}
             >
               <Copy01Icon size={18} strokeWidth={1.5} />
-            </ToolButton>
-          </div>
-          <div
-            className="w-9 h-9 flex justify-center 
-            items-center text-rs-text-tertiary"
-          >
-            <ToolButton
-              onClick={() => {
-                openAlert(
-                  <Alert
-                    title="Regenerate"
-                    message="If you regenerate this message, then all subsequent messages will be effected."
-                    confirmLabel="Proceed"
-                    onConfirm={onGenerateClick}
-                  />,
-                );
-              }}
-            >
-              <ArrowReloadHorizontalIcon size={18} strokeWidth={1.5} />
             </ToolButton>
           </div>
         </div>
