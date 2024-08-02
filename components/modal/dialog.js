@@ -34,7 +34,8 @@ export const Input = function ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoFocus={autoFocus}
-          className="outline-none col-start-2 rows-start-1 resize-none"
+          className="outline-none col-start-2 rows-start-1 
+            resize-none bg-rs-background-2"
           placeholder={placeholder}
         />
       ) : (

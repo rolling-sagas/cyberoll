@@ -5,14 +5,22 @@ import {
   Copy01Icon,
   Delete01Icon,
   Edit02Icon,
-  VolumeHighIcon,
 } from "@hugeicons/react";
 
 import ToolButton from "./tool-button";
 import MenuButton from "@/components/buttons/menu-button";
 import RoleIcon from "./role-icon";
 
-export default function MessageItem({ message, onUpdateClick, onDeleteClick }) {
+import { useAlertStore } from "@/components/modal/alert-placeholder";
+import Alert from "@/components/modal/alert";
+
+export default function MessageItem({
+  message,
+  onUpdateClick,
+  onDeleteClick,
+  onGenerateClick,
+}) {
+  const openAlert = useAlertStore((state) => state.open);
   return (
     <div
       className="grid grid-cols-[48px_auto] px-6 py-3 h-fit
@@ -64,8 +72,7 @@ export default function MessageItem({ message, onUpdateClick, onDeleteClick }) {
             items-center text-rs-text-tertiary"
           >
             <ToolButton
-              onClick={(evt) => {
-                evt.stopPropagation();
+              onClick={() => {
                 onUpdateClick();
               }}
             >
@@ -76,7 +83,11 @@ export default function MessageItem({ message, onUpdateClick, onDeleteClick }) {
             className="w-9 h-9 flex justify-center 
             items-center text-rs-text-tertiary"
           >
-            <ToolButton>
+            <ToolButton
+              onClick={() => {
+                navigator.clipboard.writeText(message.content);
+              }}
+            >
               <Copy01Icon size={18} strokeWidth={1.5} />
             </ToolButton>
           </div>
@@ -84,7 +95,18 @@ export default function MessageItem({ message, onUpdateClick, onDeleteClick }) {
             className="w-9 h-9 flex justify-center 
             items-center text-rs-text-tertiary"
           >
-            <ToolButton>
+            <ToolButton
+              onClick={() => {
+                openAlert(
+                  <Alert
+                    title="Regenerate"
+                    message="If you regenerate this message, then all subsequent messages will be effected."
+                    confirmLabel="Proceed"
+                    onConfirm={onGenerateClick}
+                  />,
+                );
+              }}
+            >
               <ArrowReloadHorizontalIcon size={18} strokeWidth={1.5} />
             </ToolButton>
           </div>

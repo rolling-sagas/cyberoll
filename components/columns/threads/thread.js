@@ -76,6 +76,20 @@ const createThreadStore = (data) =>
       const res = await response.json();
       console.log(res);
     },
+
+    regenerate: async (mid) => {
+      const response = await fetch(
+        "/api/session/" + data.id + "/message/" + mid + "/regenerate",
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      );
+      const res = await response.json();
+      console.log(res);
+    },
   }));
 
 import { useColumnsStore } from "../pinned-columns";
@@ -127,6 +141,7 @@ export default function Thread({ data, column }) {
   );
 
   const generate = useStore(storeRef.current, (state) => state.generate);
+  const regenerate = useStore(storeRef.current, (state) => state.regenerate);
 
   const messages = useStore(storeRef.current, (state) => state.messages);
   const loading = useStore(storeRef.current, (state) => state.loading);
@@ -157,16 +172,25 @@ export default function Thread({ data, column }) {
           onClick={() => {
             openModal(
               <CreateMessageDialog
-                onConfirm={async (role, content) => {
+                onConfirm={async (role, content, autoGen) => {
                   const tid = toast.loading("Creating message...", {
                     icon: <Spinner />,
                   });
                   await newMessage(role, content);
-                  await listMessages();
-                  toast.success("Message created", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  console.log(role, content, autoGen);
+                  if (autoGen) {
+                    await generate();
+                    toast.success("Message generated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } else {
+                    await listMessages();
+                    toast.success("Message created", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }
                 }}
               />,
             );
@@ -224,6 +248,17 @@ export default function Thread({ data, column }) {
                 />,
               );
             }}
+            onGenerateClick={async () => {
+              const tid = toast.loading("Regenerating message...", {
+                icon: <Spinner />,
+              });
+              await regenerate(msg.id);
+              await listMessages();
+              toast.success("Message regenerated", {
+                id: tid,
+                icon: <CheckmarkCircle01Icon />,
+              });
+            }}
           />
         ))}
       </div>
@@ -234,16 +269,30 @@ export default function Thread({ data, column }) {
           onClick={() =>
             openModal(
               <CreateMessageDialog
-                onConfirm={async (name, desc) => {
+                onConfirm={async (role, content, autoGen) => {
                   const tid = toast.loading("Creating message...", {
                     icon: <Spinner />,
                   });
-                  await newMessage(name, desc);
-                  await listMessages();
-                  toast.success("Message created", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  await newMessage(role, content);
+                  console.log(role, content, autoGen);
+                  if (autoGen) {
+                    await generate();
+                    toast.success("Generating message...", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                    await listMessages();
+                    toast.success("Message generated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } else {
+                    await listMessages();
+                    toast.success("Message created", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }
                 }}
               />,
             )
@@ -264,6 +313,7 @@ export default function Thread({ data, column }) {
                 icon: <Spinner />,
               });
               await generate();
+              await listMessages();
               toast.success("Message generated", {
                 id: tid,
                 icon: <CheckmarkCircle01Icon />,

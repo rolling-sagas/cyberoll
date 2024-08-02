@@ -15,8 +15,11 @@ import SwitchTabs from "@/components/tabs/switch-tabs";
 
 import { useState } from "react";
 
+import Switch from "@/components/switch";
+
 const roles = ["system", "assistant", "user"];
 let lastRoleIndex = 0;
+let lastAutoGen = false;
 
 const RoleSwitch = function ({ index, onChange }) {
   return (
@@ -56,6 +59,9 @@ export default function CreateMessageDialog({ role, content, onConfirm }) {
   const [roleIndex, setRoleIndex] = useState(
     role ? roles.indexOf(role) : lastRoleIndex,
   );
+
+  const [autoGen, setAutoGen] = useState(lastAutoGen);
+
   const [mContent, setMContent] = useState(content || "");
 
   const canCreate = mContent.trim().length > 0;
@@ -87,14 +93,33 @@ export default function CreateMessageDialog({ role, content, onConfirm }) {
         />
       }
       footer={
-        <BaseButton
-          label={role ? "Update" : "Create"}
-          disabled={!canCreate}
-          onClick={async () => {
-            closeModal();
-            onConfirm(roles[roleIndex], mContent);
-          }}
-        />
+        <div className="flex flex-row items-center w-full">
+          <div
+            className="flex-1 text-rs-text-secondary 
+            flex flex-row items-center"
+          >
+            {roleIndex === 2 && (
+              <>
+                <Switch
+                  value={autoGen}
+                  onChange={(toggle) => {
+                    lastAutoGen = toggle;
+                    setAutoGen(toggle);
+                  }}
+                />
+                <span className="pl-4">Auto generate</span>
+              </>
+            )}
+          </div>
+          <BaseButton
+            label={role ? "Update" : "Create"}
+            disabled={!canCreate}
+            onClick={async () => {
+              closeModal();
+              onConfirm(roles[roleIndex], mContent, roleIndex === 2 && autoGen);
+            }}
+          />
+        </div>
       }
     />
   );
