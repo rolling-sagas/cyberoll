@@ -7,14 +7,17 @@ compatibility_flags = [ "nodejs_compat" ]
 [vars]
 SITE_URL = "http://localhost:3000"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
+LLM = "AZURE"
 
 [env.production.vars]
 SITE_URL = "https://lab.rollingsagas.com"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
+LLM = "AZURE"
 
 [env.preview.vars]
 SITE_URL = "https://cyberoll.pages.dev"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
+LLM = "AZURE"
 
 [[d1_databases]]
 binding = "rsDb"

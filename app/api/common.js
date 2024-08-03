@@ -14,7 +14,7 @@ export async function generate(messages, cache = true) {
   return data.choices[0].message;
 }
 
-async function generateWithOpenAIAPI(messages) {
+async function generateWithOpenAIAPI(messages, cache) {
   const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/rollingsagas/openai/chat/completions`;
 
   const chatCompletion = await fetch(url, {
@@ -22,8 +22,10 @@ async function generateWithOpenAIAPI(messages) {
     headers: {
       "Content-type": "application/json",
       Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      "cf-skip-cache": `${!cache}`,
     },
     body: JSON.stringify({
+      response_format: { type: "json_object" },
       model: "gpt-4o-mini",
       messages: messages.map((m) => ({ role: m.role, content: m.content })),
     }),

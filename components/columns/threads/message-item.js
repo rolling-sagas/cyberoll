@@ -6,6 +6,7 @@ import {
   Copy01Icon,
   Delete01Icon,
   Edit02Icon,
+  ThirdBracketIcon,
   UnfoldLessIcon,
   UnfoldMoreIcon,
 } from "@hugeicons/react";
@@ -18,6 +19,7 @@ import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 
 import { useEffect, useState } from "react";
+import MessageContent from "./message-content";
 
 export default function MessageItem({
   message,
@@ -30,7 +32,7 @@ export default function MessageItem({
 
   const [contextMenu, setContextMenu] = useState([]);
 
-  const [foldContent, setFoldContent] = useState(false);
+  const [foldContent, setFoldContent] = useState(message.role === "system");
 
   useEffect(() => {
     const del = {
@@ -51,10 +53,22 @@ export default function MessageItem({
       },
     };
 
+    const toggleRaw = {
+      label: "Toggle raw",
+      right: <ThirdBracketIcon size={24} />,
+      onClick: () => {
+        onDeleteClick(true);
+      },
+    };
+
+    const divider = {
+      label: "divider",
+    };
+
     if (isFirst) {
-      setContextMenu([del]);
+      setContextMenu([toggleRaw, divider, del]);
     } else {
-      setContextMenu([del, delBelow]);
+      setContextMenu([toggleRaw, divider, del, delBelow]);
     }
   }, [isFirst, onDeleteClick]);
 
@@ -84,26 +98,27 @@ export default function MessageItem({
       </div>
       <div className="col-start-2 rows-start-2 row-span-2 h-ful">
         {foldContent ? null : (
-          <div className="whitespace-pre-wrap">{message.content}</div>
+          <MessageContent
+            content={message.content}
+            raw={message.role === "system"}
+          />
         )}
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
           text-rs-text-tertiary gap-2"
         >
-          {(message.role === "user" || message.role === "system") && (
-            <div
-              className="w-9 h-9 flex justify-center 
+          <div
+            className="w-9 h-9 flex justify-center 
             items-center text-rs-text-tertiary"
+          >
+            <ToolButton
+              onClick={() => {
+                onUpdateClick();
+              }}
             >
-              <ToolButton
-                onClick={() => {
-                  onUpdateClick();
-                }}
-              >
-                <Edit02Icon size={18} strokeWidth={1.5} />
-              </ToolButton>
-            </div>
-          )}
+              <Edit02Icon size={18} strokeWidth={1.5} />
+            </ToolButton>
+          </div>
           {message.role === "assistant" && (
             <div
               className="w-9 h-9 flex justify-center 
@@ -138,8 +153,8 @@ export default function MessageItem({
             </ToolButton>
           </div>
           <div
-            className="w-9 h-9 flex justify-center 
-            items-center text-rs-text-tertiary"
+            className="w-9 h-9 flex justify-center items-center 
+            text-rs-text-tertiary"
           >
             <ToolButton
               onClick={() => {
