@@ -33,16 +33,33 @@ export async function GET(_, { params }) {
 
 export async function POST(req, { params }) {
   const id = parseInt(params.mid);
-  console.log("update id", params.mid);
+  const sid = parseInt(params.id);
+  // console.log("update id", sid, id);
   try {
     const { data, include } = await req.json();
-    const res = await prisma.message.update({
-      data: data,
-      include: include || null,
-      where: {
-        id: id,
+    const res = await prisma.session.update({
+      where: { id: sid },
+      data: {
+        messages: {
+          update: {
+            data: data,
+            where: { id: id },
+          },
+        },
+        updatedAt: new Date(),
+      },
+      include: {
+        ...include,
+        messages: true,
       },
     });
+    // const res = await prisma.message.update({
+    //   data: data,
+    //   include: include || null,
+    //   where: {
+    //     id: id,
+    //   },
+    // });
     return Response.json({ ok: true, id: res.id });
   } catch (e) {
     console.log(e.code, e.message);
@@ -66,9 +83,23 @@ export async function DELETE(req, { params }) {
   if (below) {
     console.log("delete below", id);
     try {
-      await prisma.message.deleteMany({
-        where: { AND: [{ sessionId: sid }, { id: { gt: id } }] },
+      await prisma.session.update({
+        where: { id: sid },
+        data: {
+          messages: {
+            deleteMany: {
+              id: { gt: id },
+            },
+          },
+          updatedAt: new Date(),
+        },
+        include: {
+          messages: true,
+        },
       });
+      // await prisma.message.deleteMany({
+      //   where: { AND: [{ sessionId: sid }, { id: { gt: id } }] },
+      // });
       return Response.json({ ok: true });
     } catch (e) {
       console.log(e.code, e.message);
@@ -82,8 +113,19 @@ export async function DELETE(req, { params }) {
     }
   } else {
     try {
-      await prisma.message.delete({
-        where: { id: id },
+      await prisma.session.update({
+        where: { id: sid },
+        data: {
+          messages: {
+            delete: {
+              id: id,
+            },
+          },
+          updatedAt: new Date(),
+        },
+        include: {
+          messages: true,
+        },
       });
       return Response.json({ ok: true });
     } catch (e) {

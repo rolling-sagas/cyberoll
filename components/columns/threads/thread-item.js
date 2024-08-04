@@ -32,7 +32,7 @@ import {
 } from "@hugeicons/react";
 
 import ToolButton from "./tool-button";
-import MenuButton from "@/components/buttons/menu-button";
+import { MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 
 export default function ThreadItem({
   thread,
@@ -68,19 +68,17 @@ export default function ThreadItem({
             </span>
           </div>
           <div className="flex-0">
-            <MenuButton
-              items={[
-                {
-                  className: "text-red-500",
-                  label: "Delete",
-                  right: <Delete01Icon size={24} />,
-                  onClick: (evt) => {
-                    evt.stopPropagation();
-                    if (onDeleteClick) onDeleteClick();
-                  },
-                },
-              ]}
-            />
+            <MenuButton>
+              <MenuButtonItem
+                className="text-red-500"
+                left="Delete"
+                right={<Delete01Icon size={24} />}
+                onClick={(evt) => {
+                  evt.stopPropagation();
+                  if (onDeleteClick) onDeleteClick();
+                }}
+              />
+            </MenuButton>
           </div>
         </div>
       </div>

@@ -20,3 +20,13 @@ body {
 input {
   @apply outline-none bg-rs-background-2;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  width: 10px;
+}

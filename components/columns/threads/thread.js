@@ -20,7 +20,7 @@ const createThreadStore = (data) =>
       const response = await fetch(`/api/session/${data.id}/message`);
       const messages = await response.json();
       set({ messages, loading: "loaded" });
-      console.log("messages", data.id, messages);
+      // console.log("messages", data.id, messages);
     },
 
     newMessage: async (role, content) => {
@@ -32,10 +32,11 @@ const createThreadStore = (data) =>
         body: JSON.stringify({ data: { role: role, content: content } }),
       });
       const message = await response.json();
-      console.log(message);
+      // console.log(message);
     },
 
     updateMessage: async (mid, role, content) => {
+      console.log("session id", data.id);
       const response = await fetch(
         "/api/session/" + data.id + "/message/" + mid,
         {
@@ -49,7 +50,7 @@ const createThreadStore = (data) =>
         },
       );
       const message = await response.json();
-      console.log(message);
+      // console.log(message);
     },
 
     deleteMessage: async (mid) => {
@@ -186,6 +187,7 @@ export default function Thread({ data, column }) {
                   console.log(role, content, autoGen);
                   if (autoGen) {
                     await generate();
+                    await listMessages();
                     toast.success("Message generated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
@@ -214,6 +216,31 @@ export default function Thread({ data, column }) {
             key={msg.id}
             isFirst={msg.id === messages[0].id}
             message={msg}
+            onChoiceSelect={async (c) => {
+              const tid = toast.loading("Making choice...", {
+                icon: <Spinner />,
+              });
+
+              let content = "";
+              if (c.skill) {
+                content = `I rolled a **${Math.floor(Math.random() * 100 + 1)}**`;
+                content += ` for **${c.skill.name}**, `;
+                content += `And I need to roll a **50** or smaller to succeed.`;
+              } else if (c.content) {
+                content = c.content;
+              }
+              await newMessage("user", JSON.stringify({ user: content }));
+              toast.loading("Generating response", {
+                icon: <Spinner />,
+                id: tid,
+              });
+              await generate();
+              await listMessages();
+              toast.success("Message generated", {
+                id: tid,
+                icon: <CheckmarkCircle01Icon />,
+              });
+            }}
             onDeleteClick={(below) => {
               if (below) {
                 openAlert(
@@ -301,7 +328,7 @@ export default function Thread({ data, column }) {
                     icon: <Spinner />,
                   });
                   await newMessage(role, content);
-                  console.log(role, content, autoGen);
+                  // console.log(role, content, autoGen);
                   if (autoGen) {
                     await generate();
                     toast.success("Generating message...", {

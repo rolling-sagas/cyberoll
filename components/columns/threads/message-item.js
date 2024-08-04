@@ -12,65 +12,29 @@ import {
 } from "@hugeicons/react";
 
 import ToolButton from "./tool-button";
-import MenuButton from "@/components/buttons/menu-button";
+import { MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 import RoleIcon from "./role-icon";
 
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MessageContent from "./message-content";
+import { MenuButtonDivider } from "../../buttons/menu-button";
 
 export default function MessageItem({
   message,
   onUpdateClick,
   onDeleteClick,
   onGenerateClick,
+  onChoiceSelect,
   isFirst,
 }) {
   const openAlert = useAlertStore((state) => state.open);
 
-  const [contextMenu, setContextMenu] = useState([]);
+  const [raw, setRaw] = useState(message.role === "system");
 
   const [foldContent, setFoldContent] = useState(message.role === "system");
-
-  useEffect(() => {
-    const del = {
-      className: "text-red-500",
-      label: "Delete",
-      right: <Delete01Icon size={24} />,
-      onClick: () => {
-        onDeleteClick();
-      },
-    };
-
-    const delBelow = {
-      className: "text-red-500",
-      label: "Delete below",
-      right: <ArrowDown02Icon size={24} />,
-      onClick: () => {
-        onDeleteClick(true);
-      },
-    };
-
-    const toggleRaw = {
-      label: "Toggle raw",
-      right: <ThirdBracketIcon size={24} />,
-      onClick: () => {
-        onDeleteClick(true);
-      },
-    };
-
-    const divider = {
-      label: "divider",
-    };
-
-    if (isFirst) {
-      setContextMenu([toggleRaw, divider, del]);
-    } else {
-      setContextMenu([toggleRaw, divider, del, delBelow]);
-    }
-  }, [isFirst, onDeleteClick]);
 
   return (
     <div
@@ -92,17 +56,65 @@ export default function MessageItem({
             </span>
           </div>
           <div className="flex-0">
-            <MenuButton items={contextMenu} />
+            <MenuButton>
+              {message.role !== "system" && (
+                <>
+                  <MenuButtonItem
+                    left="Toggle Raw"
+                    right={<ThirdBracketIcon />}
+                    onClick={() => {
+                      setRaw(!raw);
+                    }}
+                  />
+                  <MenuButtonDivider />
+                </>
+              )}
+              <MenuButtonItem
+                left="Delete"
+                className="text-red-500"
+                right={<Delete01Icon />}
+                onClick={() => {
+                  onDeleteClick();
+                }}
+              />
+              {isFirst ? null : (
+                <MenuButtonItem
+                  left="Delete below"
+                  className="text-red-500"
+                  right={<ArrowDown02Icon />}
+                  onClick={() => {
+                    onDeleteClick(true);
+                  }}
+                />
+              )}
+            </MenuButton>
           </div>
         </div>
       </div>
       <div className="col-start-2 rows-start-2 row-span-2 h-ful">
-        {foldContent ? null : (
-          <MessageContent
-            content={message.content}
-            raw={message.role === "system"}
-          />
-        )}
+        {!foldContent &&
+          (raw || message.role === "system" ? (
+            <div className="whitespace-pre-wrap">{message.content}</div>
+          ) : (
+            <MessageContent
+              content={message.content}
+              actionNeeded={message.role === "assistant"}
+              onChoiceSelect={(c) => {
+                if (isFirst) {
+                  onChoiceSelect(c);
+                } else {
+                  openAlert(
+                    <Alert
+                      title="Previous choice"
+                      message="You can only 
+                        select the choices from last message."
+                      confirmLabel="OK"
+                    />,
+                  );
+                }
+              }}
+            />
+          ))}
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
           text-rs-text-tertiary gap-2"
@@ -119,6 +131,7 @@ export default function MessageItem({
               <Edit02Icon size={18} strokeWidth={1.5} />
             </ToolButton>
           </div>
+
           {message.role === "assistant" && (
             <div
               className="w-9 h-9 flex justify-center 
@@ -129,7 +142,8 @@ export default function MessageItem({
                   openAlert(
                     <Alert
                       title="Regenerate"
-                      message="If you regenerate this message, then all subsequent messages will be effected."
+                      message="If you regenerate this message, 
+                        then all subsequent messages will be effected."
                       confirmLabel="Proceed"
                       onConfirm={onGenerateClick}
                     />,

@@ -1,4 +1,5 @@
 import { MoreHorizontalIcon } from "@hugeicons/react";
+
 import {
   Popover,
   PopoverButton,
@@ -6,7 +7,27 @@ import {
   CloseButton,
 } from "@headlessui/react";
 
-export default function MenuButton({ items }) {
+export function MenuButtonItem({ left, right, onClick, className }) {
+  return (
+    <div className="px-2">
+      <CloseButton
+        className={`w-full h-[52px] rounded-2xl p-3
+            hover:bg-rs-background-hover flex flex-row items-center justify-start
+            font-semibold  ${className || ""}`}
+        onClick={onClick}
+      >
+        <span className="flex-grow text-left">{left}</span>
+        {right}
+      </CloseButton>
+    </div>
+  );
+}
+
+export function MenuButtonDivider() {
+  return <div className="border-b border-rs-border my-2" />;
+}
+
+export function MenuButton({ children }) {
   return (
     <Popover className="relative">
       <PopoverButton
@@ -38,23 +59,7 @@ export default function MenuButton({ items }) {
           shadow-[0_10px_20px_0_rgba(0,0,0,0.08)] 
           "
       >
-        {items.map((item, index) =>
-          item.label === "divider" ? (
-            <div key={index} className="w-full border-b my-4" />
-          ) : (
-            <div key={index} className="px-2">
-              <CloseButton
-                className={`w-full h-[52px] rounded-2xl p-3
-            hover:bg-rs-background-hover flex flex-row items-center justify-start
-            font-semibold  ${item.className || ""}`}
-                onClick={item.onClick}
-              >
-                <span className="flex-grow text-left">{item.label}</span>
-                {item.right}
-              </CloseButton>
-            </div>
-          ),
-        )}
+        {children}
       </PopoverPanel>
     </Popover>
   );
