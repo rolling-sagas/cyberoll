@@ -115,9 +115,11 @@ import {
 import MessageItem from "./message-item";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
+import { useColumnsStore } from "../pinned-columns";
 
 export default function Thread({ data, column }) {
   const storeRef = useRef(null);
+
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
@@ -153,11 +155,22 @@ export default function Thread({ data, column }) {
   const messages = useStore(storeRef.current, (state) => state.messages);
   const loading = useStore(storeRef.current, (state) => state.loading);
 
+  const addColumn = useColumnsStore((state) => state.addColumn);
+  const rmColumn = useColumnsStore((state) => state.rmColumn);
+
   useEffect(() => {
     if (listMessages) {
       listMessages();
     }
   }, [listMessages]);
+
+  useEffect(() => {
+    addColumn("variables", { headerCenter: "Variables" }, <div>Hello</div>);
+
+    return () => {
+      rmColumn("variables");
+    };
+  }, [addColumn]);
 
   if (loading === "pending") {
     return (

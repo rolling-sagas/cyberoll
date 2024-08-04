@@ -106,6 +106,13 @@ export default function PinnedColumns() {
       case "threads":
         addColumn("threads", { headerCenter: <div>Threads</div> }, <Threads />);
         break;
+      case "variables":
+        addColumn(
+          "variables",
+          { headerCenter: <div>Variables</div> },
+          <div>Hello</div>,
+        );
+        break;
       default:
         break;
     }
