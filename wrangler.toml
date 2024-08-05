@@ -6,16 +6,19 @@ compatibility_flags = [ "nodejs_compat" ]
 
 [vars]
 SITE_URL = "http://localhost:3000"
+CLOUDFLARE_ACCOUNT_HASH = "8VoaBhaig6kffmvxoWxkaw"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 LLM = "AZURE"
 
 [env.production.vars]
 SITE_URL = "https://lab.rollingsagas.com"
+CLOUDFLARE_ACCOUNT_HASH = "8VoaBhaig6kffmvxoWxkaw"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 LLM = "AZURE"
 
 [env.preview.vars]
 SITE_URL = "https://cyberoll.pages.dev"
+CLOUDFLARE_ACCOUNT_HASH = "8VoaBhaig6kffmvxoWxkaw"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 LLM = "AZURE"
 

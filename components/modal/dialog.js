@@ -9,6 +9,7 @@ export const Input = function ({
   onChange,
   autoFocus = false,
   autoSize = false,
+  editable = true,
 }) {
   const inputEl = useRef(null);
 
@@ -34,6 +35,7 @@ export const Input = function ({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoFocus={autoFocus}
+          disabled={!editable}
           className="outline-none col-start-2 rows-start-1 
             resize-none bg-rs-background-2"
           placeholder={placeholder}
@@ -43,6 +45,7 @@ export const Input = function ({
           ref={inputEl}
           type="text"
           value={value}
+          disabled={!editable}
           onChange={(e) => onChange(e.target.value)}
           className="outline-none col-start-2 rows-start-1"
           placeholder={placeholder}

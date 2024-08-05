@@ -11,7 +11,7 @@ export default function SwitchTabs({ items, index, onChange }) {
         {items.map((item, idx) => (
           <Tab
             key={idx}
-            className="w-[96px] h-[44px] flex justify-center items-center
+            className="w-[86px] h-[44px] flex justify-center items-center
             data-[selected]:text-rs-text-primary text-rs-text-secondary z-10
             outline-none"
           >
@@ -19,9 +19,9 @@ export default function SwitchTabs({ items, index, onChange }) {
           </Tab>
         ))}
         <span
-          className="absolute border w-[96px] h-[44px] ease-out duration-300
+          className="absolute border w-[86px] h-[44px] ease-out duration-300
             rounded-xl bg-rs-background-3 z-0 transition"
-          style={{ transform: `translate(${index * 96}px, 0)` }}
+          style={{ transform: `translate(${index * 86}px, 0)` }}
         />
       </TabList>
     </TabGroup>

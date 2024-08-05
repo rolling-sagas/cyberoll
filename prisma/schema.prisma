@@ -80,6 +80,20 @@ model Message {
   sessionId Int
 }
 
+model Property {
+  id      Int    @id @default(autoincrement())
+
+  name    String
+  type    String
+  value   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId Int
+}
+
 model Session {
   id Int @id @default(autoincrement())
 
@@ -90,4 +104,5 @@ model Session {
   updatedAt DateTime @updatedAt
 
   messages Message[]
+  properties Property[]
 }

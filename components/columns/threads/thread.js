@@ -1,5 +1,5 @@
 import toast from "react-hot-toast/headless";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
@@ -116,6 +116,7 @@ import MessageItem from "./message-item";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 import { useColumnsStore } from "../pinned-columns";
+import Properties from "../properties/properties";
 
 export default function Thread({ data, column }) {
   const storeRef = useRef(null);
@@ -158,6 +159,8 @@ export default function Thread({ data, column }) {
   const addColumn = useColumnsStore((state) => state.addColumn);
   const rmColumn = useColumnsStore((state) => state.rmColumn);
 
+  const [props, setProps] = useState([]);
+
   useEffect(() => {
     if (listMessages) {
       listMessages();
@@ -165,12 +168,16 @@ export default function Thread({ data, column }) {
   }, [listMessages]);
 
   useEffect(() => {
-    addColumn("variables", { headerCenter: "Variables" }, <div>Hello</div>);
+    addColumn(
+      "properties",
+      { headerCenter: "Properties" },
+      <Properties id={data.id} onPropsUpdate={setProps} />,
+    );
 
     return () => {
-      rmColumn("variables");
+      rmColumn("properties");
     };
-  }, [addColumn]);
+  }, [addColumn, rmColumn, data.id]);
 
   if (loading === "pending") {
     return (
