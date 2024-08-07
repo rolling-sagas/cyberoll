@@ -1,11 +1,34 @@
 export const runtime = "edge";
 
-export async function generate(messages, { cache, llm }) {
+export async function generate(messages, { cache, llm, filter }) {
   // console.log(chatCompletion.status);
-  // const chatCompletion = await generateWithOpenAIAPI(messages);
-  const chatCompletion = await generateWithAzureAPI(messages, cache);
-  const data = await chatCompletion.json();
+  let data = null;
 
+  // if (filter) {
+  //   messages = messages.map((m) => {
+  //     if (m.role === "user" || m.role === "assistant") {
+  //       const obj = JSON.parse(m.content);
+  //       if (obj.choices) {
+  //         delete obj.choices;
+  //       }
+  //       if (obj.hidden) delete obj.hidden;
+  //       return { role: m.role, content: JSON.stringify(obj) };
+  //     }
+  //     return m;
+  //   });
+  // }
+  //
+  // console.log("filter:", filter, messages);
+
+  if (llm === "azure") {
+    const chatCompletion = await generateWithAzureAPI(messages, cache);
+    data = await chatCompletion.json();
+  } else if (llm === "openai") {
+    const chatCompletion = await generateWithOpenAIAPI(messages, cache);
+    data = await chatCompletion.json();
+  }
+
+  // const chatCompletion = await generateWithOpenAIAPI(messages);
   if (data.error) {
     return { error: data.error };
   }

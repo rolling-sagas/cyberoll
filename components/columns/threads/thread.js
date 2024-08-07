@@ -83,10 +83,11 @@ const createThreadStore = (data) =>
 
     generate: async () => {
       const response = await fetch("/api/session/" + data.id + "/generate", {
-        method: "GET",
+        method: "POST",
         headers: {
           "Content-type": "application/json",
         },
+        data: JSON.stringify({ llm: "azure", cache: true, filter: false }),
       });
       const res = await response.json();
       console.log(res);
@@ -96,10 +97,11 @@ const createThreadStore = (data) =>
       const response = await fetch(
         "/api/session/" + data.id + "/message/" + mid + "/regenerate",
         {
-          method: "GET",
+          method: "POST",
           headers: {
             "Content-type": "application/json",
           },
+          data: JSON.stringify({ llm: "azure", cache: false, filter: false }),
         },
       );
       const res = await response.json();
@@ -311,7 +313,7 @@ export default function Thread({ data, column }) {
                     const tid = toast.loading("Updating message...", {
                       icon: <Spinner />,
                     });
-                    console.log(role, content);
+                    // console.log(role, content);
                     await updateMessage(msg.id, role, content);
                     await listMessages();
                     toast.success("Message updated", {

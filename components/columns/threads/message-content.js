@@ -1,4 +1,4 @@
-import { CinnamonRollIcon } from "@hugeicons/react";
+import { CinnamonRollIcon, DeadIcon, NextIcon } from "@hugeicons/react";
 import { useEffect, useState } from "react";
 
 function SkillCheck({ name, difficulty }) {
@@ -39,6 +39,34 @@ export default function MessageContent({
   }, [content]);
 
   if (parsed) {
+    if (parsed.game_over || parsed.chapter_ending) {
+      return (
+        <div className="flex flex-col gap-2">
+          <span
+            dangerouslySetInnerHTML={parse(
+              parsed.game_over || parsed.chapter_ending,
+            )}
+          />
+          <div
+            className="bg-rs-background-hover rounded-xl 
+            p-2 -ml-2 cursor-pointer w-fit font-semibold"
+            onClick={() => {
+              if (parsed.game_over) {
+                onGameOver();
+              } else if (parsed.chapter_ending) {
+                onChapterEnding();
+              }
+            }}
+          >
+            <div className="flex flex-row gap-2 items-center">
+              {parsed.game_over ? <DeadIcon /> : <NextIcon />}
+              {parsed.game_over ? "GAME OVER" : "Chapter Ending"}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div>
         {parsed.narration && (

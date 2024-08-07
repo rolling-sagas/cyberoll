@@ -1,3 +1,5 @@
+// regenerate
+
 import prisma from "@/prisma/client";
 import { generate } from "@/app/api/common";
 
@@ -5,7 +7,7 @@ export const runtime = "edge";
 
 const LIST_LIMIT = 512;
 
-export async function GET(req, { params }) {
+export async function POST(req, { params }) {
   const id = parseInt(params.id);
   const mid = parseInt(params.mid);
 
@@ -23,7 +25,16 @@ export async function GET(req, { params }) {
 
     console.log("prev messages:", prevMessages.length);
 
-    const message = await generate(prevMessages, false);
+    let llm = "azure";
+
+    try {
+      const data = await req.json();
+      llm = data.llm ? data.llm : "azure";
+    } catch (e) {
+      console.log("no body");
+    }
+
+    const message = await generate(prevMessages, { cache: false, llm });
 
     if (message.error) {
       throw new Error(message.error);

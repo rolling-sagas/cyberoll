@@ -4,9 +4,18 @@ export const runtime = "edge";
 
 const LIST_LIMIT = 512;
 
-export async function GET(req, { params }) {
+export async function POST(req, { params }) {
   const id = parseInt(params.id);
   const { limit, skip } = req.nextUrl.searchParams;
+
+  let llm = "azure";
+
+  try {
+    const data = await req.json();
+    llm = data.llm ? data.llm : "azure";
+  } catch (e) {
+    console.log("no body");
+  }
 
   try {
     const res = await prisma.message.findMany({
@@ -19,9 +28,11 @@ export async function GET(req, { params }) {
 
     const message = await generate(
       res.map((m) => ({ role: m.role, content: m.content })),
+      { cache: true, llm: llm },
     );
 
     if (message.error) {
+      console.log("error", message.error.message);
       throw new Error(message.error);
     }
 
