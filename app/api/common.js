@@ -1,12 +1,11 @@
 export const runtime = "edge";
 
-export async function generate(messages, cache = true) {
+export async function generate(messages, { cache, llm }) {
   // console.log(chatCompletion.status);
   // const chatCompletion = await generateWithOpenAIAPI(messages);
   const chatCompletion = await generateWithAzureAPI(messages, cache);
   const data = await chatCompletion.json();
 
-  console.log(data);
   if (data.error) {
     return { error: data.error };
   }

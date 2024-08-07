@@ -11,7 +11,7 @@ export async function GET(req, { params }) {
 
   const { limit, skip } = req.nextUrl.searchParams;
 
-  console.log("regenerate message:", mid);
+  // console.log("regenerate message:", mid);
   try {
     const prevMessages = await prisma.message.findMany({
       skip: skip ? parseInt(skip) : 0,
