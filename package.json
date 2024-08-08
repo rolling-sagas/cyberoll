@@ -21,7 +21,7 @@
   "author": "aspirin2d@outlook.com",
   "license": "MIT",
   "dependencies": {
-    "@auth/prisma-adapter": "^2.4.1",
+    "@auth/prisma-adapter": "^2.4.2",
     "@headlessui/react": "^2.1.2",
     "@hugeicons/react": "^0.5.2",
     "dayjs": "^1.11.12",
@@ -29,22 +29,20 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
-    "react-image-crop": "^11.0.6",
     "react-textarea-autosize": "^8.5.3",
-    "stream": "^0.0.3",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.12.1",
-    "@prisma/adapter-d1": "^5.17.0",
-    "@prisma/client": "^5.17.0",
-    "autoprefixer": "^10.4.19",
+    "@cloudflare/next-on-pages": "^1.13.2",
+    "prisma": "^5.18.0",
+    "@prisma/adapter-d1": "^5.18.0",
+    "@prisma/client": "^5.18.0",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "eslint-plugin-storybook": "^0.8.0",
-    "postcss": "^8.4.39",
-    "prisma": "^5.17.0",
-    "tailwindcss": "^3.4.6",
-    "wrangler": "^3.66.0"
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.8",
+    "wrangler": "^3.69.1"
   }
 }
