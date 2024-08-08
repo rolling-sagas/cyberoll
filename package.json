@@ -9,8 +9,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build-storybook": "storybook build",
-    "pages:build": "pnpm prisma generate && npx @cloudflare/next-on-pages",
+    "pages:build": "pnpm prisma generate && npx @cloudflare/next-on-pages@1",
     "preview": "pnpm run pages:build && wrangler pages dev",
     "deploy": "pnpm run pages:build && wrangler pages deploy"
   },
