@@ -85,27 +85,13 @@ model Property {
 
   name    String
   type    String // skill check, 
-  value   String // Raw json obj
+  value   String // Raw json obj or the value
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   sessionId Int
-}
-
-model Character {
-  id        Int      @id @default(autoincrement())
-  name      String
-  age       Int?
-  gender    Int?
-  backstory String?
-
-  avatar          String? // cloudflare image id
-  skills          String?
-  characteristics String?
-  items           String?
-  wealth          String?
 }
 
 model Session {

@@ -105,7 +105,7 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
     },
   }));
 
@@ -238,20 +238,13 @@ export default function Thread({ data, column }) {
             key={msg.id}
             isFirst={msg.id === messages[0].id}
             message={msg}
-            onChoiceSelect={async (c) => {
+            props={props}
+            onSend={async (c) => {
               const tid = toast.loading("Making choice...", {
                 icon: <Spinner />,
               });
 
-              let content = "";
-              if (c.skill) {
-                content = `I rolled a **${Math.floor(Math.random() * 100 + 1)}**`;
-                content += ` for **${c.skill.name}**, `;
-                content += `And I need to roll a **50** or smaller to succeed.`;
-              } else if (c.content) {
-                content = c.content;
-              }
-              await newMessage("user", JSON.stringify({ user: content }));
+              await newMessage("user", JSON.stringify(c));
               toast.loading("Generating response", {
                 icon: <Spinner />,
                 id: tid,

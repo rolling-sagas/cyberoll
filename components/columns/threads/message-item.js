@@ -24,10 +24,11 @@ import { MenuButtonDivider } from "../../buttons/menu-button";
 
 export default function MessageItem({
   message,
+  props,
   onUpdateClick,
   onDeleteClick,
   onGenerateClick,
-  onChoiceSelect,
+  onSend,
   isFirst,
 }) {
   const openAlert = useAlertStore((state) => state.open);
@@ -98,16 +99,17 @@ export default function MessageItem({
           ) : (
             <MessageContent
               content={message.content}
+              props={props}
               actionNeeded={message.role === "assistant"}
-              onChoiceSelect={(c) => {
+              onSend={(c) => {
                 if (isFirst) {
-                  onChoiceSelect(c);
+                  onSend(c);
                 } else {
                   openAlert(
                     <Alert
-                      title="Previous choice"
+                      title="Previous message"
                       message="You can only 
-                        select the choices from last message."
+                        click the buttons from last message."
                       confirmLabel="OK"
                     />,
                   );

@@ -1,24 +1,21 @@
 export const runtime = "edge";
 
-export async function generate(messages, { cache, llm, filter }) {
+export async function generate(messages, { cache, llm }) {
   // console.log(chatCompletion.status);
   let data = null;
 
   // if (filter) {
-  //   messages = messages.map((m) => {
-  //     if (m.role === "user" || m.role === "assistant") {
-  //       const obj = JSON.parse(m.content);
-  //       if (obj.choices) {
-  //         delete obj.choices;
-  //       }
-  //       if (obj.hidden) delete obj.hidden;
-  //       return { role: m.role, content: JSON.stringify(obj) };
-  //     }
-  //     return m;
-  //   });
+  messages = messages.map((m) => {
+    if (m.role === "user" || m.role === "assistant") {
+      let obj = JSON.parse(m.content);
+      obj.data = obj.data.filter((d) => d.type !== "pm");
+      return { role: m.role, content: JSON.stringify(obj) };
+    }
+    return m;
+  });
   // }
   //
-  // console.log("filter:", filter, messages);
+  // console.log("filtered:", messages);
 
   if (llm === "azure") {
     const chatCompletion = await generateWithAzureAPI(messages, cache);

@@ -29,7 +29,7 @@ const createPropertyStore = (id) =>
 
     newProperty: async (name, type, value, imageDesc, image) => {
       if (type === "image") {
-        console.log("upload image");
+        // console.log("upload image");
         const formData = new FormData();
 
         formData.append("desc", imageDesc);
@@ -55,7 +55,6 @@ const createPropertyStore = (id) =>
     },
 
     updateProperty: async (pid, name, type, value, imageDesc, image) => {
-      console.log("session id", id);
       if (type === "image") {
         const formData = new FormData();
 
@@ -121,7 +120,9 @@ const createPropertyStore = (id) =>
 
 function CreateProperty({ store }) {
   const openModal = useModalStore((state) => state.open);
+
   const newProperty = useStore(store, (state) => state.newProperty);
+
   const listProperties = useStore(store, (state) => state.listProperties);
 
   return (
@@ -193,10 +194,10 @@ export default function Properties({ id, onPropsUpdate }) {
   }, [listProperties]);
 
   useEffect(() => {
-    if (onPropsUpdate && properties) {
-      onPropsUpdate(properties);
+    if (onPropsUpdate && properties && updateProperty) {
+      onPropsUpdate({ properties, updateProperty });
     }
-  }, [onPropsUpdate, properties]);
+  }, [onPropsUpdate, properties, updateProperty]);
 
   if (loading === "pending") {
     return (
