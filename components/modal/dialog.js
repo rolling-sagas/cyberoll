@@ -29,28 +29,15 @@ export const Input = function ({
         <div className="w-9 h-9">{icon}</div>
       </div>
       <div className="font-semibold col-start-2 rows-start-1">{name}</div>
-      {autoSize ? (
-        <TextareaAutosize
-          ref={inputEl}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          autoFocus={autoFocus}
-          disabled={!editable}
-          className="outline-none col-start-2 rows-start-1 
-            resize-none bg-rs-background-2"
-          placeholder={placeholder}
-        />
-      ) : (
-        <input
-          ref={inputEl}
-          type="text"
-          value={value}
-          disabled={!editable}
-          onChange={(e) => onChange(e.target.value)}
-          className="outline-none col-start-2 rows-start-1"
-          placeholder={placeholder}
-        />
-      )}
+      <TextareaAutosize
+        ref={inputEl}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        autoFocus={autoFocus}
+        disabled={!editable}
+        className="outline-none col-start-2 rows-start-1 bg-rs-background-2"
+        placeholder={placeholder}
+      />
     </div>
   );
 };
