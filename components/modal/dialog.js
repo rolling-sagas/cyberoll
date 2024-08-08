@@ -1,5 +1,5 @@
 import TextareaAutosize from "react-textarea-autosize";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useLayoutEffect, useState } from "react";
 
 export const Input = function ({
   name,
@@ -9,13 +9,16 @@ export const Input = function ({
   onChange,
   autoFocus = false,
   autoSize = false,
-  editable = true,
 }) {
   const inputEl = useRef(null);
+
+  const [isRerendered, setIsRerendered] = useState(false);
+  useLayoutEffect(() => setIsRerendered(true), []);
 
   useEffect(() => {
     if (autoFocus) {
       inputEl.current.focus();
+      inputEl.current.select();
     }
   }, [autoFocus]);
 
@@ -29,15 +32,25 @@ export const Input = function ({
         <div className="w-9 h-9">{icon}</div>
       </div>
       <div className="font-semibold col-start-2 rows-start-1">{name}</div>
-      <TextareaAutosize
-        ref={inputEl}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        autoFocus={autoFocus}
-        disabled={!editable}
-        className="outline-none col-start-2 rows-start-1 bg-rs-background-2"
-        placeholder={placeholder}
-      />
+      {autoSize && isRerendered ? (
+        <TextareaAutosize
+          ref={inputEl}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          autoFocus={autoFocus}
+          className="outline-none col-start-2 rows-start-1 resize-none bg-rs-background-2"
+          placeholder={placeholder}
+        />
+      ) : (
+        <input
+          ref={inputEl}
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="outline-none col-start-2 rows-start-1"
+          placeholder={placeholder}
+        />
+      )}
     </div>
   );
 };
