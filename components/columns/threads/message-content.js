@@ -8,7 +8,7 @@ function parseMarkdown(content) {
 }
 
 if (typeof String.prototype.parseFunction != "function") {
-  String.prototype.parseFunction = function () {
+  String.prototype.parseFunction = function() {
     var funcReg = /function *\(([^()]*)\)[ \n\t]*{(.*)}/gim;
     var match = funcReg.exec(this.replace(/\n/g, " "));
 
@@ -33,9 +33,6 @@ export default function MessageContent({ content, props, onSend }) {
         args = params.slice(1);
       }
     }
-
-    // console.log(params);
-    // console.log(params);
 
     switch (functionName) {
       case "send":

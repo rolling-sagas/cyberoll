@@ -54,7 +54,7 @@ const createPropertyStore = (id) =>
       }
     },
 
-    updateProperty: async (pid, name, type, value, imageDesc, image) => {
+    updateProperty: async (oldName, name, type, value, imageDesc, image) => {
       if (type === "image") {
         const formData = new FormData();
 
@@ -68,7 +68,7 @@ const createPropertyStore = (id) =>
           formData.append("file", image);
         }
         formData.append("value", value);
-        const response = await fetch(`/api/session/${id}/property/${pid}`, {
+        const response = await fetch(`/api/session/${id}/property/${oldName}`, {
           method: "PUT",
           body: formData,
         });
@@ -76,7 +76,7 @@ const createPropertyStore = (id) =>
         // console.log(res);
       } else {
         const response = await fetch(
-          "/api/session/" + id + "/property/" + pid,
+          "/api/session/" + id + "/property/" + oldName,
           {
             method: "POST",
             headers: {
@@ -92,8 +92,8 @@ const createPropertyStore = (id) =>
       }
     },
 
-    deleteProperty: async (pid) => {
-      const response = await fetch("/api/session/" + id + "/property/" + pid, {
+    deleteProperty: async (name) => {
+      const response = await fetch("/api/session/" + id + "/property/" + name, {
         method: "DELETE",
         headers: {
           "Content-type": "application/json",
@@ -223,7 +223,6 @@ export default function Properties({ id, onPropsUpdate }) {
                   const tid = toast.loading("Creating property...", {
                     icon: <Spinner />,
                   });
-                  console.log("type", type);
                   await newProperty(name, type, value, imageDesc, image);
                   await listProperties();
                   toast.success("Property created", {
@@ -244,8 +243,8 @@ export default function Properties({ id, onPropsUpdate }) {
       <CreateProperty store={storeRef.current} />
       {properties.map((prop) => (
         <PropertyItem
-          key={prop.id}
-          isLast={prop.id === properties[properties.length - 1].id}
+          key={prop.name}
+          isLast={prop.name === properties[properties.length - 1].name}
           property={prop}
           onDeleteClick={() => {
             openAlert(
@@ -257,7 +256,7 @@ export default function Properties({ id, onPropsUpdate }) {
                   const tid = toast.loading("Deleting property...", {
                     icon: <Spinner />,
                   });
-                  await deleteProperty(prop.id);
+                  await deleteProperty(prop.name);
                   await listProperties();
                   toast.success("Property deleted", {
                     id: tid,

@@ -3,25 +3,26 @@ import BaseButton from "@/components/buttons/base-button";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 
 import {
-  Image01Icon,
   LabelIcon,
   Menu01Icon,
-  Raw01Icon,
-  TextIcon,
-  TextNumberSignIcon,
   ToggleOnIcon,
 } from "@hugeicons/react";
 
 import Dialog, { Input } from "@/components/modal/dialog";
 
-import SwitchTabs from "@/components/tabs/switch-tabs";
-
 import { useState } from "react";
 import ImageUploader from "./image-uploader";
+import ListBox from "@/components/list-box/list-box";
 
-const types = ["string", "number", "object", "image"];
+const dataTypes = [
+  { key: "str", label: "string", value: "str" },
+  { key: "num", label: "number", value: "num" },
+  { key: "obj", label: "object", value: "obj" },
+  { key: "func", label: "function", value: "func" },
+  { key: "img", label: "image", value: "img" }
+];
 
-const TypeSwitch = function ({ index, onChange }) {
+const TypeSwitch = function({ value, onChange }) {
   return (
     <div
       className="grid grid-cols-[48px_auto] 
@@ -35,20 +36,11 @@ const TypeSwitch = function ({ index, onChange }) {
       </div>
       <div className="col-start-2 rows-start-1">
         <div className="px-1">
-          <span className="font-semibold capitalize">Type: {types[index]}</span>
+          <span className="font-semibold capitalize">Type</span>
         </div>
       </div>
       <div className="col-start-2 mt-1">
-        <SwitchTabs
-          onChange={onChange}
-          index={index}
-          items={[
-            <TextIcon size={20} key={0} />,
-            <TextNumberSignIcon size={20} key={1} />,
-            <Raw01Icon size={20} key={2} />,
-            <Image01Icon size={20} key={3} />,
-          ]}
-        />
+        <ListBox list={dataTypes} value={value} onChange={onChange} />
       </div>
     </div>
   );
@@ -58,8 +50,11 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
   const closeModal = useModalStore((state) => state.close);
 
   const [pName, setName] = useState(name || "");
-  const [pType, setType] = useState(type || "string");
+
+  const [pType, setType] = useState(type || dataTypes[0].value)
   const [pValue, setValue] = useState(value || "");
+
+  const [width, setWidth] = useState(560);
 
   const [image, setImage] = useState(null);
   const [imageDesc, setImageDesc] = useState("");
@@ -70,7 +65,9 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
 
   return (
     <Dialog
+      width={width}
       title={name ? "Edit property" : "New property"}
+
       header={
         <Input
           name="Name"
@@ -81,15 +78,14 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
           autoFocus={true}
         />
       }
+
       body={
         <div className="flex flex-col gap-2">
-          <TypeSwitch
-            index={types.indexOf(pType)}
-            onChange={(idx) => {
-              setType(types[idx]);
-            }}
-          />
-          {pType !== "image" ? (
+          <TypeSwitch value={pType} onChange={(value) => {
+            setType(value)
+          }} />
+
+          {pType === "str" && (
             <Input
               name="Value"
               value={pValue}
@@ -98,17 +94,32 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
               placeholder="Required, value of the property"
               autoSize={true}
             />
-          ) : (
-            <ImageUploader
+          )}
+
+          {pType === "num" && (
+            <Input
+              name="Value"
               value={pValue}
-              onChange={(desc, file) => {
-                setImageDesc(desc);
-                setImage(file);
-              }}
+              onChange={setValue}
+              icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
+              placeholder="Required, value of the property"
+              autoSize={false}
+            />
+          )}
+
+          {pType === "obj" && (
+            <Input
+              name="Value"
+              value={pValue}
+              onChange={setValue}
+              icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
+              placeholder="Required, value of the property"
+              autoSize={false}
             />
           )}
         </div>
       }
+
       footer={
         <div className="flex flex-row-reverse items-center w-full">
           <BaseButton

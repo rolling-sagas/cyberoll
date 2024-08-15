@@ -32,6 +32,7 @@ const createThreadStore = (data) =>
         body: JSON.stringify({ data: { role: role, content: content } }),
       });
       const message = await response.json();
+      // TODO: maybe add the new message to list directly
       // console.log(message);
     },
 
@@ -50,6 +51,7 @@ const createThreadStore = (data) =>
         },
       );
       const message = await response.json();
+      // TODO: maybe update the message from list directly
       // console.log(message);
     },
 
@@ -64,7 +66,8 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
-      console.log(res);
+      // TODO: maybe remove the message from list directly
+      // console.log(res);
     },
 
     deleteMessagesBelow: async (mid) => {
@@ -77,7 +80,8 @@ const createThreadStore = (data) =>
           },
         },
       );
-      // const res = await response.json();
+      const res = await response.json();
+      // TODO: maybe remove the messages from list directly
       console.log(response);
     },
 
@@ -87,10 +91,22 @@ const createThreadStore = (data) =>
         headers: {
           "Content-type": "application/json",
         },
-        data: JSON.stringify({ llm: "azure", cache: true, filter: false }),
+        data: JSON.stringify({ llm: "azure", cache: true }),
       });
+
+      if (!response.ok) {
+        try {
+          const res = await response.json();
+          throw res
+        } catch (e) {
+          console.warn("unknown error", e)
+          throw e
+        }
+      }
       const res = await response.json();
-      console.log(res);
+      // TODO: maybe add the generated message from list directly
+      // console.log(res);
+      return res
     },
 
     regenerate: async (mid) => {
@@ -105,6 +121,8 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
+      // TODO: maybe update the generated message from list directly
+      return res
       // console.log(res);
     },
   }));
@@ -181,6 +199,13 @@ export default function Thread({ data, column }) {
     };
   }, [addColumn, rmColumn, data.id]);
 
+  function alertError(e) {
+    console.warn("thread error:", e, data.id)
+    openAlert(<Alert title="Oops, something wrong!"
+      message={e.error.message + ", please try it later."}
+      confirmLabel="OK" />)
+  }
+
   if (loading === "pending") {
     return (
       <div className="flex w-full h-full items-center justify-center">
@@ -244,18 +269,29 @@ export default function Thread({ data, column }) {
                 icon: <Spinner />,
               });
 
-              await newMessage("user", JSON.stringify(c));
-              toast.loading("Generating response", {
-                icon: <Spinner />,
-                id: tid,
-              });
-              await generate();
-              await listMessages();
+              try {
+                await newMessage("user", JSON.stringify(c));
+                toast.loading("Generating response", {
+                  icon: <Spinner />,
+                  id: tid,
+                })
+                await generate();
+                await listMessages();
+              } catch (e) {
+                if (e.error) {
+                  openAlert(<Alert title="Oops, something wrong!"
+                    message={e.error.message + ", please try it later."}
+                    confirmLabel="OK" />)
+                }
+                console.log(e)
+              }
+
               toast.success("Message generated", {
                 id: tid,
                 icon: <CheckmarkCircle01Icon />,
               });
             }}
+
             onDeleteClick={(below) => {
               if (below) {
                 openAlert(
@@ -342,25 +378,28 @@ export default function Thread({ data, column }) {
                   const tid = toast.loading("Creating message...", {
                     icon: <Spinner />,
                   });
-                  await newMessage(role, content);
-                  // console.log(role, content, autoGen);
-                  if (autoGen) {
-                    await generate();
-                    toast.success("Generating message...", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                    await listMessages();
-                    toast.success("Message generated", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                  } else {
-                    await listMessages();
-                    toast.success("Message created", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
+                  try {
+                    await newMessage(role, content);
+                    // console.log(role, content, autoGen);
+                    if (autoGen) {
+                      await generate();
+                      toast.success("Generating message...", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                      await listMessages();
+                      toast.success("Message generated", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    } else {
+                      await listMessages();
+                      toast.success("Message created", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    }
+                  } catch (e) {
                   }
                 }}
               />,
@@ -378,11 +417,18 @@ export default function Thread({ data, column }) {
             label={<AiChat02Icon />}
             onClick={async (evt) => {
               evt.stopPropagation();
+
               const tid = toast.loading("Generating...", {
                 icon: <Spinner />,
               });
-              await generate();
-              await listMessages();
+
+              try {
+                await generate();
+                await listMessages()
+              } catch (e) {
+                alertError(e)
+              }
+
               toast.success("Message generated", {
                 id: tid,
                 icon: <CheckmarkCircle01Icon />,

@@ -2,6 +2,7 @@
 
 import prisma from "@/prisma/client";
 import { generate } from "@/app/api/common";
+import { isKnownError } from "@/app/api/common";
 
 export const runtime = "edge";
 
@@ -37,6 +38,10 @@ export async function POST(req, { params }) {
     const message = await generate(prevMessages, { cache: false, llm });
 
     if (message.error) {
+      throw message;
+    }
+
+    if (message.error) {
       throw new Error(message.error);
     }
 
@@ -51,13 +56,7 @@ export async function POST(req, { params }) {
 
     return Response.json({ ok: true, id: update.id });
   } catch (e) {
-    console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error regenerate message",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    console.log(e.code);
+    return Response.json(isKnownError(e), { status: 400 })
   }
 }

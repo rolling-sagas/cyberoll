@@ -1,4 +1,5 @@
 import prisma from "@/prisma/client";
+import { isKnownError } from "../../common";
 
 export const runtime = "edge";
 
@@ -6,28 +7,12 @@ export async function GET(_, { params }) {
   const id = parseInt(params.id);
 
   try {
-    const res = await prisma.session.findUnique({
+    const res = await prisma.session.findUniqueOrThrow({
       where: { id },
-    });
-    if (!res) {
-      return Response.json(
-        {
-          message: "Session not found",
-        },
-        { status: 404 },
-      );
-    }
-
+    },);
     return Response.json(res);
   } catch (e) {
-    console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error get session",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json(isKnownError(e), { status: 400 })
   }
 }
 
@@ -45,14 +30,7 @@ export async function POST(req, { params }) {
     });
     return Response.json({ ok: true, id: res.id });
   } catch (e) {
-    console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error update session",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json(isKnownError(e), { status: 400 })
   }
 }
 
@@ -64,13 +42,6 @@ export async function DELETE(_, { params }) {
     });
     return Response.json({ ok: true });
   } catch (e) {
-    console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error delete session",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json(isKnownError(e), { status: 400 })
   }
 }

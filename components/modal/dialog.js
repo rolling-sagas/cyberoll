@@ -57,8 +57,7 @@ export const Input = function ({
 const Dialog = function ({ title, header, body, footer, width = 460 }) {
   return (
     <div
-      className="flex flex-col 
-      "
+      className="flex flex-col"
     >
       <div
         className="h-[46px] flex flex-row 

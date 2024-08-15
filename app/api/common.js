@@ -2,7 +2,7 @@ export const runtime = "edge";
 
 export async function generate(messages, { cache, llm }) {
   // console.log(chatCompletion.status);
-  let data = null;
+  let res = null;
 
   // if (filter) {
   messages = messages.map((m) => {
@@ -13,24 +13,28 @@ export async function generate(messages, { cache, llm }) {
     }
     return m;
   });
-  // }
-  //
-  // console.log("filtered:", messages);
 
-  if (llm === "azure") {
-    const chatCompletion = await generateWithAzureAPI(messages, cache);
-    data = await chatCompletion.json();
-  } else if (llm === "openai") {
-    const chatCompletion = await generateWithOpenAIAPI(messages, cache);
-    data = await chatCompletion.json();
+  try {
+    if (llm === "azure") {
+      res = await generateWithAzureAPI(messages, cache);
+    } else if (llm === "openai") {
+      res = await generateWithOpenAIAPI(messages, cache);
+    }
+    if (!res.ok) {
+      return { error: { message: "Unknown fetch error" }, type: "llm-fetch" };
+    }
+
+    res = await res.json();
+  } catch (e) {
+    return { error: e, type: "llm-fetch" };
   }
 
   // const chatCompletion = await generateWithOpenAIAPI(messages);
-  if (data.error) {
-    return { error: data.error };
+  if (res.error) {
+    return { error: res.error, type: "llm-response" }
   }
 
-  return data.choices[0].message;
+  return res.choices[0].message;
 }
 
 async function generateWithOpenAIAPI(messages, cache) {
@@ -70,4 +74,26 @@ async function generateWithAzureAPI(messages, cache) {
   });
 
   return chatCompletion;
+}
+
+import { Prisma } from '@prisma/client'
+
+export function isKnownError(e) {
+  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    console.warn("prisma error:", e.code, e.message)
+    return { message: code.message, code: e.code }
+  }
+
+  if (e.type === "llm-fetch") {
+    console.warn("llm fetch error:", e.error)
+    return { message: "Llm fetch error", code: "LLM_FETCH" }
+  }
+
+  if (e.type === "llm-response") {
+    console.warn("llm response error:", e.error)
+    return { message: "Llm response error", code: "LLM_RESPONSE" }
+  }
+
+  console.error("unknown error:", e, e.type, e.type)
+  return { message: "Unknown error", code: "UNKNOWN" }
 }

@@ -1,29 +1,31 @@
 import prisma from "@/prisma/client";
 import { generate } from "@/app/api/common";
+import { isKnownError } from "@/app/api/common";
+
 export const runtime = "edge";
 
 const LIST_LIMIT = 512;
 
 export async function POST(req, { params }) {
   const id = parseInt(params.id);
-  const { limit, skip } = req.nextUrl.searchParams;
 
   let llm = "azure";
+  let cache = true
 
   try {
     const data = await req.json();
-    llm = data.llm ? data.llm : "azure";
+    llm = data.llm ? data.llm : llm;
+    cache = data.cache ? data.cache : cache
   } catch (e) {
-    console.log("no body");
+    console.log("no post body");
   }
 
   try {
     const res = await prisma.message.findMany({
-      skip: skip ? parseInt(skip) : 0,
-      take:
-        limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
+      skip: 0, // always start from 0
+      take: LIST_LIMIT,
       where: { sessionId: id },
-      orderBy: { createdAt: "asc" },
+      orderBy: { id: "asc" },
     });
 
     const message = await generate(
@@ -32,8 +34,7 @@ export async function POST(req, { params }) {
     );
 
     if (message.error) {
-      console.log("error", message.error.message);
-      throw new Error(message.error);
+      throw message;
     }
 
     const insert = await prisma.message.create({
@@ -46,14 +47,7 @@ export async function POST(req, { params }) {
 
     return Response.json({ ok: true, id: insert.id });
   } catch (e) {
-    console.log(e);
-
-    return Response.json(
-      {
-        message: "Error generate message",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    // console.log(e)
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }

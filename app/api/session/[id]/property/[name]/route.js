@@ -3,11 +3,12 @@ import { Upload } from "@/components/images/cloudflare_upload";
 export const runtime = "edge";
 
 export async function GET(_, { params }) {
-  const id = parseInt(params.pid);
+  const name = params.name;
+  const sid = parseInt(params.id)
 
   try {
     const res = await prisma.property.findUnique({
-      where: { id },
+      where: { name_sessionId: { name: name, sessionId: sid } }
     });
     if (!res) {
       return Response.json(
@@ -32,9 +33,9 @@ export async function GET(_, { params }) {
 }
 
 export async function POST(req, { params }) {
-  const id = parseInt(params.pid);
+  const name = params.name;
   const sid = parseInt(params.id);
-  // console.log("update id", sid, id);
+  console.log("update id", sid, name);
   try {
     const { data, include } = await req.json();
     const res = await prisma.session.update({
@@ -43,7 +44,7 @@ export async function POST(req, { params }) {
         properties: {
           update: {
             data: data,
-            where: { id: id },
+            where: { name_sessionId: { name: name, sessionId: sid } },
           },
         },
         updatedAt: new Date(),
@@ -60,7 +61,7 @@ export async function POST(req, { params }) {
     //     id: id,
     //   },
     // });
-    return Response.json({ ok: true, id: res.id });
+    return Response.json({ ok: true });
   } catch (e) {
     console.log(e.code, e.message);
     return Response.json(
@@ -74,15 +75,15 @@ export async function POST(req, { params }) {
 }
 
 export async function DELETE(req, { params }) {
+  const name = params.name;
   const sid = parseInt(params.id);
-  const id = parseInt(params.pid);
   try {
     await prisma.session.update({
       where: { id: sid },
       data: {
         properties: {
           delete: {
-            id: id,
+            name_sessionId: { name: name, sessionId: sid }
           },
         },
         updatedAt: new Date(),
@@ -105,8 +106,8 @@ export async function DELETE(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
+  const name = params.name;
   const sid = parseInt(params.id);
-  const id = parseInt(params.pid);
   try {
     const data = await req.formData();
     const file = data.get("file");
@@ -115,7 +116,7 @@ export async function PUT(req, { params }) {
 
     if (file) {
       const uploadForm = new FormData();
-      uploadForm.append("file", file, "session-image");
+      uploadForm.append("file", file, "session-image-" + name);
 
       const upload = await Upload(uploadForm);
       if (!upload.success && upload.errors) {
@@ -124,7 +125,7 @@ export async function PUT(req, { params }) {
       imageId = upload.result.id;
     }
 
-    const name = data.get("name");
+    const newName = data.get("name");
     let desc = data.get("desc");
 
     if (!desc) {
@@ -142,11 +143,11 @@ export async function PUT(req, { params }) {
         properties: {
           update: {
             data: {
-              name: name,
+              name: newName,
               type: "image",
               value: JSON.stringify({ id: imageId, desc }),
             },
-            where: { id: id },
+            where: { name: name },
           },
         },
         updatedAt: new Date(),

@@ -10,6 +10,7 @@ import { light, dark } from "@/components/tailwind/themeColors";
 import { DialogPlaceholder } from "@/components/modal/dialog-placeholder";
 
 import "./global.css";
+
 import { ToastPlaceholder } from "@/components/modal/toast-placeholder";
 import { AlertPlaceholder } from "@/components/modal/alert-placeholder";
 

@@ -1,5 +1,12 @@
 import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
 
+// ANALYZE=true pnpm build
+import BundleAnalyzer from '@next/bundle-analyzer'
+
+const withBundleAnalyzer = BundleAnalyzer({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 if (process.env.NODE_ENV === "development") {
   await setupDevPlatform();
 }
@@ -22,24 +29,6 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "*.googleusercontent.com",
-        port: "",
-        pathname: "**",
-      },
-      {
-        protocol: "https",
-        hostname: "*.supabase.co",
-        port: "",
-        pathname: "**",
-      },
-      {
-        protocol: "https",
-        hostname: "img.daisyui.com",
-        port: "",
-        pathname: "**",
-      },
-      {
-        protocol: "https",
         hostname: "imagedelivery.net",
         port: "",
         pathname: "**",
@@ -49,4 +38,5 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// export default nextConfig;
+export default withBundleAnalyzer(nextConfig)

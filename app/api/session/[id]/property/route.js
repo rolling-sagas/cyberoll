@@ -52,7 +52,7 @@ export async function POST(req, { params }) {
     //   data: { ...data, sessionId: id },
     //   include: include || null,
     // });
-    return Response.json({ ok: true, id: res.id });
+    return Response.json({ ok: true });
   } catch (e) {
     console.log(e.code, e.message);
     return Response.json(
@@ -102,7 +102,7 @@ export async function PUT(req, { params }) {
       },
     });
     console.log(res);
-    return Response.json({ ok: true, id: res.id });
+    return Response.json({ ok: true });
   } catch (e) {
     console.log(e.code, e.message);
     return Response.json(
