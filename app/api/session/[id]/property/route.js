@@ -70,17 +70,18 @@ export async function PUT(req, { params }) {
   try {
     const data = await req.formData();
     const file = data.get("file");
-    console.log("upload:", data);
 
     const uploadForm = new FormData();
     uploadForm.append("file", file, "session-image");
 
     const upload = await Upload(uploadForm);
+
     if (!upload.success && upload.errors) {
       throw new Error(upload.errors[0].message);
     }
 
     const imageId = upload.result.id;
+
     const name = data.get("name");
     const desc = data.get("desc");
     // const { data, include } = await req.json();
@@ -91,7 +92,7 @@ export async function PUT(req, { params }) {
         properties: {
           create: {
             name: name,
-            type: "image",
+            type: "img",
             value: JSON.stringify({ id: imageId, desc }),
           },
         },

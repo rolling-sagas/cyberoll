@@ -6,16 +6,16 @@ import {
 } from "@hugeicons/react";
 
 export default function TypeIcon({ type }) {
-  if (type === "string") {
+  if (type === "str") {
     return <TextIcon />;
   }
-  if (type === "number") {
+  if (type === "num") {
     return <TextNumberSignIcon />;
   }
-  if (type === "object") {
+  if (type === "obj") {
     return <Raw01Icon />;
   }
-  if (type === "image") {
+  if (type === "img") {
     return <Image01Icon />;
   }
 }

@@ -46,10 +46,11 @@ export default function PropertyItem({
         </div>
       </div>
       <div className="col-start-2 rows-start-2 row-span-2 h-ful">
-        {property.type === "image" ? (
+        {property.type === "img" ? (
           <div>
             <Image
-              src={`https://imagedelivery.net/8VoaBhaig6kffmvxoWxkaw/${JSON.parse(property.value).id}/public`}
+              src={"https://imagedelivery.net/8VoaBhaig6kffmvxoWxkaw/" +
+                `${JSON.parse(property.value).id}/public`}
               width={720}
               height={360}
               className="w-full h-full rounded-xl"

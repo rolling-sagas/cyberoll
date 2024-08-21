@@ -27,69 +27,69 @@ const createPropertyStore = (id) =>
       // console.log("messages", data.id, messages);
     },
 
-    newProperty: async (name, type, value, imageDesc, image) => {
-      if (type === "image") {
-        // console.log("upload image");
-        const formData = new FormData();
+    newImageProperty: async (name, imageDesc, image) => {
+      const formData = new FormData();
 
-        formData.append("desc", imageDesc);
-        formData.append("name", name);
-        formData.append("file", image);
-        const response = await fetch(`/api/session/${id}/property`, {
-          method: "PUT",
-          body: formData,
-        });
-        const res = await response.json();
-        console.log(res);
-      } else {
-        const response = await fetch(`/api/session/${id}/property`, {
+      formData.append("name", name);
+      formData.append("desc", imageDesc);
+      formData.append("file", image);
+      const response = await fetch(`/api/session/${id}/property`, {
+        method: "PUT",
+        body: formData,
+      });
+      const res = await response.json();
+      console.log(res);
+    },
+
+    newProperty: async (name, type, value) => {
+      const response = await fetch(`/api/session/${id}/property`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ data: { name, type, value } }),
+      });
+      const res = await response.json();
+      console.log(res);
+    },
+
+    updateImageProperty: async (oldName, oldValue, name, desc, file) => {
+      const formData = new FormData();
+
+      formData.append("name", name);
+      formData.append("value", oldValue)
+
+      if (desc !== "") {
+        formData.append("desc", desc);
+      }
+
+      if (file) {
+        formData.append("file", file);
+      }
+
+      const response = await fetch(`/api/session/${id}/property/${oldName}`, {
+        method: "PUT",
+        body: formData,
+      });
+      const res = await response.json();
+      console.log(res);
+    },
+
+    updateProperty: async (oldName, name, type, value) => {
+      const response = await fetch(
+        "/api/session/" + id + "/property/" + oldName,
+        {
           method: "POST",
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ data: { name, type, value } }),
-        });
-        const res = await response.json();
-        console.log(res);
-      }
-    },
-
-    updateProperty: async (oldName, name, type, value, imageDesc, image) => {
-      if (type === "image") {
-        const formData = new FormData();
-
-        formData.append("name", name);
-        if (imageDesc) {
-          formData.append("desc", imageDesc);
-        }
-
-        if (image) {
-          console.log("upload image");
-          formData.append("file", image);
-        }
-        formData.append("value", value);
-        const response = await fetch(`/api/session/${id}/property/${oldName}`, {
-          method: "PUT",
-          body: formData,
-        });
-        const res = await response.json();
-        // console.log(res);
-      } else {
-        const response = await fetch(
-          "/api/session/" + id + "/property/" + oldName,
-          {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-              data: { name, type, value },
-            }),
-          },
-        );
-        const res = await response.json();
-        // console.log(message);
-      }
+          body: JSON.stringify({
+            data: { name, type, value },
+          }),
+        },
+      );
+      const res = await response.json();
+      // console.log(message);
     },
 
     deleteProperty: async (name) => {
@@ -122,6 +122,7 @@ function CreateProperty({ store }) {
   const openModal = useModalStore((state) => state.open);
 
   const newProperty = useStore(store, (state) => state.newProperty);
+  const newImageProperty = useStore(store, (state) => state.newImageProperty);
 
   const listProperties = useStore(store, (state) => state.listProperties);
 
@@ -139,6 +140,17 @@ function CreateProperty({ store }) {
                 await newProperty(name, type, value, imageDesc, image);
                 await listProperties();
                 toast.success("Property created", {
+                  id: tid,
+                  icon: <CheckmarkCircle01Icon />,
+                });
+              }}
+              onImageConfirm={async (name, imageDesc, image) => {
+                const tid = toast.loading("Creating image property...", {
+                  icon: <Spinner />,
+                });
+                await newImageProperty(name, imageDesc, image);
+                await listProperties();
+                toast.success("Image property created", {
                   id: tid,
                   icon: <CheckmarkCircle01Icon />,
                 });
@@ -176,6 +188,7 @@ export default function Properties({ id, onPropsUpdate }) {
   );
 
   const newProperty = useStore(storeRef.current, (state) => state.newProperty);
+  const newImageProperty = useStore(storeRef.current, (state) => state.newImageProperty);
 
   const deleteProperty = useStore(
     storeRef.current,
@@ -185,6 +198,11 @@ export default function Properties({ id, onPropsUpdate }) {
   const updateProperty = useStore(
     storeRef.current,
     (state) => state.updateProperty,
+  );
+
+  const updateImageProperty = useStore(
+    storeRef.current,
+    (state) => state.updateImageProperty,
   );
 
   useEffect(() => {
@@ -226,6 +244,18 @@ export default function Properties({ id, onPropsUpdate }) {
                   await newProperty(name, type, value, imageDesc, image);
                   await listProperties();
                   toast.success("Property created", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                }}
+
+                onImageConfirm={async (name, imageDesc, image) => {
+                  const tid = toast.loading("Creating image property...", {
+                    icon: <Spinner />,
+                  });
+                  await newImageProperty(name, imageDesc, image);
+                  await listProperties();
+                  toast.success("Image property created", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
@@ -272,20 +302,30 @@ export default function Properties({ id, onPropsUpdate }) {
                 name={prop.name}
                 type={prop.type}
                 value={prop.value}
-                onConfirm={async (name, type, value, imageDesc, image) => {
+                onConfirm={async (name, type, value) => {
                   const tid = toast.loading("Updating property...", {
                     icon: <Spinner />,
                   });
                   await updateProperty(
-                    prop.id,
+                    prop.name,
                     name,
                     type,
                     value,
-                    imageDesc,
-                    image,
                   );
                   await listProperties();
                   toast.success("Property updated", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                }}
+                onImageConfirm={async (name, imageDesc, image) => {
+                  const tid = toast.loading("Updating image property...", {
+                    icon: <Spinner />,
+                  });
+                  await updateImageProperty(prop.name, prop.value, name, imageDesc,
+                    image);
+                  await listProperties();
+                  toast.success("Image property updated", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });

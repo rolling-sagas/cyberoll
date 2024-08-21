@@ -9,8 +9,9 @@ export async function Upload(formData) {
       body: formData,
     },
   );
+
   if (!response.ok) {
-    throw new Error("Can't upload the picutre");
+    throw new Error("Can't upload the picture");
   }
   // Your image has been uploaded
   // Do something with the response, e.g. save image ID in a database

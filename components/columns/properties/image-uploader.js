@@ -1,20 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Input } from "@/components/modal/dialog";
 import { Image01Icon } from "@hugeicons/react";
 import Image from "next/image";
 
 export default function ImageUploader({ value, onChange }) {
+  const pValue = value ? JSON.parse(value) : null;
+
   const imageInput = useRef(null);
 
-  const [localUrl, setLocalUrl] = useState(null);
+  const [localUrl, setLocalUrl] = useState(null)
   const [localFile, setLocalFile] = useState(null);
 
-  const pValue = value ? JSON.parse(value) : null;
+  const [pDesc, setDesc] = useState(pValue ? pValue.desc : "")
+
+
   const url = pValue
     ? `https://imagedelivery.net/8VoaBhaig6kffmvxoWxkaw/${pValue.id}/public`
     : null;
-
-  const [pDesc, setDesc] = useState(pValue ? pValue.desc : "");
 
   return (
     <div className="flex flex-col w-full">
@@ -40,6 +42,7 @@ export default function ImageUploader({ value, onChange }) {
           if (evt.target.files?.length === 0) return;
           const file = evt.target.files[0];
           const src = URL.createObjectURL(file);
+
           if (localUrl !== "") {
             URL.revokeObjectURL(localUrl);
           }

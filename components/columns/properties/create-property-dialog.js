@@ -46,22 +46,24 @@ const TypeSwitch = function({ value, onChange }) {
   );
 };
 
-export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
+export default function CreatePropertyDialog({ name, type, value,
+  onConfirm, onImageConfirm }) {
+
   const closeModal = useModalStore((state) => state.close);
 
   const [pName, setName] = useState(name || "");
 
   const [pType, setType] = useState(type || dataTypes[0].value)
-  const [pValue, setValue] = useState(value || "");
+  const [pValue, setValue] = useState(value || "")
 
   const [width, setWidth] = useState(560);
 
   const [image, setImage] = useState(null);
-  const [imageDesc, setImageDesc] = useState("");
+  const [imageDesc, setImageDesc] = useState("")
 
   const canCreate =
-    (pValue.trim().length > 0 && pName.trim().length > 0) ||
-    (pType === "image" && image !== null && imageDesc !== "");
+    pName.trim().length > 0 && ((pValue && pValue.trim().length > 0) ||
+      (pType === "img" && image !== null && imageDesc !== ""));
 
   return (
     <Dialog
@@ -82,6 +84,7 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
       body={
         <div className="flex flex-col gap-2">
           <TypeSwitch value={pType} onChange={(value) => {
+            setValue("")
             setType(value)
           }} />
 
@@ -114,8 +117,28 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
               onChange={setValue}
               icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
               placeholder="Required, value of the property"
-              autoSize={false}
+              autoSize={true}
             />
+          )}
+
+          {pType === "func" && (
+            <div>
+              <Input
+                name="Value"
+                value={pValue}
+                onChange={setValue}
+                icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
+                placeholder="Required, value of the property"
+                autoSize={true}
+              />
+            </div>
+          )}
+
+          {pType === "img" && (
+            <ImageUploader value={pValue} onChange={(desc, file) => {
+              setImageDesc(desc)
+              setImage(file)
+            }} />
           )}
         </div>
       }
@@ -127,7 +150,11 @@ export default function CreatePropertyDialog({ name, type, value, onConfirm }) {
             disabled={!canCreate}
             onClick={async () => {
               closeModal();
-              onConfirm(pName, pType, pValue, imageDesc, image);
+              if (pType === "img") {
+                onImageConfirm(pName, imageDesc, image)
+              } else {
+                onConfirm(pName, pType, pValue);
+              }
             }}
           />
         </div>

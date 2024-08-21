@@ -54,13 +54,6 @@ export async function POST(req, { params }) {
         properties: true,
       },
     });
-    // const res = await prisma.message.update({
-    //   data: data,
-    //   include: include || null,
-    //   where: {
-    //     id: id,
-    //   },
-    // });
     return Response.json({ ok: true });
   } catch (e) {
     console.log(e.code, e.message);
@@ -110,9 +103,12 @@ export async function PUT(req, { params }) {
   const sid = parseInt(params.id);
   try {
     const data = await req.formData();
+    const value = JSON.parse(data.get("value"))
+
     const file = data.get("file");
 
-    let imageId = null;
+    let imageId = value.id;
+    const desc = data.get("desc") || value.desc
 
     if (file) {
       const uploadForm = new FormData();
@@ -126,15 +122,6 @@ export async function PUT(req, { params }) {
     }
 
     const newName = data.get("name");
-    let desc = data.get("desc");
-
-    if (!desc) {
-      desc = JSON.parse(data.get("value")).desc;
-    }
-
-    if (!imageId) {
-      imageId = JSON.parse(data.get("value")).id;
-    }
     // const { data, include } = await req.json();
     // // console.log("new message", data.role, data.content);
     const res = await prisma.session.update({
@@ -144,10 +131,12 @@ export async function PUT(req, { params }) {
           update: {
             data: {
               name: newName,
-              type: "image",
+              type: "img",
               value: JSON.stringify({ id: imageId, desc }),
             },
-            where: { name: name },
+            where: {
+              name_sessionId: { name: name, sessionId: sid }
+            },
           },
         },
         updatedAt: new Date(),
