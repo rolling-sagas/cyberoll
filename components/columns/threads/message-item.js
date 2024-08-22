@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import mustache from 'mustache'
 
 import {
   ArrowDown02Icon,
@@ -22,6 +23,25 @@ import { useState } from "react";
 import MessageContent from "./message-content";
 import { MenuButtonDivider } from "../../buttons/menu-button";
 
+export function ArrayToKeyValue(list) {
+  const result = {}
+  for (const item of list) {
+    if (item.type === "obj" || item.type === "img") {
+      try {
+        result[item.name] = JSON.parse(item.value)
+      } catch (e) {
+        console.error("template render error")
+      }
+    } else if (item.type === "num") {
+      result[item.name] = Number(item.value)
+    } else {
+      result[item.name] = item.value
+    }
+  }
+  // console.log("key value:", list, result)
+  return result
+}
+
 export default function MessageItem({
   message,
   props,
@@ -36,6 +56,7 @@ export default function MessageItem({
   const [raw, setRaw] = useState(message.role === "system");
 
   const [foldContent, setFoldContent] = useState(message.role === "system");
+
 
   return (
     <div
@@ -95,12 +116,14 @@ export default function MessageItem({
       <div className="col-start-2 rows-start-2 row-span-2 h-ful">
         {!foldContent &&
           (raw || message.role === "system" ? (
-            <div className="whitespace-pre-wrap">{message.content}</div>
+            <div className="whitespace-pre-wrap">{
+              mustache.render(message.content, ArrayToKeyValue(props))
+            }</div>
           ) : (
             <MessageContent
               content={message.content}
               props={props}
-              actionNeeded={message.role === "assistant"}
+              actionNeeded={message.role === "assistant" && isFirst}
               onSend={(c) => {
                 if (isFirst) {
                   onSend(c);

@@ -2,6 +2,10 @@ import BaseButton from "@/components/buttons/base-button";
 
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 
+import dynamic from "next/dynamic"
+const CodeEditor = dynamic(() => import('@/components/editors/code-editor'),
+  { ssr: false })
+
 import {
   LabelIcon,
   Menu01Icon,
@@ -56,7 +60,8 @@ export default function CreatePropertyDialog({ name, type, value,
   const [pType, setType] = useState(type || dataTypes[0].value)
   const [pValue, setValue] = useState(value || "")
 
-  const [width, setWidth] = useState(560);
+  const [width, setWidth] = useState(type === "func" || type === "obj" ?
+    720 : 560);
 
   const [image, setImage] = useState(null);
   const [imageDesc, setImageDesc] = useState("")
@@ -85,6 +90,7 @@ export default function CreatePropertyDialog({ name, type, value,
         <div className="flex flex-col gap-2">
           <TypeSwitch value={pType} onChange={(value) => {
             setValue("")
+            setWidth(value === "obj" || value === "func" ? 720 : 560)
             setType(value)
           }} />
 
@@ -111,27 +117,11 @@ export default function CreatePropertyDialog({ name, type, value,
           )}
 
           {pType === "obj" && (
-            <Input
-              name="Value"
-              value={pValue}
-              onChange={setValue}
-              icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
-              placeholder="Required, value of the property"
-              autoSize={true}
-            />
+            <CodeEditor value={pValue} lang="json" onChange={setValue} />
           )}
 
           {pType === "func" && (
-            <div>
-              <Input
-                name="Value"
-                value={pValue}
-                onChange={setValue}
-                icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
-                placeholder="Required, value of the property"
-                autoSize={true}
-              />
-            </div>
+            <CodeEditor value={pValue} lang="js" onChange={setValue} />
           )}
 
           {pType === "img" && (

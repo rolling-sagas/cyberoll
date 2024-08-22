@@ -1,6 +1,6 @@
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
@@ -9,10 +9,10 @@ import Alert from "@/components/modal/alert";
 
 import CreatePropertyDialog from "./create-property-dialog";
 import { toast } from "react-hot-toast/headless";
-import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
+import { Add01Icon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import PropertyItem from "./property-item";
 
-const createPropertyStore = (id) =>
+export const createPropertyStore = (id) =>
   createStore((set) => ({
     id: id,
 
@@ -159,7 +159,7 @@ function CreateProperty({ store }) {
           )
         }
       >
-        <BubbleChatAddIcon className="text-rs-text-secondary" strokeWidth={1} />
+        <Add01Icon className="text-rs-text-secondary" strokeWidth={1} />
         <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
           Create a property
         </div>
@@ -169,12 +169,7 @@ function CreateProperty({ store }) {
   );
 }
 
-export default function Properties({ id, onPropsUpdate }) {
-  const storeRef = useRef(null);
-
-  if (!storeRef.current) {
-    storeRef.current = createPropertyStore(id);
-  }
+export default function Properties({ storeRef }) {
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
@@ -187,8 +182,8 @@ export default function Properties({ id, onPropsUpdate }) {
     (state) => state.listProperties,
   );
 
-  const newProperty = useStore(storeRef.current, (state) => state.newProperty);
-  const newImageProperty = useStore(storeRef.current, (state) => state.newImageProperty);
+  // const newProperty = useStore(storeRef.current, (state) => state.newProperty);
+  // const newImageProperty = useStore(storeRef.current, (state) => state.newImageProperty);
 
   const deleteProperty = useStore(
     storeRef.current,
@@ -211,11 +206,12 @@ export default function Properties({ id, onPropsUpdate }) {
     }
   }, [listProperties]);
 
-  useEffect(() => {
-    if (onPropsUpdate && properties && updateProperty) {
-      onPropsUpdate({ properties, updateProperty });
-    }
-  }, [onPropsUpdate, properties, updateProperty]);
+  //useEffect(() => {
+  //  if (onPropsUpdate && properties && updateProperty) {
+  //    console.log("properties:", properties)
+  //    onPropsUpdate({ properties, updateProperty });
+  //  }
+  //}, [onPropsUpdate, properties, updateProperty]);
 
   if (loading === "pending") {
     return (
@@ -224,6 +220,7 @@ export default function Properties({ id, onPropsUpdate }) {
       </div>
     );
   }
+
 
   if (properties.length === 0) {
     return (

@@ -1,7 +1,7 @@
 import TextareaAutosize from "react-textarea-autosize";
 import { useEffect, useRef, useLayoutEffect, useState } from "react";
 
-export const Input = function ({
+export const Input = function({
   name,
   placeholder,
   icon,
@@ -54,10 +54,10 @@ export const Input = function ({
     </div>
   );
 };
-const Dialog = function ({ title, header, body, footer, width = 460 }) {
+const Dialog = function({ title, header, body, footer, width = 460 }) {
   return (
     <div
-      className="flex flex-col"
+      className="flex flex-col transition-[height] duration-150"
     >
       <div
         className="h-[46px] flex flex-row 
@@ -69,7 +69,8 @@ const Dialog = function ({ title, header, body, footer, width = 460 }) {
         <div
           className="bg-rs-background-2 flex flex-col
           border border-rs-border rounded-2xl
-          max-w-[calc(100vw-32px)]"
+          max-w-[calc(100vw-32px)] transition-[width]
+          duration-150"
           style={{ width: `${width}px` }}
         >
           <div className="max-h-[calc(100svh-193px)] overflow-y-auto">

@@ -5,6 +5,7 @@ import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
+import { createPropertyStore } from "@/components/columns/properties/properties";
 
 const createThreadStore = (data) =>
   createStore((set) => ({
@@ -20,7 +21,6 @@ const createThreadStore = (data) =>
       const response = await fetch(`/api/session/${data.id}/message`);
       const messages = await response.json();
       set({ messages, loading: "loaded" });
-      // console.log("messages", data.id, messages);
     },
 
     newMessage: async (role, content) => {
@@ -32,6 +32,7 @@ const createThreadStore = (data) =>
         body: JSON.stringify({ data: { role: role, content: content } }),
       });
       const message = await response.json();
+      return message
       // TODO: maybe add the new message to list directly
       // console.log(message);
     },
@@ -51,6 +52,7 @@ const createThreadStore = (data) =>
         },
       );
       const message = await response.json();
+      return message
       // TODO: maybe update the message from list directly
       // console.log(message);
     },
@@ -66,6 +68,7 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
+      return res
       // TODO: maybe remove the message from list directly
       // console.log(res);
     },
@@ -132,6 +135,7 @@ import {
   BubbleChatAddIcon,
   CheckmarkCircle01Icon,
 } from "@hugeicons/react";
+
 import MessageItem from "./message-item";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
@@ -139,14 +143,10 @@ import { useColumnsStore } from "../pinned-columns";
 import Properties from "../properties/properties";
 
 export default function Thread({ data, column }) {
-  const storeRef = useRef(null);
+  const storeRef = useRef(createThreadStore(data));
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
-
-  if (!storeRef.current) {
-    storeRef.current = createThreadStore(data);
-  }
 
   const listMessages = useStore(
     storeRef.current,
@@ -179,7 +179,8 @@ export default function Thread({ data, column }) {
   const addColumn = useColumnsStore((state) => state.addColumn);
   const rmColumn = useColumnsStore((state) => state.rmColumn);
 
-  const [props, setProps] = useState([]);
+  const propsStore = useRef(createPropertyStore(data.id))
+  const properties = useStore(propsStore.current, (state) => state.properties);
 
   useEffect(() => {
     if (listMessages) {
@@ -191,7 +192,7 @@ export default function Thread({ data, column }) {
     addColumn(
       "properties",
       { headerCenter: "Properties" },
-      <Properties id={data.id} onPropsUpdate={setProps} />,
+      <Properties storeRef={propsStore} />,
     );
 
     return () => {
@@ -263,7 +264,7 @@ export default function Thread({ data, column }) {
             key={msg.id}
             isFirst={msg.id === messages[0].id}
             message={msg}
-            props={props}
+            props={properties}
             onSend={async (c) => {
               const tid = toast.loading("Making choice...", {
                 icon: <Spinner />,

@@ -1,4 +1,3 @@
-// import { CinnamonRollIcon, DeadIcon, NextIcon } from "@hugeicons/react";
 import { useEffect, useState } from "react";
 
 function parseMarkdown(content) {
@@ -41,7 +40,7 @@ export default function MessageContent({ content, props, onSend }) {
       default:
         // console.log("props", props.properties);
         // const [name, difficulty, label] = args;
-        const funcProp = props.properties.find(
+        const funcProp = props.find(
           (prop) => prop.name === functionName,
         );
 
