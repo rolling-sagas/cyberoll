@@ -1,4 +1,5 @@
 import {
+  FunctionIcon,
   Image01Icon,
   Raw01Icon,
   TextIcon,
@@ -14,6 +15,9 @@ export default function TypeIcon({ type }) {
   }
   if (type === "obj") {
     return <Raw01Icon />;
+  }
+  if (type === "func") {
+    return <FunctionIcon />;
   }
   if (type === "img") {
     return <Image01Icon />;

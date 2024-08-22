@@ -3,8 +3,12 @@
 import prisma from "@/prisma/client";
 import { generate } from "@/app/api/common";
 import { isKnownError } from "@/app/api/common";
+import mustache from "mustache"
+
+import { ArrayToKeyValue } from "../../../generate/route";
 
 export const runtime = "edge";
+
 
 const LIST_LIMIT = 512;
 
@@ -24,7 +28,15 @@ export async function POST(req, { params }) {
       orderBy: { createdAt: "asc" },
     });
 
-    console.log("prev messages:", prevMessages.length);
+    // console.log("prev messages:", prevMessages.length);
+    const props = await prisma.property.findMany({
+      skip: 0, // always start from 0
+      take: LIST_LIMIT,
+      where: { sessionId: id },
+      orderBy: { createdAt: "desc" },
+    })
+
+    const view = ArrayToKeyValue(props)
 
     let llm = "azure";
 
@@ -35,7 +47,13 @@ export async function POST(req, { params }) {
       console.log("no body");
     }
 
-    const message = await generate(prevMessages, { cache: false, llm });
+    const message = await generate(
+      prevMessages.map((m) => ({
+        role: m.role,
+        content: mustache.render(m.content, view)
+      })),
+      { cache: false, llm: llm },
+    );
 
     if (message.error) {
       throw message;

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import { getImageUrlById } from "@/components/images/utils";
 
 function parseMarkdown(content) {
   const reg = /\*\*(.+?)\*\*/g;
@@ -81,6 +83,21 @@ export default function MessageContent({ content, props, onSend }) {
             dangerouslySetInnerHTML={parseMarkdown(content.value)}
           />
         );
+      case "img":
+        const prop = props.find((prop) => prop.name === content.value)
+        if (prop) {
+          const obj = JSON.parse(prop.value)
+          return (
+            <li key={key}>
+              <Image src={getImageUrlById(obj.id)}
+                width={720}
+                height={360}
+                className="w-full h-full rounded-xl"
+                alt={obj.desc}
+              />
+            </li>
+          )
+        }
       case "pm":
         return (
           <li

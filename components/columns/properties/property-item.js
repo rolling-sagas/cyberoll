@@ -5,7 +5,9 @@ import { Copy01Icon, Delete01Icon, Edit02Icon } from "@hugeicons/react";
 import { MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 import ToolButton from "../threads/tool-button";
 import TypeIcon from "./type-icon";
+
 import Image from "next/image";
+import { getImageUrlById } from "@/components/images/utils";
 
 export default function PropertyItem({
   property,
@@ -49,8 +51,7 @@ export default function PropertyItem({
         {property.type === "img" ? (
           <div>
             <Image
-              src={"https://imagedelivery.net/8VoaBhaig6kffmvxoWxkaw/" +
-                `${JSON.parse(property.value).id}/public`}
+              src={getImageUrlById(JSON.parse(property.value).id)}
               width={720}
               height={360}
               className="w-full h-full rounded-xl"
