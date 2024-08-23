@@ -1,3 +1,4 @@
+"use client"
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
 import { useEffect } from "react";
@@ -38,7 +39,7 @@ export const createPropertyStore = (id) =>
         body: formData,
       });
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
     },
 
     newProperty: async (name, type, value) => {
@@ -50,7 +51,7 @@ export const createPropertyStore = (id) =>
         body: JSON.stringify({ data: { name, type, value } }),
       });
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
     },
 
     updateImageProperty: async (oldName, oldValue, name, desc, file) => {
@@ -100,7 +101,7 @@ export const createPropertyStore = (id) =>
         },
       });
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
     },
 
     deletePropertiesBelow: async (pid) => {
@@ -182,8 +183,8 @@ export default function Properties({ storeRef }) {
     (state) => state.listProperties,
   );
 
-  // const newProperty = useStore(storeRef.current, (state) => state.newProperty);
-  // const newImageProperty = useStore(storeRef.current, (state) => state.newImageProperty);
+  const newProperty = useStore(storeRef.current, (state) => state.newProperty);
+  const newImageProperty = useStore(storeRef.current, (state) => state.newImageProperty);
 
   const deleteProperty = useStore(
     storeRef.current,

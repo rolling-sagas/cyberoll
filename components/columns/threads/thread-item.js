@@ -25,6 +25,7 @@ dayjs.updateLocale("en", {
 
 import {
   BubbleChatNotificationIcon,
+  Copy01Icon,
   Delete01Icon,
   Edit02Icon,
   Message02Icon,
@@ -39,6 +40,7 @@ export default function ThreadItem({
   onEnterThread,
   onUpdateClick,
   onDeleteClick,
+  onDuplicateClick
 }) {
   return (
     <div
@@ -70,12 +72,20 @@ export default function ThreadItem({
           <div className="flex-0">
             <MenuButton>
               <MenuButtonItem
-                className="text-red-500"
-                left="Delete"
-                right={<Delete01Icon size={24} />}
+                left="Duplicate"
+                right={<Copy01Icon size={20} />}
                 onClick={(evt) => {
                   evt.stopPropagation();
-                  if (onDeleteClick) onDeleteClick();
+                  onDuplicateClick();
+                }}
+              />
+              <MenuButtonItem
+                className="text-red-500"
+                left="Delete"
+                right={<Delete01Icon size={20} />}
+                onClick={(evt) => {
+                  evt.stopPropagation();
+                  onDeleteClick();
                 }}
               />
             </MenuButton>

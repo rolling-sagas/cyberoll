@@ -319,7 +319,7 @@ export default function Thread({ data, column }) {
 
               try {
                 const res = await callFunction(functionName, content)
-                console.log(functionName, content, res)
+                // console.log(functionName, content, res)
                 if (res.generate) {
                   toast.loading("Generating response", {
                     icon: <Spinner />,

@@ -57,6 +57,18 @@ const useThreadsStore = create((set) => ({
     console.log(thread);
   },
 
+  copyThread: async (id, name, description) => {
+    const response = await fetch("/api/session/" + id + "/copy", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({ data: { name: name, description: description } }),
+    });
+    const thread = await response.json();
+    console.log(thread);
+  },
+
   deleteThread: async (id) => {
     const response = await fetch("/api/session/" + id, {
       method: "DELETE",
@@ -69,7 +81,7 @@ const useThreadsStore = create((set) => ({
   },
 }));
 
-const CreateThread = function () {
+const CreateThread = function() {
   const openModal = useModalStore((state) => state.open);
   const newThread = useThreadsStore((state) => state.newThread);
   const listThreads = useThreadsStore((state) => state.listThreads);
@@ -111,6 +123,7 @@ export default function Threads() {
 
   const listThreads = useThreadsStore((state) => state.listThreads);
   const newThread = useThreadsStore((state) => state.newThread);
+  const copyThread = useThreadsStore((state) => state.copyThread);
   const updateThread = useThreadsStore((state) => state.updateThread);
   const deleteThread = useThreadsStore((state) => state.deleteThread);
 
@@ -199,6 +212,25 @@ export default function Threads() {
                   await updateThread(thread.id, name, desc);
                   await listThreads();
                   toast.success("Thread updated", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                }}
+              />,
+            );
+          }}
+          onDuplicateClick={() => {
+            openModal(
+              <CreateSessionDialog
+                name={thread.name + " copy"}
+                desc={thread.description}
+                onConfirm={async (name, desc) => {
+                  const tid = toast.loading("Duplicating thread...", {
+                    icon: <Spinner />,
+                  });
+                  await copyThread(thread.id, name, desc);
+                  await listThreads();
+                  toast.success("Thread duplicated", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
