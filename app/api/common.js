@@ -94,6 +94,11 @@ export function isKnownError(e) {
     return { message: "Llm response error", code: "LLM_RESPONSE" }
   }
 
+  if (e.type === "function-call") {
+    console.warn("function call error:", e.error)
+    return { message: e.message, code: "FUNCTION" }
+  }
+
   console.error("unknown error:", e, e.type, e.type)
   return { message: "Unknown error", code: "UNKNOWN" }
 }

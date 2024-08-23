@@ -88,6 +88,21 @@ const createThreadStore = (data) =>
       console.log(response);
     },
 
+    callFunction: async (funcName, content) => {
+      const response = await fetch(
+        "/api/session/" + data.id + "/function/" + funcName,
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({ content }),
+        },
+      );
+      const res = await response.json();
+      return res
+    },
+
     generate: async () => {
       const response = await fetch("/api/session/" + data.id + "/generate", {
         method: "POST",
@@ -141,6 +156,7 @@ import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 import { useColumnsStore } from "../pinned-columns";
 import Properties from "../properties/properties";
+import { POST } from "@/app/api/session/route";
 
 export default function Thread({ data, column }) {
   const storeRef = useRef(createThreadStore(data));
@@ -169,6 +185,8 @@ export default function Thread({ data, column }) {
     storeRef.current,
     (state) => state.updateMessage,
   );
+
+  const callFunction = useStore(storeRef.current, (state) => state.callFunction);
 
   const generate = useStore(storeRef.current, (state) => state.generate);
   const regenerate = useStore(storeRef.current, (state) => state.regenerate);
@@ -265,8 +283,9 @@ export default function Thread({ data, column }) {
             isFirst={msg.id === messages[0].id}
             message={msg}
             props={properties}
+
             onSend={async (c) => {
-              const tid = toast.loading("Making choice...", {
+              const tid = toast.loading("Sending...", {
                 icon: <Spinner />,
               });
 
@@ -288,6 +307,37 @@ export default function Thread({ data, column }) {
               }
 
               toast.success("Message generated", {
+                id: tid,
+                icon: <CheckmarkCircle01Icon />,
+              });
+            }}
+
+            onCall={async (functionName, content) => {
+              const tid = toast.loading("Calling function...", {
+                icon: <Spinner />,
+              });
+
+              try {
+                const res = await callFunction(functionName, content)
+                console.log(functionName, content, res)
+                if (res.generate) {
+                  toast.loading("Generating response", {
+                    icon: <Spinner />,
+                    id: tid,
+                  })
+                  await generate()
+                  await listMessages();
+                }
+              } catch (e) {
+                if (e.error) {
+                  openAlert(<Alert title="Oops, something wrong!"
+                    message={e.error.message + ", please try it later."}
+                    confirmLabel="OK" />)
+                }
+                console.log(e)
+              }
+
+              toast.success("Function called", {
                 id: tid,
                 icon: <CheckmarkCircle01Icon />,
               });

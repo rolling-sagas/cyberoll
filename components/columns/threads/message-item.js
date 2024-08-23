@@ -49,6 +49,7 @@ export default function MessageItem({
   onDeleteClick,
   onGenerateClick,
   onSend,
+  onCall,
   isFirst,
 }) {
   const openAlert = useAlertStore((state) => state.open);
@@ -127,6 +128,20 @@ export default function MessageItem({
               onSend={(c) => {
                 if (isFirst) {
                   onSend(c);
+                } else {
+                  openAlert(
+                    <Alert
+                      title="Previous message"
+                      message="You can only 
+                        click the buttons from last message."
+                      confirmLabel="OK"
+                    />,
+                  );
+                }
+              }}
+              onCall={(functionName, content) => {
+                if (isFirst) {
+                  onCall(functionName, content);
                 } else {
                   openAlert(
                     <Alert
