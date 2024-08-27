@@ -41,15 +41,14 @@ export default function MessageContent({ content, props, onSend, onCall }) {
           return;
         }
 
-        onCall(functionName, content)
+        // onCall(functionName, content)
         // console.log("funcProp", funcProp.value);
-        // const func = funcProp.value.parseFunction();
+        const func = funcProp.value.parseFunction();
+        const res = func(content, ArrayToKeyValue(props));
 
-        // const res = func(content, ArrayToKeyValue(props));
-
-        //if (res.send) {
-        //  onSend({ data: res.send, update: res.update });
-        //}
+        if (res.send) {
+          onSend({ data: res.send, update: res.update ?? null });
+        }
         break;
     }
   }

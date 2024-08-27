@@ -290,7 +290,13 @@ export default function Thread({ data, column }) {
               });
 
               try {
+                const { data, update } = c
+                if (update) {
+                  console.log("update props:", update)
+                }
+
                 await newMessage("user", JSON.stringify(c));
+
                 toast.loading("Generating response", {
                   icon: <Spinner />,
                   id: tid,
