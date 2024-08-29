@@ -99,6 +99,11 @@ export function isKnownError(e) {
     return { message: e.message, code: "FUNCTION" }
   }
 
+  if (e instanceof SyntaxError) {
+    console.warn("json parsing error:", e.error)
+    return { message: "JSON parsing error", code: "JSON_PARSING" }
+  }
+
   console.error("unknown error:", e, e.type, e.type)
   return { message: "Unknown error", code: "UNKNOWN" }
 }
