@@ -83,7 +83,7 @@ model Message {
 model Property {
   name    String
   type    String // Skill type
-  value   String // Raw json obj
+  value   String // Raw json obj or Origin Value
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

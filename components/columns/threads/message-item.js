@@ -139,9 +139,9 @@ export default function MessageItem({
                   );
                 }
               }}
-              onCall={(functionName, content) => {
+              onCall={(c) => {
                 if (isFirst) {
-                  onCall(functionName, content);
+                  onCall(c);
                 } else {
                   openAlert(
                     <Alert

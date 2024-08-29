@@ -103,13 +103,16 @@ const createThreadStore = (data) =>
       return res
     },
 
-    generate: async () => {
+    generate: async (messages, update) => {
       const response = await fetch("/api/session/" + data.id + "/generate", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        data: JSON.stringify({ llm: "azure", cache: true }),
+        body: JSON.stringify({
+          llm: "azure", cache: true,
+          messages: messages, update: update
+        }),
       });
 
       if (!response.ok) {
@@ -123,7 +126,7 @@ const createThreadStore = (data) =>
       }
       const res = await response.json();
       // TODO: maybe add the generated message from list directly
-      // console.log(res);
+      console.log("generate gen:", res);
       return res
     },
 
@@ -135,7 +138,7 @@ const createThreadStore = (data) =>
           headers: {
             "Content-type": "application/json",
           },
-          data: JSON.stringify({ llm: "azure", cache: false, filter: false }),
+          body: JSON.stringify({ llm: "azure", cache: false, filter: false }),
         },
       );
       const res = await response.json();
@@ -198,7 +201,11 @@ export default function Thread({ data, column }) {
   const rmColumn = useColumnsStore((state) => state.rmColumn);
 
   const propsStore = useRef(createPropertyStore(data.id))
+
   const properties = useStore(propsStore.current, (state) => state.properties);
+  const updatePropertiesValue = useStore(propsStore.current, (state) =>
+    state.updatePropertiesValue);
+  const listProperties = useStore(propsStore.current, (state) => state.listProperties);
 
   useEffect(() => {
     if (listMessages) {
@@ -284,55 +291,19 @@ export default function Thread({ data, column }) {
             message={msg}
             props={properties}
 
-            onSend={async (c) => {
-              const tid = toast.loading("Sending...", {
+            onCall={async (c) => {
+              const tid = toast.loading("Generating...", {
                 icon: <Spinner />,
               });
 
               try {
-                const { data, update } = c
-                if (update) {
-                  console.log("update props:", update)
+                const res = await generate([{ role: "user", content: { data: c.send } }], c.update)
+                if (res.update) {
+                  await listProperties()
                 }
 
-                await newMessage("user", JSON.stringify(c));
-
-                toast.loading("Generating response", {
-                  icon: <Spinner />,
-                  id: tid,
-                })
-                await generate();
-                await listMessages();
-              } catch (e) {
-                if (e.error) {
-                  openAlert(<Alert title="Oops, something wrong!"
-                    message={e.error.message + ", please try it later."}
-                    confirmLabel="OK" />)
-                }
-                console.log(e)
-              }
-
-              toast.success("Message generated", {
-                id: tid,
-                icon: <CheckmarkCircle01Icon />,
-              });
-            }}
-
-            onCall={async (functionName, content) => {
-              const tid = toast.loading("Calling function...", {
-                icon: <Spinner />,
-              });
-
-              try {
-                const res = await callFunction(functionName, content)
-                // console.log(functionName, content, res)
-                if (res.generate) {
-                  toast.loading("Generating response", {
-                    icon: <Spinner />,
-                    id: tid,
-                  })
-                  await generate()
-                  await listMessages();
+                if (res.newMessages) {
+                  await listMessages()
                 }
               } catch (e) {
                 if (e.error) {
@@ -343,7 +314,7 @@ export default function Thread({ data, column }) {
                 console.log(e)
               }
 
-              toast.success("Function called", {
+              toast.success("Generated", {
                 id: tid,
                 icon: <CheckmarkCircle01Icon />,
               });

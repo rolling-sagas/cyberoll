@@ -22,7 +22,7 @@ if (typeof String.prototype.parseFunction != "function") {
   };
 }
 
-export default function MessageContent({ content, props, onSend, onCall }) {
+export default function MessageContent({ content, props, onCall }) {
 
   function callFunction(functionName, content) {
     switch (functionName) {
@@ -46,9 +46,7 @@ export default function MessageContent({ content, props, onSend, onCall }) {
         const func = funcProp.value.parseFunction();
         const res = func(content, ArrayToKeyValue(props));
 
-        if (res.send) {
-          onSend({ data: res.send, update: res.update ?? null });
-        }
+        onCall(res)
         break;
     }
   }

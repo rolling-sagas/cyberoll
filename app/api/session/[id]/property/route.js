@@ -32,22 +32,32 @@ export async function GET(req, { params }) {
 
 export async function POST(req, { params }) {
   const id = parseInt(params.id);
+  const { data, update } = await req.json();
   try {
-    const { data, include } = await req.json();
-    // console.log("new message", data.role, data.content);
-    const res = await prisma.session.update({
-      where: { id: id },
-      data: {
-        properties: {
-          create: { ...data },
+    if (data) {
+      const res = await prisma.session.update({
+        where: { id: id },
+        data: {
+          properties: {
+            create: { ...data },
+          },
+          updatedAt: new Date(),
         },
-        updatedAt: new Date(),
-      },
-      include: {
-        ...include,
-        properties: true,
-      },
-    });
+        include: {
+          properties: true,
+        },
+      });
+    } else if (update) {
+      console.log("update", update)
+      await prisma.$transaction(update.map(u => {
+        return prisma.property.update({
+          where: { name_sessionId: { sessionId: id, name: u.name } },
+          data: {
+            value: String(u.value) // TODO:value type check
+          }
+        })
+      }))
+    }
     // const res = await prisma.message.create({
     //   data: { ...data, sessionId: id },
     //   include: include || null,

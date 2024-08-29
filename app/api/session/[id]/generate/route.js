@@ -29,25 +29,28 @@ const LIST_LIMIT = 512;
 
 export async function POST(req, { params }) {
   const id = parseInt(params.id);
-
-  let llm = "azure";
-  let cache = true
-
   try {
-    const data = await req.json();
-    llm = data.llm ? data.llm : llm;
-    cache = data.cache ? data.cache : cache
-  } catch (e) {
-    console.log("no post body");
-  }
+    const { cache, llm, messages, update } = await req.json()
 
-  try {
     const res = await prisma.message.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
       where: { sessionId: id },
       orderBy: { id: "asc" },
     });
+
+    // console.log("context:", res)
+
+    let newMessages = []
+    if (messages && messages.length > 0) {
+      newMessages = messages.map(msg => (
+        { sessionId: id, role: msg.role, content: JSON.stringify(msg.content) }
+      ))
+
+      res.push(...newMessages)
+    }
+
+    console.log("added messages:", res)
 
     const props = await prisma.property.findMany({
       skip: 0, // always start from 0
@@ -56,6 +59,25 @@ export async function POST(req, { params }) {
       orderBy: { createdAt: "desc" },
     })
 
+    // console.log("props:", props)
+
+    if (update && update.length > 0) {
+      props.map((prop) => {
+        const found = update.find(up => up.name === prop.name)
+        if (found) {
+          if (prop.type === "num") {
+            prop.value = String(found.value)
+          } else if (prop.type = "raw") {
+            prop.value = JSON.stringify(found.value)
+          } else {
+            prop.value = found.value
+          }
+        }
+
+        return prop
+      })
+    }
+
     const view = ArrayToKeyValue(props)
 
     const message = await generate(
@@ -63,22 +85,36 @@ export async function POST(req, { params }) {
         role: m.role,
         content: mustache.render(m.content, view)
       })),
-      { cache: true, llm: llm },
+      { cache: cache, llm: llm },
     );
 
     if (message.error) {
       throw message;
     }
 
-    const insert = await prisma.message.create({
-      data: {
+    await prisma.message.createMany({
+      data: [...newMessages, {
         sessionId: id,
         role: message.role,
         content: message.content,
-      },
+      }]
     });
 
-    return Response.json({ ok: true, id: insert.id });
+    if (update && update.length > 0) {
+      await prisma.$transaction(update.map(u => {
+        return prisma.property.update({
+          where: { name_sessionId: { sessionId: id, name: u.name } },
+          data: {
+            value: String(u.value) // TODO:value type check
+          }
+        })
+      }))
+
+    }
+    return Response.json({
+      ok: true, newMessages: newMessages.length > 0,
+      update: update && update.length > 0
+    });
   } catch (e) {
     // console.log(e)
     return Response.json({ error: isKnownError(e) }, { status: 400 })

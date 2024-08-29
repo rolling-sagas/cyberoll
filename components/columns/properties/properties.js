@@ -93,6 +93,23 @@ export const createPropertyStore = (id) =>
       // console.log(message);
     },
 
+    updatePropertiesValue: async (update) => {
+      const response = await fetch(
+        "/api/session/" + id + "/property",
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            update
+          }),
+        },
+      );
+      console.log('update properties', update)
+      const res = await response.json();
+    },
+
     deleteProperty: async (name) => {
       const response = await fetch("/api/session/" + id + "/property/" + name, {
         method: "DELETE",

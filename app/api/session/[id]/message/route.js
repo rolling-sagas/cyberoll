@@ -13,11 +13,10 @@ export async function GET(req, { params }) {
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
       where: { sessionId: id },
-      orderBy: { createdAt: "desc" },
+      orderBy: { id: "desc" },
     });
     return Response.json(res);
   } catch (e) {
-    console.log(e.code, e.message);
     return Response.json(
       {
         message: "Error list message",
