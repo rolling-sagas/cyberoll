@@ -44,13 +44,13 @@ export async function POST(req, { params }) {
     let newMessages = []
     if (messages && messages.length > 0) {
       newMessages = messages.map(msg => (
-        { sessionId: id, role: msg.role, content: JSON.stringify(msg.content) }
+        { sessionId: id, role: msg.role, content: msg.content }
       ))
 
       res.push(...newMessages)
     }
 
-    console.log("added messages:", res)
+    console.log("new messages:", newMessages)
 
     const props = await prisma.property.findMany({
       skip: 0, // always start from 0

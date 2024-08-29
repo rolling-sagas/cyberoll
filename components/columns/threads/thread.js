@@ -8,7 +8,7 @@ import CreateMessageDialog from "./create-message-dialog";
 import { createPropertyStore } from "@/components/columns/properties/properties";
 
 const createThreadStore = (data) =>
-  createStore((set) => ({
+  createStore((set, get) => ({
     id: data.id,
     name: data.name,
     createdAt: data.createdAt,
@@ -38,7 +38,6 @@ const createThreadStore = (data) =>
     },
 
     updateMessage: async (mid, role, content) => {
-      console.log("session id", data.id);
       const response = await fetch(
         "/api/session/" + data.id + "/message/" + mid,
         {
@@ -103,7 +102,17 @@ const createThreadStore = (data) =>
       return res
     },
 
-    generate: async (messages, update) => {
+    generate: async (newMessages, update) => {
+      if (newMessages && newMessages.length > 0) {
+        set({
+          messages: [...newMessages.map((m, idx) => {
+            m.id = idx + 512
+            m.content = JSON.stringify(m.content)
+            return m
+          }), ...get().messages]
+        })
+      }
+
       const response = await fetch("/api/session/" + data.id + "/generate", {
         method: "POST",
         headers: {
@@ -111,7 +120,7 @@ const createThreadStore = (data) =>
         },
         body: JSON.stringify({
           llm: "azure", cache: true,
-          messages: messages, update: update
+          messages: newMessages, update: update
         }),
       });
 
@@ -126,7 +135,6 @@ const createThreadStore = (data) =>
       }
       const res = await response.json();
       // TODO: maybe add the generated message from list directly
-      console.log("generate gen:", res);
       return res
     },
 
@@ -138,7 +146,7 @@ const createThreadStore = (data) =>
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({ llm: "azure", cache: false, filter: false }),
+          body: JSON.stringify({ llm: "azure", cache: false }),
         },
       );
       const res = await response.json();
@@ -189,7 +197,7 @@ export default function Thread({ data, column }) {
     (state) => state.updateMessage,
   );
 
-  const callFunction = useStore(storeRef.current, (state) => state.callFunction);
+  // const callFunction = useStore(storeRef.current, (state) => state.callFunction);
 
   const generate = useStore(storeRef.current, (state) => state.generate);
   const regenerate = useStore(storeRef.current, (state) => state.regenerate);
@@ -203,9 +211,11 @@ export default function Thread({ data, column }) {
   const propsStore = useRef(createPropertyStore(data.id))
 
   const properties = useStore(propsStore.current, (state) => state.properties);
-  const updatePropertiesValue = useStore(propsStore.current, (state) =>
-    state.updatePropertiesValue);
+  // const updatePropertiesValue = useStore(propsStore.current, (state) =>
+  //  state.updatePropertiesValue);
   const listProperties = useStore(propsStore.current, (state) => state.listProperties);
+
+  const bottom = useRef(null)
 
   useEffect(() => {
     if (listMessages) {
@@ -231,6 +241,12 @@ export default function Thread({ data, column }) {
       message={e.error.message + ", please try it later."}
       confirmLabel="OK" />)
   }
+
+  useEffect(() => {
+    if (bottom.current) setTimeout(() =>
+      bottom.current.scrollIntoView({ behavior: 'smooth' }), 10)
+  },
+    [messages])
 
   if (loading === "pending") {
     return (
@@ -284,6 +300,7 @@ export default function Thread({ data, column }) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 flex flex-col-reverse overflow-y-auto">
+        <div ref={bottom}></div>
         {messages.map((msg) => (
           <MessageItem
             key={msg.id}

@@ -41,8 +41,6 @@ export default function MessageContent({ content, props, onCall }) {
           return;
         }
 
-        // onCall(functionName, content)
-        // console.log("funcProp", funcProp.value);
         const func = funcProp.value.parseFunction();
         const res = func(content, ArrayToKeyValue(props));
 
