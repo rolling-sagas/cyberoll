@@ -1,9 +1,8 @@
 "use client";
 import toast from "react-hot-toast/headless";
 
-import ColumnBackButton from "@/components/column/column-back-button";
-
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import { create } from "zustand";
 
@@ -119,6 +118,8 @@ const CreateThread = function() {
 };
 
 export default function Threads() {
+  const router = useRouter()
+
   const loading = useThreadsStore((state) => state.loading);
 
   const listThreads = useThreadsStore((state) => state.listThreads);
@@ -144,13 +145,14 @@ export default function Threads() {
   });
 
   const onEnterThread = (thread) => {
-    setColumn("threads", <Thread data={thread} column="threads" />);
-    setHeader(
-      "threads",
-      <ColumnBackButton backId="threads" backChildren=<Threads /> />,
-      thread.name,
-      null,
-    );
+    router.push("/th/" + thread.id)
+    //setColumn("threads", <Thread data={thread} column="threads" />);
+    //setHeader(
+    //  "threads",
+    //  <ColumnBackButton backId="threads" backChildren=<Threads /> />,
+    //  thread.name,
+    //  null,
+    //);
   };
 
   if (loading === "pending") {

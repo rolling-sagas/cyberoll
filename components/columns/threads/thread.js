@@ -1,11 +1,12 @@
 import toast from "react-hot-toast/headless";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
 import { createPropertyStore } from "@/components/columns/properties/properties";
+import ColumnBackButton from "@/components/column/column-back-button";
 
 const createThreadStore = (data) =>
   createStore((set, get) => ({
@@ -167,9 +168,8 @@ import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 import { useColumnsStore } from "../pinned-columns";
 import Properties from "../properties/properties";
-import { POST } from "@/app/api/session/route";
 
-export default function Thread({ data, column }) {
+export default function Thread({ data }) {
   const storeRef = useRef(createThreadStore(data));
 
   const openModal = useModalStore((state) => state.open);

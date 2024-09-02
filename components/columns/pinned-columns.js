@@ -9,7 +9,7 @@ import Threads from "./threads/threads";
 export const usePinStore = create(
   persist(
     (set, get) => ({
-      pinned: [{ id: "threads" }],
+      pinned: [],
 
       pin: (id, extra) => {
         if (get().pinned.find((n) => n.id === id)) return;
@@ -38,6 +38,12 @@ export const usePinStore = create(
 export const useColumnsStore = create((set) => ({
   columns: [],
 
+  reset: () => {
+    return set((state) => {
+      return { columns: [] }
+    })
+  },
+
   addColumn: (id, props, children) => {
     return set((state) => {
       if (state.columns.find((n) => n.id === id)) return state;
@@ -53,14 +59,14 @@ export const useColumnsStore = create((set) => ({
         columns: state.columns.map((n) =>
           n.id === id
             ? {
-                id,
-                props: {
-                  headerLeft: null,
-                  headerCenter: null,
-                  headerRight: null,
-                },
-                children,
-              }
+              id,
+              props: {
+                headerLeft: null,
+                headerCenter: null,
+                headerRight: null,
+              },
+              children,
+            }
             : n,
         ),
       };
@@ -75,10 +81,10 @@ export const useColumnsStore = create((set) => ({
         columns: state.columns.map((n) =>
           n.id === id
             ? {
-                id,
-                props: { ...n.props, headerLeft, headerCenter, headerRight },
-                children: n.children,
-              }
+              id,
+              props: { ...n.props, headerLeft, headerCenter, headerRight },
+              children: n.children,
+            }
             : n,
         ),
       };
@@ -105,13 +111,6 @@ export default function PinnedColumns() {
     switch (pin.id) {
       case "threads":
         addColumn("threads", { headerCenter: <div>Threads</div> }, <Threads />);
-        break;
-      case "variables":
-        addColumn(
-          "variables",
-          { headerCenter: <div>Variables</div> },
-          <div>Hello</div>,
-        );
         break;
       default:
         break;
