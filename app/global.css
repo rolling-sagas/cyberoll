@@ -19,3 +19,22 @@ body {
 input {
   @apply outline-none bg-rs-background-2;
 }
+
+
+::-webkit-scrollbar {
+  @apply bg-rs-background-2 w-4;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-rs-background-2;
+}
+
+/* scrollbar itself */
+::-webkit-scrollbar-thumb {
+    @apply bg-rs-background-3 border-solid border-4 
+    border-rs-background-2 rounded-[16px];
+}
+
+::-webkit-scrollbar-button {
+    display:none;
+}

@@ -30,7 +30,7 @@ export default function Column({
             <div>{headerRight}</div>
           </div>
         </div>
-        <div className="column-content scrollbar">{children}</div>
+        <div className="column-content">{children}</div>
       </div>
     </Transition>
   );
