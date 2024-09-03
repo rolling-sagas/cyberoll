@@ -33,7 +33,7 @@ import {
 } from "@hugeicons/react";
 
 import ToolButton from "./tool-button";
-import { MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
+import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 
 export default function ThreadItem({
   thread,
@@ -70,7 +70,7 @@ export default function ThreadItem({
             </span>
           </div>
           <div className="flex-0">
-            <MenuButton>
+            <ItemMenuButton>
               <MenuButtonItem
                 left="Duplicate"
                 right={<Copy01Icon size={20} />}
@@ -88,7 +88,7 @@ export default function ThreadItem({
                   onDeleteClick();
                 }}
               />
-            </MenuButton>
+            </ItemMenuButton>
           </div>
         </div>
       </div>

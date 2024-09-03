@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { Copy01Icon, Delete01Icon, Edit02Icon } from "@hugeicons/react";
 
-import { MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
+import { ItemMenuButton as MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 import ToolButton from "../threads/tool-button";
 import TypeIcon from "./type-icon";
 

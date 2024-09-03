@@ -13,7 +13,7 @@ import {
 } from "@hugeicons/react";
 
 import ToolButton from "./tool-button";
-import { MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
+import { ItemMenuButton, MenuButtonItem, MenuButtonDivider } from "@/components/buttons/menu-button";
 import RoleIcon from "./role-icon";
 
 import { useAlertStore } from "@/components/modal/alert-placeholder";
@@ -21,7 +21,6 @@ import Alert from "@/components/modal/alert";
 
 import { useState } from "react";
 import MessageContent from "./message-content";
-import { MenuButtonDivider } from "../../buttons/menu-button";
 
 export function ArrayToKeyValue(list) {
   const result = {}
@@ -79,7 +78,7 @@ export default function MessageItem({
             </span>
           </div>
           <div className="flex-0">
-            <MenuButton>
+            <ItemMenuButton>
               {message.role !== "system" && (
                 <>
                   <MenuButtonItem
@@ -110,7 +109,7 @@ export default function MessageItem({
                   }}
                 />
               )}
-            </MenuButton>
+            </ItemMenuButton>
           </div>
         </div>
       </div>

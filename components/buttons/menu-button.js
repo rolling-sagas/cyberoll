@@ -1,16 +1,16 @@
 import { MoreHorizontalIcon } from "@hugeicons/react";
 
 import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  CloseButton,
+  Menu,
+  MenuButton,
+  MenuItems,
+  MenuItem,
 } from "@headlessui/react";
 
 export function MenuButtonItem({ left, right, onClick, className }) {
   return (
-    <div className="px-2">
-      <CloseButton
+    <MenuItem as="div" className="px-2">
+      <div
         className={`w-full h-[52px] rounded-2xl p-3
             hover:bg-rs-background-hover flex flex-row items-center justify-start
             font-semibold  ${className || ""}`}
@@ -18,21 +18,22 @@ export function MenuButtonItem({ left, right, onClick, className }) {
       >
         <span className="flex-grow text-left">{left}</span>
         {right}
-      </CloseButton>
-    </div>
+      </div>
+    </MenuItem>
   );
 }
 
 export function MenuButtonDivider() {
-  return <div className="border-b border-rs-border my-2" />;
+  return <MenuItem as="div" className="border-b border-rs-border my-2" />;
 }
 
-export function MenuButton({ children }) {
+export function ItemMenuButton({ children }) {
   return (
-    <Popover className="relative">
-      <PopoverButton
+    <Menu>
+      <MenuButton
         className="group w-fit h-fit outline-none
             flex justify-center items-center relative"
+        onClick={(evt) => evt.stopPropagation()}
       >
         <div
           className="transition duration-200 
@@ -48,8 +49,8 @@ export function MenuButton({ children }) {
             group-data-[hover]:scale-100
             group-data-[hover]:bg-rs-background-hover`}
         />
-      </PopoverButton>
-      <PopoverPanel
+      </MenuButton>
+      <MenuItems
         anchor="bottom end"
         transition
         className="flex flex-col bg-rs-background-2 rounded-2xl border
@@ -60,7 +61,7 @@ export function MenuButton({ children }) {
           "
       >
         {children}
-      </PopoverPanel>
-    </Popover>
+      </MenuItems>
+    </Menu>
   );
 }
