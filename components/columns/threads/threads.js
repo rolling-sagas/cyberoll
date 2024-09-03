@@ -133,26 +133,12 @@ export default function Threads() {
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
-  const setColumn = useColumnsStore((state) => state.setColumn);
-  const setHeader = useColumnsStore((state) => state.setHeader);
-
   useEffect(() => {
     listThreads();
   }, [listThreads]);
 
-  useEffect(() => {
-    setHeader("threads", null, "Threads", null);
-  });
-
   const onEnterThread = (thread) => {
     router.push("/th/" + thread.id)
-    //setColumn("threads", <Thread data={thread} column="threads" />);
-    //setHeader(
-    //  "threads",
-    //  <ColumnBackButton backId="threads" backChildren=<Threads /> />,
-    //  thread.name,
-    //  null,
-    //);
   };
 
   if (loading === "pending") {

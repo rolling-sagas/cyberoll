@@ -53,8 +53,11 @@ export const useColumnsStore = create((set) => ({
 
   setColumn: (id, children) => {
     return set((state) => {
-      if (!state.columns.find((n) => n.id === id))
+      if (!state.columns.find((n) => n.id === id)) {
         console.warn("Column not found");
+        return state
+      }
+
       return {
         columns: state.columns.map((n) =>
           n.id === id

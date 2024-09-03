@@ -1,8 +1,8 @@
 import { ArrowLeft02Icon } from "@hugeicons/react";
-import { useColumnsStore } from "../columns/pinned-columns";
+// import { useColumnsStore } from "../columns/pinned-columns";
 
 export default function ColumnBackButton({ backId, backChildren, onClick }) {
-  const setColumn = useColumnsStore((state) => state.setColumn);
+  // const setColumn = useColumnsStore((state) => state.setColumn);
   return (
     <button
       onClick={() => {

@@ -206,8 +206,6 @@ export default function Thread({ data }) {
   const loading = useStore(storeRef.current, (state) => state.loading);
 
   const addColumn = useColumnsStore((state) => state.addColumn);
-  const rmColumn = useColumnsStore((state) => state.rmColumn);
-
   const propsStore = useRef(createPropertyStore(data.id))
 
   const properties = useStore(propsStore.current, (state) => state.properties);
@@ -229,11 +227,7 @@ export default function Thread({ data }) {
       { headerCenter: "Properties" },
       <Properties storeRef={propsStore} />,
     );
-
-    return () => {
-      rmColumn("properties");
-    };
-  }, [addColumn, rmColumn, data.id]);
+  }, [addColumn, data.id]);
 
   function alertError(e) {
     console.warn("thread error:", e, data.id)
