@@ -1,4 +1,5 @@
 "use client"
+export const runtime = 'edge';
 
 import PinnedColumns from "@/components/columns/pinned-columns";
 
