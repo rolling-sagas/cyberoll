@@ -5,7 +5,8 @@
 }
 
 .column:not(:only-child) {
-  @apply min-w-[420px] max-w-[500px];
+  @apply min-w-[420px] max-w-[500px] lg:min-w-[500px] lg:max-w-[700px]
+  2xl:min-w-[500px] 2xl:max-w-[900px];
 }
 
 .column-header {
@@ -74,3 +75,22 @@
   @apply flex flex-col border-x box-border shadow-top h-full
     overflow-y-auto overflow-x-hidden pt-2 w-full z-0 bg-rs-background-2;
 }
+
+body::-webkit-scrollbar {
+  @apply bg-rs-background-1 w-[16px];
+}
+
+body::-webkit-scrollbar-track {
+  @apply bg-rs-background-1;
+}
+
+/* scrollbar itself */
+body::-webkit-scrollbar-thumb {
+    @apply bg-rs-background-2 border-4 border-rs-background-1;
+    border-radius: 16px;
+}
+
+body::-webkit-scrollbar-button {
+    display:none;
+}
+
