@@ -5,8 +5,7 @@
 }
 
 .column:not(:only-child) {
-  @apply min-w-[420px] max-w-[500px] lg:min-w-[420px] lg:max-w-[600px]
-  2xl:min-w-[420px] 2xl:max-w-[700px];
+  @apply min-w-[420px] max-w-[640px] w-[34vw];
 }
 
 .column-header {

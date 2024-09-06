@@ -1,12 +1,11 @@
 import toast from "react-hot-toast/headless";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
 import { createPropertyStore } from "@/components/columns/properties/properties";
-import ColumnBackButton from "@/components/column/column-back-button";
 
 const createThreadStore = (data) =>
   createStore((set, get) => ({
@@ -161,13 +160,18 @@ import {
   AiChat02Icon,
   BubbleChatAddIcon,
   CheckmarkCircle01Icon,
+  MoreHorizontalIcon,
+  ViewIcon,
+  ViewOffIcon,
 } from "@hugeicons/react";
 
 import MessageItem from "./message-item";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
-import { useColumnsStore } from "../pinned-columns";
+import { useColumnsStore } from "@/components/columns/pinned-columns";
 import Properties from "../properties/properties";
+import CircleIconButton from "@/components/buttons/circle-icon-button";
+import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 
 export default function Thread({ data }) {
   const storeRef = useRef(createThreadStore(data));
@@ -206,14 +210,19 @@ export default function Thread({ data }) {
   const loading = useStore(storeRef.current, (state) => state.loading);
 
   const addColumn = useColumnsStore((state) => state.addColumn);
+  const rmColumn = useColumnsStore(state => state.rmColumn);
+  const setHeader = useColumnsStore((state) => state.setHeader);
   const propsStore = useRef(createPropertyStore(data.id))
 
   const properties = useStore(propsStore.current, (state) => state.properties);
   // const updatePropertiesValue = useStore(propsStore.current, (state) =>
   //  state.updatePropertiesValue);
-  const listProperties = useStore(propsStore.current, (state) => state.listProperties);
+  const listProperties = useStore(propsStore.current, (state) =>
+    state.listProperties);
 
   const bottom = useRef(null)
+
+  const [showProperties, setShowProperties] = useState(true)
 
   useEffect(() => {
     if (listMessages) {
@@ -222,12 +231,29 @@ export default function Thread({ data }) {
   }, [listMessages]);
 
   useEffect(() => {
-    addColumn(
-      "properties",
-      { headerCenter: "Properties" },
-      <Properties storeRef={propsStore} />,
-    );
-  }, [addColumn, data.id]);
+    if (showProperties) {
+      addColumn(
+        "properties",
+        { headerCenter: "Properties" },
+        <Properties storeRef={propsStore} />,
+      );
+    } else {
+      rmColumn("properties")
+    }
+
+    setHeader("thread", {
+      headerRight: <ItemMenuButton
+        btn={<CircleIconButton icon={<MoreHorizontalIcon size={12} />} />}>
+        <MenuButtonItem
+          left={showProperties ? "Hide properties" : "Show properties"}
+          right={showProperties ? <ViewOffIcon /> : <ViewIcon />}
+          onClick={() => {
+            setShowProperties(!showProperties)
+          }}
+        />
+      </ItemMenuButton>
+    })
+  }, [addColumn, rmColumn, showProperties, data.id]);
 
   function alertError(e) {
     console.warn("thread error:", e, data.id)

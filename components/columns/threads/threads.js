@@ -10,12 +10,9 @@ import { useModalStore } from "@/components/modal/dialog-placeholder";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 
-import { useColumnsStore } from "../pinned-columns";
-
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
 import ThreadItem from "./thread-item";
-import Thread from "./thread";
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import CreateSessionDialog from "./create-session-dialog";

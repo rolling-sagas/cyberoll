@@ -27,35 +27,45 @@ export function MenuButtonDivider() {
   return <MenuItem as="div" className="border-b border-rs-border my-2" />;
 }
 
-export function ItemMenuButton({ children }) {
+export function ItemMenuButton({ btn, children }) {
   return (
     <Menu>
-      <MenuButton
-        className="group w-fit h-fit outline-none
+      {btn ?
+        <MenuButton
+          className="group w-fit h-fit outline-none
             flex justify-center items-center relative"
-        onClick={(evt) => evt.stopPropagation()}
-      >
-        <div
-          className="transition duration-200 
+          onClick={(evt) => evt.stopPropagation()}
+          as="div"
+        >
+          {btn}
+        </MenuButton>
+        : (
+          <MenuButton
+            className="group w-fit h-fit outline-none
+            flex justify-center items-center relative"
+            onClick={(evt) => evt.stopPropagation()}
+          >
+            <div
+              className="transition duration-200 
           h-fit w-fit z-[1] flex items-center justify-center
           text-rs-text-secondary"
-        >
-          <MoreHorizontalIcon className="w-6 h-6" />
-        </div>
-        <div
-          className={`transition absolute rounded-3xl ease-out
+            >
+              <MoreHorizontalIcon className="w-6 h-6" />
+            </div>
+            <div
+              className={`transition absolute rounded-3xl ease-out
             w-[calc(100%+16px)] h-[calc(100%+16px)]
             hover:bg-rs-background-hover scale-75 duration-200 
             group-data-[hover]:scale-100
             group-data-[hover]:bg-rs-background-hover`}
-        />
-      </MenuButton>
+            />
+          </MenuButton>
+        )}
       <MenuItems
         anchor="bottom end"
-        transition
         className="flex flex-col bg-rs-background-2 rounded-2xl border
           w-60 origin-top-right z-20 [--anchor-gap:6px]
-          transition duration-200 ease-out py-2
+          ease-out py-2
           data-[closed]:scale-75 data-[closed]:opacity-0
           shadow-[0_10px_20px_0_rgba(0,0,0,0.08)] 
           "

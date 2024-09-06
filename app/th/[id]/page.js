@@ -2,14 +2,14 @@
 export const runtime = 'edge';
 
 import PinnedColumns from "@/components/columns/pinned-columns";
+import { ArrowLeft02Icon } from "@hugeicons/react";
 
 import { useColumnsStore } from "@/components/columns/pinned-columns";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import ColumnBackButton from "@/components/column/column-back-button";
-
 import Thread from "@/components/columns/threads/thread";
+import CircleIconButton from "@/components/buttons/circle-icon-button";
 
 export default function Page({ params }) {
   const router = useRouter()
@@ -34,8 +34,10 @@ export default function Page({ params }) {
   useEffect(() => {
     if (!thread) return
     addColumn("thread", {
-      headerLeft: <ColumnBackButton onClick={() => router.push("/")} />,
-      headerCenter: thread.name
+      headerLeft: <CircleIconButton onClick={() => router.push("/")}
+        icon={<ArrowLeft02Icon size={12} />}
+      />,
+      headerCenter: thread.name,
     }, <Thread data={thread} />);
   }, [addColumn, thread])
 

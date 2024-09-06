@@ -39,11 +39,11 @@ export default function RootLayout({ children }) {
         <div className="flex h-svh relative z-10">
           <NavBar />
           <div className="flex overflow-y-hidden overflow-x-auto px-5 w-full">
-            <div className="md:flex min-w-[76px]" />
-            <div className="flex flex-row flex-grow h-full gap-3 justify-center">
+            <div className="block min-w-[76px]" />
+            <div className="flex flex-row flex-grow gap-3 justify-center">
               {children}
             </div>
-            <div className="md:flex min-w-[76px]" />
+            <div className="block min-w-[76px]" />
           </div>
         </div>
         <ToastPlaceholder />

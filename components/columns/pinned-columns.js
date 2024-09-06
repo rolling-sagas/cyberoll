@@ -39,7 +39,7 @@ export const useColumnsStore = create((set) => ({
   columns: [],
 
   reset: () => {
-    return set((state) => {
+    return set(() => {
       return { columns: [] }
     })
   },
@@ -76,7 +76,7 @@ export const useColumnsStore = create((set) => ({
     });
   },
 
-  setHeader: (id, headerLeft, headerCenter, headerRight) => {
+  setHeader: (id, header) => {
     return set((state) => {
       if (!state.columns.find((n) => n.id === id))
         console.warn("Column not found");
@@ -85,7 +85,7 @@ export const useColumnsStore = create((set) => ({
           n.id === id
             ? {
               id,
-              props: { ...n.props, headerLeft, headerCenter, headerRight },
+              props: { ...n.props, ...header },
               children: n.children,
             }
             : n,
