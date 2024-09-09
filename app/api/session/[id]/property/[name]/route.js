@@ -35,9 +35,9 @@ export async function GET(_, { params }) {
 export async function POST(req, { params }) {
   const name = params.name;
   const sid = parseInt(params.id);
-  console.log("update id", sid, name);
   try {
     const { data, include } = await req.json();
+    console.log("update:", sid, name, data);
     const res = await prisma.session.update({
       where: { id: sid },
       data: {
@@ -105,6 +105,8 @@ export async function PUT(req, { params }) {
     const data = await req.formData();
     const value = JSON.parse(data.get("value"))
 
+    const isInitial = data.get("isInitial") === "true"
+
     const file = data.get("file");
 
     let imageId = value.id;
@@ -119,9 +121,19 @@ export async function PUT(req, { params }) {
         throw new Error(upload.errors[0].message);
       }
       imageId = upload.result.id;
+      console.log(" new image:", imageId)
     }
 
     const newName = data.get("name");
+    const update = { name: newName, type: "img" }
+
+    console.log("is initial:", isInitial)
+
+    if (isInitial) {
+      update.initial = JSON.stringify({ id: imageId, desc });
+    } else {
+      update.value = JSON.stringify({ id: imageId, desc });
+    }
     // const { data, include } = await req.json();
     // // console.log("new message", data.role, data.content);
     const res = await prisma.session.update({
@@ -129,11 +141,7 @@ export async function PUT(req, { params }) {
       data: {
         properties: {
           update: {
-            data: {
-              name: newName,
-              type: "img",
-              value: JSON.stringify({ id: imageId, desc }),
-            },
+            data: update,
             where: {
               name_sessionId: { name: name, sessionId: sid }
             },
@@ -145,7 +153,6 @@ export async function PUT(req, { params }) {
         properties: true,
       },
     });
-    console.log(res);
     return Response.json({ ok: true, id: res.id });
   } catch (e) {
     console.log(e.code, e.message);

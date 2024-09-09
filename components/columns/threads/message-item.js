@@ -22,24 +22,7 @@ import Alert from "@/components/modal/alert";
 import { useState } from "react";
 import MessageContent from "./message-content";
 
-export function ArrayToKeyValue(list) {
-  const result = {}
-  for (const item of list) {
-    if (item.type === "obj" || item.type === "img") {
-      try {
-        result[item.name] = JSON.parse(item.value)
-      } catch (e) {
-        console.error("template render error")
-      }
-    } else if (item.type === "num") {
-      result[item.name] = Number(item.value)
-    } else {
-      result[item.name] = item.value
-    }
-  }
-  // console.log("key value:", list, result)
-  return result
-}
+import { ArrayToKeyValue } from "@/components/utils";
 
 export default function MessageItem({
   message,

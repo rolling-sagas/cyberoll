@@ -17,6 +17,7 @@ import Dialog, { Input } from "@/components/modal/dialog";
 import { useState } from "react";
 import ImageUploader from "./image-uploader";
 import ListBox from "@/components/list-box/list-box";
+import ToggleSwitch from "@/components/switch";
 
 const dataTypes = [
   { key: "str", label: "string", value: "str" },
@@ -50,7 +51,7 @@ const TypeSwitch = function({ value, onChange }) {
   );
 };
 
-export default function CreatePropertyDialog({ name, type, value,
+export default function CreatePropertyDialog({ name, type, value, initial,
   onConfirm, onImageConfirm }) {
 
   const closeModal = useModalStore((state) => state.close);
@@ -58,7 +59,12 @@ export default function CreatePropertyDialog({ name, type, value,
   const [pName, setName] = useState(name || "");
 
   const [pType, setType] = useState(type || dataTypes[0].value)
+
   const [pValue, setValue] = useState(value || "")
+
+  const [pInitial, setInitial] = useState(initial || "")
+
+  const [showInitial, setShowInitial] = useState(!value)
 
   const [width, setWidth] = useState(type === "func" || type === "obj" ?
     720 : 560);
@@ -67,7 +73,9 @@ export default function CreatePropertyDialog({ name, type, value,
   const [imageDesc, setImageDesc] = useState("")
 
   const canCreate =
-    pName.trim().length > 0 && ((pValue && pValue.trim().length > 0) ||
+    pName.trim().length > 0 &&
+    ((showInitial ? pInitial && pInitial.trim().length > 0 :
+      pValue && pValue.trim().length > 0) ||
       (pType === "img" && image !== null && imageDesc !== ""));
 
   return (
@@ -97,8 +105,8 @@ export default function CreatePropertyDialog({ name, type, value,
           {pType === "str" && (
             <Input
               name="Value"
-              value={pValue}
-              onChange={setValue}
+              value={showInitial ? pInitial : pValue}
+              onChange={showInitial ? setInitial : setValue}
               icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
               placeholder="Required, value of the property"
               autoSize={true}
@@ -108,8 +116,8 @@ export default function CreatePropertyDialog({ name, type, value,
           {pType === "num" && (
             <Input
               name="Value"
-              value={pValue}
-              onChange={setValue}
+              value={showInitial ? pInitial : pValue}
+              onChange={showInitial ? setInitial : setValue}
               icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
               placeholder="Required, value of the property"
               autoSize={false}
@@ -117,36 +125,52 @@ export default function CreatePropertyDialog({ name, type, value,
           )}
 
           {pType === "obj" && (
-            <CodeEditor value={pValue} lang="json" onChange={setValue} />
+            <CodeEditor
+              value={showInitial ? pInitial : pValue}
+              lang="json"
+              onChange={showInitial ? setInitial : setValue}
+            />
           )}
 
           {pType === "func" && (
-            <CodeEditor value={pValue} lang="js" onChange={setValue} />
+            <CodeEditor
+              value={showInitial ? pInitial : pValue}
+              lang="js"
+              onChange={showInitial ? setInitial : setValue}
+            />
           )}
 
           {pType === "img" && (
-            <ImageUploader value={pValue} onChange={(desc, file) => {
-              setImageDesc(desc)
-              setImage(file)
-            }} />
+            <ImageUploader
+              value={showInitial ? pInitial : pValue}
+              onChange={(desc, file) => {
+                setImageDesc(desc)
+                setImage(file)
+              }} />
           )}
         </div>
       }
 
       footer={
-        <div className="flex flex-row-reverse items-center w-full">
+        <div className="flex flex-row-reverse items-center 
+          w-full justify-between">
           <BaseButton
-            label={name ? "Update" : "Create"}
+            label={value ? "Update" : "Create"}
             disabled={!canCreate}
             onClick={async () => {
               closeModal();
               if (pType === "img") {
-                onImageConfirm(pName, imageDesc, image)
+                onImageConfirm(pName, imageDesc, image, showInitial)
               } else {
-                onConfirm(pName, pType, pValue);
+                onConfirm(pName, pType, pValue, pInitial);
               }
             }}
           />
+          <div className="flex flex-row items-center gap-2">
+            <ToggleSwitch value={showInitial} onChange={setShowInitial}
+              disabled={!value} />
+            <span>{showInitial ? "Initial" : "Current"}</span>
+          </div>
         </div>
       }
     />

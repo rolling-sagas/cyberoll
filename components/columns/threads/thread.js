@@ -161,6 +161,7 @@ import {
   BubbleChatAddIcon,
   CheckmarkCircle01Icon,
   MoreHorizontalIcon,
+  RefreshIcon,
   ViewIcon,
   ViewOffIcon,
 } from "@hugeicons/react";
@@ -220,6 +221,9 @@ export default function Thread({ data }) {
   const listProperties = useStore(propsStore.current, (state) =>
     state.listProperties);
 
+  const resetAllProperties = useStore(propsStore.current,
+    (state) => state.resetAllProperties)
+
   const bottom = useRef(null)
 
   const [showProperties, setShowProperties] = useState(true)
@@ -234,7 +238,20 @@ export default function Thread({ data }) {
     if (showProperties) {
       addColumn(
         "properties",
-        { headerCenter: "Properties" },
+        {
+          headerCenter: "Properties", headerRight:
+            <ItemMenuButton
+              btn={<CircleIconButton icon={<MoreHorizontalIcon size={12} />} />}>
+
+              <MenuButtonItem
+                left="Reset all"
+                right={<RefreshIcon />}
+                onClick={() => {
+
+                }}
+              />
+            </ItemMenuButton>
+        },
         <Properties storeRef={propsStore} />,
       );
     } else {

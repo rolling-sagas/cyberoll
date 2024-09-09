@@ -84,6 +84,7 @@ model Property {
   name    String
   type    String // Skill type
   value   String // Raw json obj or Origin Value
+  initial String // initial value of the property
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

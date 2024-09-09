@@ -1,18 +1,20 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/modal/dialog";
 import { Image01Icon } from "@hugeicons/react";
 import Image from "next/image";
 
 export default function ImageUploader({ value, onChange }) {
-  const pValue = value ? JSON.parse(value) : null;
+  const [pValue, setValue] = useState(JSON.parse(value))
+
+  useEffect(() => {
+    // console.log(pValue)
+    setValue(JSON.parse(value))
+  }, [value])
 
   const imageInput = useRef(null);
 
   const [localUrl, setLocalUrl] = useState(null)
   const [localFile, setLocalFile] = useState(null);
-
-  const [pDesc, setDesc] = useState(pValue ? pValue.desc : "")
-
 
   const url = pValue
     ? `https://imagedelivery.net/8VoaBhaig6kffmvxoWxkaw/${pValue.id}/public`
@@ -23,10 +25,10 @@ export default function ImageUploader({ value, onChange }) {
       <Input
         name="Image"
         placeholder="Input image description here"
-        value={pDesc}
+        value={pValue.desc}
         icon={<Image01Icon size={20} className="text-rs-text-secondary" />}
         onChange={(value) => {
-          setDesc(value);
+          setValue({ ...pValue, desc: value });
           onChange(value, localFile);
         }}
       />
@@ -50,7 +52,7 @@ export default function ImageUploader({ value, onChange }) {
           setLocalUrl(src);
           setLocalFile(file);
 
-          onChange(pDesc, file);
+          onChange(pValue.desc, file);
         }}
       />
 

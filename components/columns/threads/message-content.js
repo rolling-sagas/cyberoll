@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getImageUrlById } from "@/components/images/utils";
-import { ArrayToKeyValue } from "./message-item";
+
+import { ArrayToKeyValue } from "@/components/utils";
 
 function parseMarkdown(content) {
   const reg = /\*\*(.+?)\*\*/g;

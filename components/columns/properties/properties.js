@@ -48,17 +48,19 @@ export const createPropertyStore = (id) =>
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ data: { name, type, value } }),
+        body: JSON.stringify({ data: { name, type, value, initial: value } }),
       });
       const res = await response.json();
       // console.log(res);
     },
 
-    updateImageProperty: async (oldName, oldValue, name, desc, file) => {
+    updateImageProperty: async (oldName, oldValue, name, desc, file,
+      isInitial) => {
       const formData = new FormData();
 
       formData.append("name", name);
       formData.append("value", oldValue)
+      formData.append("isInitial", isInitial)
 
       if (desc !== "") {
         formData.append("desc", desc);
@@ -76,7 +78,7 @@ export const createPropertyStore = (id) =>
       console.log(res);
     },
 
-    updateProperty: async (oldName, name, type, value) => {
+    updateProperty: async (oldName, name, type, value, initial) => {
       const response = await fetch(
         "/api/session/" + id + "/property/" + oldName,
         {
@@ -85,29 +87,12 @@ export const createPropertyStore = (id) =>
             "Content-type": "application/json",
           },
           body: JSON.stringify({
-            data: { name, type, value },
+            data: { name, type, value, initial },
           }),
         },
       );
       const res = await response.json();
       // console.log(message);
-    },
-
-    updatePropertiesValue: async (update) => {
-      const response = await fetch(
-        "/api/session/" + id + "/property",
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            update
-          }),
-        },
-      );
-      console.log('update properties', update)
-      const res = await response.json();
     },
 
     deleteProperty: async (name) => {
@@ -151,11 +136,11 @@ function CreateProperty({ store }) {
         onClick={() =>
           openModal(
             <CreatePropertyDialog
-              onConfirm={async (name, type, value, imageDesc, image) => {
+              onConfirm={async (name, type, value, initial) => {
                 const tid = toast.loading("Creating property...", {
                   icon: <Spinner />,
                 });
-                await newProperty(name, type, value, imageDesc, image);
+                await newProperty(name, type, initial);
                 await listProperties();
                 toast.success("Property created", {
                   id: tid,
@@ -317,7 +302,8 @@ export default function Properties({ storeRef }) {
                 name={prop.name}
                 type={prop.type}
                 value={prop.value}
-                onConfirm={async (name, type, value) => {
+                initial={prop.initial}
+                onConfirm={async (name, type, value, initial) => {
                   const tid = toast.loading("Updating property...", {
                     icon: <Spinner />,
                   });
@@ -326,6 +312,7 @@ export default function Properties({ storeRef }) {
                     name,
                     type,
                     value,
+                    initial,
                   );
                   await listProperties();
                   toast.success("Property updated", {
@@ -333,12 +320,12 @@ export default function Properties({ storeRef }) {
                     icon: <CheckmarkCircle01Icon />,
                   });
                 }}
-                onImageConfirm={async (name, imageDesc, image) => {
+                onImageConfirm={async (name, imageDesc, image, isInitial) => {
                   const tid = toast.loading("Updating image property...", {
                     icon: <Spinner />,
                   });
-                  await updateImageProperty(prop.name, prop.value, name, imageDesc,
-                    image);
+                  await updateImageProperty(prop.name, prop.value, name,
+                    imageDesc, image, isInitial);
                   await listProperties();
                   toast.success("Image property updated", {
                     id: tid,

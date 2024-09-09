@@ -33,6 +33,7 @@ export async function GET(req, { params }) {
 export async function POST(req, { params }) {
   const id = parseInt(params.id);
   const { data, update } = await req.json();
+  console.log("data", data)
   try {
     if (data) {
       const res = await prisma.session.update({

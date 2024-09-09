@@ -4,24 +4,7 @@ import { isKnownError } from "@/app/api/common";
 
 import mustache from "mustache"
 
-export function ArrayToKeyValue(list) {
-  const result = {}
-  for (const item of list) {
-    if (item.type === "obj" || item.type === "img") {
-      try {
-        result[item.name] = JSON.parse(item.value)
-      } catch (e) {
-        console.error("template render error")
-      }
-    } else if (item.type === "num") {
-      result[item.name] = Number(item.value)
-    } else {
-      result[item.name] = item.value
-    }
-  }
-  // console.log("key value:", list, result)
-  return result
-}
+import { ArrayToKeyValue } from "@/components/utils";
 
 export const runtime = "edge";
 
@@ -80,11 +63,15 @@ export async function POST(req, { params }) {
 
     const view = ArrayToKeyValue(props)
 
+    const context = res.map((m) => ({
+      role: m.role,
+      content: mustache.render(m.content, view)
+    }))
+
+    // console.log("context messages:", context)
+
     const message = await generate(
-      res.map((m) => ({
-        role: m.role,
-        content: mustache.render(m.content, view)
-      })),
+      context,
       { cache: cache, llm: llm },
     );
 
