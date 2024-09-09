@@ -221,8 +221,8 @@ export default function Thread({ data }) {
   const listProperties = useStore(propsStore.current, (state) =>
     state.listProperties);
 
-  const resetAllProperties = useStore(propsStore.current,
-    (state) => state.resetAllProperties)
+  const resetProperties = useStore(propsStore.current,
+    (state) => state.resetProperties)
 
   const bottom = useRef(null)
 
@@ -247,7 +247,21 @@ export default function Thread({ data }) {
                 left="Reset all"
                 right={<RefreshIcon />}
                 onClick={() => {
-
+                  openAlert(<Alert title="Reset all properties"
+                    message="Reset all properties' value to initial."
+                    confirmLabel="OK"
+                    onConfirm={async () => {
+                      const tid = toast.loading("Reseting properties...", {
+                        icon: <Spinner />,
+                      });
+                      await resetProperties();
+                      await listProperties();
+                      toast.success("Properties updated", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    }}
+                  />)
                 }}
               />
             </ItemMenuButton>

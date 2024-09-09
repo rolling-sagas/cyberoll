@@ -28,6 +28,14 @@ export const createPropertyStore = (id) =>
       // console.log("messages", data.id, messages);
     },
 
+    resetProperties: async () => {
+      const response = await fetch(`/api/session/${id}/property/reset`, {
+        method: "GET",
+      });
+      const res = await response.json();
+      console.log(res)
+    },
+
     newImageProperty: async (name, imageDesc, image) => {
       const formData = new FormData();
 
