@@ -5,7 +5,7 @@ import { generate } from "@/app/api/common";
 import { isKnownError } from "@/app/api/common";
 import mustache from "mustache"
 
-import { ArrayToKeyValue } from "../../../generate/route";
+import { ArrayToKeyValue } from "@/components/utils";
 
 export const runtime = "edge";
 
