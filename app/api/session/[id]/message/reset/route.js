@@ -18,9 +18,10 @@ export async function POST(req, { params }) {
       throw { type: "not-found", message: "thread entry point not found" }
     }
 
-    await prisma.message.deleteMany({
+    const res = await prisma.message.deleteMany({
       where: { sessionId: sid, id: { gt: prevEntry.id } }
     })
+    console.log("delete result", res)
 
     return Response.json({ ok: true });
   } catch (e) {

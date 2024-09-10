@@ -23,6 +23,14 @@ const createThreadStore = (data) =>
       set({ messages, loading: "loaded" });
     },
 
+    resetMessages: async () => {
+      const response = await fetch(`/api/session/${data.id}/message/reset`, {
+        method: "POST",
+      });
+      const res = await response.json();
+      console.log(res)
+    },
+
     newMessage: async (role, content) => {
       const response = await fetch(`/api/session/${data.id}/message`, {
         method: "POST",
@@ -199,6 +207,12 @@ export default function Thread({ data }) {
     (state) => state.listMessages,
   );
 
+  const resetMessages = useStore(
+    storeRef.current,
+    (state) => state.resetMessages,
+  );
+
+
   const newMessage = useStore(storeRef.current, (state) => state.newMessage);
 
   const deleteMessage = useStore(
@@ -308,7 +322,27 @@ export default function Thread({ data }) {
           left={"Reset"}
           right={<RefreshIcon />}
           onClick={() => {
-            setShowProperties(!showProperties)
+            openAlert(<Alert title="Reset messages"
+              message="Remove all messages after the entry point"
+              confirmLabel="OK"
+              onConfirm={async () => {
+                const tid = toast.loading("Reseting messages...", {
+                  icon: <Spinner />,
+                });
+                try {
+                  await resetMessages();
+                } catch (e) {
+                  console.error(e)
+                } finally {
+                  await listMessages();
+                  scrollToBottom()
+                }
+                toast.success("Messages reset", {
+                  id: tid,
+                  icon: <CheckmarkCircle01Icon />,
+                });
+              }}
+            />)
           }}
         />
       </ItemMenuButton>

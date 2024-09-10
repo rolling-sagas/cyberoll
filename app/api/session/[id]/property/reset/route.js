@@ -5,7 +5,7 @@ export const runtime = "edge";
 
 const LIST_LIMIT = 512;
 
-export async function GET(req, { params }) {
+export async function POST(req, { params }) {
   const id = parseInt(params.id);
   const { limit, skip } = req.nextUrl.searchParams;
 
