@@ -181,7 +181,6 @@ function CreateProperty({ store }) {
 }
 
 export default function Properties({ storeRef }) {
-
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
@@ -216,13 +215,6 @@ export default function Properties({ storeRef }) {
       listProperties();
     }
   }, [listProperties]);
-
-  //useEffect(() => {
-  //  if (onPropsUpdate && properties && updateProperty) {
-  //    console.log("properties:", properties)
-  //    onPropsUpdate({ properties, updateProperty });
-  //  }
-  //}, [onPropsUpdate, properties, updateProperty]);
 
   if (loading === "pending") {
     return (
@@ -279,72 +271,74 @@ export default function Properties({ storeRef }) {
   return (
     <div className="flex flex-col h-full">
       <CreateProperty store={storeRef.current} />
-      {properties.map((prop) => (
-        <PropertyItem
-          key={prop.name}
-          isLast={prop.name === properties[properties.length - 1].name}
-          property={prop}
-          onDeleteClick={() => {
-            openAlert(
-              <Alert
-                title="Delete property?"
-                message="If you delete this property, 
+      <div className="flex flex-col flex-1 scroll-smooth overflow-y-auto">
+        {properties.map((prop) => (
+          <PropertyItem
+            key={prop.name}
+            isLast={prop.name === properties[properties.length - 1].name}
+            property={prop}
+            onDeleteClick={() => {
+              openAlert(
+                <Alert
+                  title="Delete property?"
+                  message="If you delete this property, 
                 you won't be able to restore it."
-                onConfirm={async () => {
-                  const tid = toast.loading("Deleting property...", {
-                    icon: <Spinner />,
-                  });
-                  await deleteProperty(prop.name);
-                  await listProperties();
-                  toast.success("Property deleted", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
-                }}
-              />,
-            );
-          }}
-          onUpdateClick={() => {
-            openModal(
-              <CreatePropertyDialog
-                name={prop.name}
-                type={prop.type}
-                value={prop.value}
-                initial={prop.initial}
-                onConfirm={async (name, type, value, initial) => {
-                  const tid = toast.loading("Updating property...", {
-                    icon: <Spinner />,
-                  });
-                  await updateProperty(
-                    prop.name,
-                    name,
-                    type,
-                    value,
-                    initial,
-                  );
-                  await listProperties();
-                  toast.success("Property updated", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
-                }}
-                onImageConfirm={async (name, imageDesc, image, isInitial) => {
-                  const tid = toast.loading("Updating image property...", {
-                    icon: <Spinner />,
-                  });
-                  await updateImageProperty(prop.name, prop.value, name,
-                    imageDesc, image, isInitial);
-                  await listProperties();
-                  toast.success("Image property updated", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
-                }}
-              />,
-            );
-          }}
-        />
-      ))}
+                  onConfirm={async () => {
+                    const tid = toast.loading("Deleting property...", {
+                      icon: <Spinner />,
+                    });
+                    await deleteProperty(prop.name);
+                    await listProperties();
+                    toast.success("Property deleted", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }}
+                />,
+              );
+            }}
+            onUpdateClick={() => {
+              openModal(
+                <CreatePropertyDialog
+                  name={prop.name}
+                  type={prop.type}
+                  value={prop.value}
+                  initial={prop.initial}
+                  onConfirm={async (name, type, value, initial) => {
+                    const tid = toast.loading("Updating property...", {
+                      icon: <Spinner />,
+                    });
+                    await updateProperty(
+                      prop.name,
+                      name,
+                      type,
+                      value,
+                      initial,
+                    );
+                    await listProperties();
+                    toast.success("Property updated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }}
+                  onImageConfirm={async (name, imageDesc, image, isInitial) => {
+                    const tid = toast.loading("Updating image property...", {
+                      icon: <Spinner />,
+                    });
+                    await updateImageProperty(prop.name, prop.value, name,
+                      imageDesc, image, isInitial);
+                    await listProperties();
+                    toast.success("Image property updated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  }}
+                />,
+              );
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

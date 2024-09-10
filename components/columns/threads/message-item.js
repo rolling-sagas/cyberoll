@@ -7,6 +7,9 @@ import {
   Copy01Icon,
   Delete01Icon,
   Edit02Icon,
+  EnteringGeoFenceIcon,
+  LoginCircle01Icon,
+  PinIcon,
   ThirdBracketIcon,
   UnfoldLessIcon,
   UnfoldMoreIcon,
@@ -23,6 +26,7 @@ import { useState } from "react";
 import MessageContent from "./message-content";
 
 import { ArrayToKeyValue } from "@/components/utils";
+import { MenuSeparator } from "@headlessui/react";
 
 export default function MessageItem({
   message,
@@ -30,6 +34,7 @@ export default function MessageItem({
   onUpdateClick,
   onDeleteClick,
   onGenerateClick,
+  onEntryClick,
   onSend,
   onCall,
   isFirst,
@@ -54,11 +59,15 @@ export default function MessageItem({
       </div>
       <div className="col-start-2 rows-start-1">
         <div className="flex flex-row items-start">
-          <div className="flex-1">
+          <div className="flex-1 flex flex-row items-center gap-2">
             <span className="font-semibold capitalize">{message.role}</span>
-            <span className="text-rs-text-secondary ml-2">
+            <span className="text-rs-text-secondary">
               {dayjs(message.updatedAt).fromNow(true)}
             </span>
+            {message.entry && (
+              <EnteringGeoFenceIcon variant="solid"
+                size={20} className="text-rs-blue" />
+            )}
           </div>
           <div className="flex-0">
             <ItemMenuButton>
@@ -71,6 +80,15 @@ export default function MessageItem({
                       setRaw(!raw);
                     }}
                   />
+                  {!message.entry && (
+                    <MenuButtonItem
+                      left="Set as entry point"
+                      right={<EnteringGeoFenceIcon />}
+                      onClick={() => {
+                        onEntryClick();
+                      }}
+                    />
+                  )}
                   <MenuButtonDivider />
                 </>
               )}
@@ -79,7 +97,7 @@ export default function MessageItem({
                 className="text-red-500"
                 right={<Delete01Icon />}
                 onClick={() => {
-                  onDeleteClick();
+                  onDeleteClick(false);
                 }}
               />
               {isFirst ? null : (

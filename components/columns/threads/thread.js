@@ -56,6 +56,20 @@ const createThreadStore = (data) =>
       // console.log(message);
     },
 
+    setEntryMessage: async (mid) => {
+      const response = await fetch(
+        "/api/session/" + data.id + "/message/" + mid + "/entry",
+        {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      );
+      const res = await response.json();
+      return res
+    },
+
     deleteMessage: async (mid) => {
       const response = await fetch(
         "/api/session/" + data.id + "/message/" + mid,
@@ -202,6 +216,11 @@ export default function Thread({ data }) {
     (state) => state.updateMessage,
   );
 
+  const setEntryMessage = useStore(
+    storeRef.current,
+    (state) => state.setEntryMessage,
+  );
+
   // const callFunction = useStore(storeRef.current, (state) => state.callFunction);
 
   const generate = useStore(storeRef.current, (state) => state.generate);
@@ -248,7 +267,7 @@ export default function Thread({ data }) {
                 right={<RefreshIcon />}
                 onClick={() => {
                   openAlert(<Alert title="Reset all properties"
-                    message="Reset all properties' value to initial."
+                    message="Reset all properties' value."
                     confirmLabel="OK"
                     onConfirm={async () => {
                       const tid = toast.loading("Reseting properties...", {
@@ -293,11 +312,10 @@ export default function Thread({ data }) {
       confirmLabel="OK" />)
   }
 
-  useEffect(() => {
+  function scrollToBottom() {
     if (bottom.current) setTimeout(() =>
       bottom.current.scrollIntoView({ behavior: 'smooth' }), 10)
-  },
-    [messages])
+  }
 
   if (loading === "pending") {
     return (
@@ -365,21 +383,24 @@ export default function Thread({ data }) {
               });
 
               try {
-                const res = await generate([{ role: "user", content: { data: c.send } }], c.update)
+                const res = await generate([{
+                  role: "user",
+                  content: { data: c.send }
+                }], c.update)
+
                 if (res.update) {
                   await listProperties()
                 }
 
-                if (res.newMessages) {
-                  await listMessages()
-                }
               } catch (e) {
                 if (e.error) {
                   openAlert(<Alert title="Oops, something wrong!"
                     message={e.error.message + ", please try it later."}
                     confirmLabel="OK" />)
                 }
-                console.log(e)
+              } finally {
+                await listMessages()
+                scrollToBottom()
               }
 
               toast.success("Generated", {
@@ -460,6 +481,17 @@ export default function Thread({ data }) {
                 icon: <CheckmarkCircle01Icon />,
               });
             }}
+            onEntryClick={async () => {
+              const tid = toast.loading("Set the message as entry...", {
+                icon: <Spinner />,
+              });
+              await setEntryMessage(msg.id);
+              await listMessages();
+              toast.success("Done", {
+                id: tid,
+                icon: <CheckmarkCircle01Icon />,
+              });
+            }}
           />
         ))}
       </div>
@@ -520,9 +552,15 @@ export default function Thread({ data }) {
 
               try {
                 await generate();
-                await listMessages()
               } catch (e) {
                 alertError(e)
+              } finally {
+                toast.loading("Fetching messages", {
+                  id: tid,
+                  icon: <Spinner />,
+                });
+                await listMessages()
+                scrollToBottom()
               }
 
               toast.success("Message generated", {

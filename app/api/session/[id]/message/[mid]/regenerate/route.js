@@ -1,5 +1,4 @@
 // regenerate
-
 import prisma from "@/prisma/client";
 import { generate } from "@/app/api/common";
 import { isKnownError } from "@/app/api/common";

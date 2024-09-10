@@ -70,8 +70,9 @@ model Message {
   id      Int    @id @default(autoincrement())
   role    String
 
-  content String?
+  content  String?
   template String?
+  entry    Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
