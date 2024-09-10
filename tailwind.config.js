@@ -39,6 +39,7 @@ const config = {
           },
           border: "rgb(var(--rs-color-border) / <alpha-value>)",
           blue: "rgb(var(--rs-color-blue) / <alpha-value>)",
+          red: "rgb(var(--rs-color-red) / <alpha-value>)",
           primary: "rgb(var(--rs-color-primary) / <alpha-value>)",
         },
       },

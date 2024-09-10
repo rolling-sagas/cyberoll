@@ -1,6 +1,5 @@
 import prisma from "@/prisma/client";
 import { isKnownError } from "@/app/api/common";
-import Properties from "@/components/columns/properties/properties";
 
 export const runtime = "edge";
 const LIST_LIMIT = 512;

@@ -186,7 +186,7 @@ import Alert from "@/components/modal/alert";
 import { useColumnsStore } from "@/components/columns/pinned-columns";
 import Properties from "../properties/properties";
 import CircleIconButton from "@/components/buttons/circle-icon-button";
-import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
+import { ItemMenuButton, MenuButtonDivider, MenuButtonItem } from "@/components/buttons/menu-button";
 
 export default function Thread({ data }) {
   const storeRef = useRef(createThreadStore(data));
@@ -263,7 +263,8 @@ export default function Thread({ data }) {
               btn={<CircleIconButton icon={<MoreHorizontalIcon size={12} />} />}>
 
               <MenuButtonItem
-                left="Reset all"
+                left="Reset"
+                className="text-rs-red"
                 right={<RefreshIcon />}
                 onClick={() => {
                   openAlert(<Alert title="Reset all properties"
@@ -297,6 +298,15 @@ export default function Thread({ data }) {
         <MenuButtonItem
           left={showProperties ? "Hide properties" : "Show properties"}
           right={showProperties ? <ViewOffIcon /> : <ViewIcon />}
+          onClick={() => {
+            setShowProperties(!showProperties)
+          }}
+        />
+        <MenuButtonDivider />
+        <MenuButtonItem
+          className="text-rs-red"
+          left={"Reset"}
+          right={<RefreshIcon />}
           onClick={() => {
             setShowProperties(!showProperties)
           }}
