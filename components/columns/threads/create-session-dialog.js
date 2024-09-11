@@ -8,7 +8,7 @@ import { TextIcon, Menu01Icon } from "@hugeicons/react";
 
 import Dialog, { Input } from "@/components/modal/dialog";
 
-export default function CreateSessionDialog({ name, desc, onConfirm }) {
+export default function CreateSessionDialog({ name, desc, onConfirm, title }) {
   const closeModal = useModalStore((state) => state.close);
 
   const [tName, setTName] = useState(name || "");
@@ -18,7 +18,7 @@ export default function CreateSessionDialog({ name, desc, onConfirm }) {
 
   return (
     <Dialog
-      title={name ? "Edit thread" : "New thread"}
+      title={title ? title : (name ? "Edit thread" : "New thread")}
       header={
         <Input
           name="name"

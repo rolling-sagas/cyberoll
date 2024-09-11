@@ -30,7 +30,7 @@ export const createPropertyStore = (id) =>
 
     resetProperties: async () => {
       const response = await fetch(`/api/session/${id}/property/reset`, {
-        method: "GET",
+        method: "POST",
       });
       const res = await response.json();
       console.log(res)

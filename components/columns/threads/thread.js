@@ -1,10 +1,12 @@
 import toast from "react-hot-toast/headless";
 import { useRef, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
+import CreateSessionDialog from "./create-session-dialog";
 import { createPropertyStore } from "@/components/columns/properties/properties";
 
 const createThreadStore = (data) =>
@@ -16,6 +18,25 @@ const createThreadStore = (data) =>
     loading: "pending",
 
     messages: [],
+
+    copyThread: async (id, name, description) => {
+      const response = await fetch("/api/session/" + id + "/copy", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ data: { name: name, description: description } }),
+      });
+
+      const res = await response.json();
+      if (res.error) {
+        if (res.error.code === "P2002") {
+          res.error.message = "Thread name already exists"
+        }
+        throw res
+      }
+      return res
+    },
 
     listMessages: async () => {
       const response = await fetch(`/api/session/${data.id}/message`);
@@ -182,6 +203,7 @@ import {
   AiChat02Icon,
   BubbleChatAddIcon,
   CheckmarkCircle01Icon,
+  Copy01Icon,
   MoreHorizontalIcon,
   RefreshIcon,
   ViewIcon,
@@ -197,6 +219,7 @@ import CircleIconButton from "@/components/buttons/circle-icon-button";
 import { ItemMenuButton, MenuButtonDivider, MenuButtonItem } from "@/components/buttons/menu-button";
 
 export default function Thread({ data }) {
+  const router = useRouter();
   const storeRef = useRef(createThreadStore(data));
 
   const openModal = useModalStore((state) => state.open);
@@ -211,6 +234,8 @@ export default function Thread({ data }) {
     storeRef.current,
     (state) => state.resetMessages,
   );
+
+  const copyThread = useStore(storeRef.current, (state) => state.copyThread);
 
 
   const newMessage = useStore(storeRef.current, (state) => state.newMessage);
@@ -316,6 +341,36 @@ export default function Thread({ data }) {
             setShowProperties(!showProperties)
           }}
         />
+        <MenuButtonItem
+          left="Duplicate"
+          right={<Copy01Icon />}
+          onClick={() => {
+            openModal(
+              <CreateSessionDialog
+                title="Duplicate thread"
+                name={data.name + " copy"}
+                desc={data.description}
+                onConfirm={async (name, desc) => {
+                  const tid = toast.loading("Duplicating thread...", {
+                    icon: <Spinner />,
+                  });
+                  try {
+                    const res = await copyThread(data.id, name, desc);
+                    router.push("/th/" + res.id)
+                    toast.success("Thread duplicated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } catch (e) {
+                    alertError(e)
+                  } finally {
+                    toast.dismiss(tid);
+                  }
+                }}
+              />,
+            );
+          }}
+        />
         <MenuButtonDivider />
         <MenuButtonItem
           className="text-rs-red"
@@ -332,7 +387,7 @@ export default function Thread({ data }) {
                 try {
                   await resetMessages();
                 } catch (e) {
-                  console.error(e)
+                  alertError(e)
                 } finally {
                   await listMessages();
                   scrollToBottom()
@@ -572,6 +627,13 @@ export default function Thread({ data }) {
                       });
                     }
                   } catch (e) {
+                    if (e.error) {
+                      openAlert(<Alert title="Oops, something wrong!"
+                        message={e.error.message + ", please try it later."}
+                        confirmLabel="OK" />)
+                    } else {
+                      alertError(e)
+                    }
                   }
                 }}
               />,

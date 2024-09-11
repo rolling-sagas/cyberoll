@@ -61,8 +61,8 @@ const useThreadsStore = create((set) => ({
       },
       body: JSON.stringify({ data: { name: name, description: description } }),
     });
-    const thread = await response.json();
-    console.log(thread);
+    const res = await response.json();
+    return res
   },
 
   deleteThread: async (id) => {
@@ -89,6 +89,7 @@ const CreateThread = function() {
         onClick={() =>
           openModal(
             <CreateSessionDialog
+              title="Copy thread"
               onConfirm={async (name, desc) => {
                 const tid = toast.loading("Creating thread...", {
                   icon: <Spinner />,
@@ -213,8 +214,8 @@ export default function Threads() {
                   const tid = toast.loading("Duplicating thread...", {
                     icon: <Spinner />,
                   });
-                  await copyThread(thread.id, name, desc);
-                  await listThreads();
+                  const res = await copyThread(thread.id, name, desc);
+                  router.push("/th/" + res.id)
                   toast.success("Thread duplicated", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,

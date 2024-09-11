@@ -8,8 +8,6 @@ import {
   Delete01Icon,
   Edit02Icon,
   EnteringGeoFenceIcon,
-  LoginCircle01Icon,
-  PinIcon,
   ThirdBracketIcon,
   UnfoldLessIcon,
   UnfoldMoreIcon,
@@ -26,7 +24,6 @@ import { useState } from "react";
 import MessageContent from "./message-content";
 
 import { ArrayToKeyValue } from "@/components/utils";
-import { MenuSeparator } from "@headlessui/react";
 
 export default function MessageItem({
   message,

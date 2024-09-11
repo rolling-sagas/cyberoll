@@ -108,6 +108,6 @@ export function isKnownError(e) {
     return { message: "JSON parsing error", code: "JSON_PARSING" }
   }
 
-  console.error("unknown error:", e, e.type, e.type)
+  console.error("unknown error:", e, e.type)
   return { message: "Unknown error", code: "UNKNOWN" }
 }

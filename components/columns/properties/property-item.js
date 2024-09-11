@@ -1,6 +1,10 @@
 import dayjs from "dayjs";
 
-import { Copy01Icon, Delete01Icon, Edit02Icon } from "@hugeicons/react";
+import {
+  Copy01Icon, Delete01Icon, Edit02Icon,
+  UnfoldLessIcon,
+  UnfoldMoreIcon,
+} from "@hugeicons/react";
 
 import { ItemMenuButton as MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 import ToolButton from "../threads/tool-button";
@@ -8,12 +12,17 @@ import TypeIcon from "./type-icon";
 
 import Image from "next/image";
 import { getImageUrlById } from "@/components/images/utils";
+import { useState } from "react";
 
 export default function PropertyItem({
   property,
   onUpdateClick,
   onDeleteClick,
 }) {
+
+  const [foldContent, setFoldContent] = useState(property.type === "func"
+    || property.type === "obj")
+
   return (
     <div
       className="grid grid-cols-[48px_auto] px-6 py-3 h-fit
@@ -59,38 +68,40 @@ export default function PropertyItem({
             />
             <div>{JSON.parse(property.value).desc}</div>
           </div>
-        ) : (
+        ) : !foldContent && (
           <div className="whitespace-pre-wrap">{property.value}</div>
-        )}
+        )
+        }
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
-          text-rs-text-tertiary gap-2"
+          text-rs-text-tertiary gap-8 h-9 items-center"
         >
-          <div
-            className="w-9 h-9 flex justify-center 
-            items-center text-rs-text-tertiary"
+          <ToolButton
+            onClick={() => {
+              onUpdateClick();
+            }}
           >
-            <ToolButton
-              onClick={() => {
-                onUpdateClick();
-              }}
-            >
-              <Edit02Icon size={18} strokeWidth={1.5} />
-            </ToolButton>
-          </div>
+            <Edit02Icon size={18} strokeWidth={1.5} />
+          </ToolButton>
 
-          <div
-            className="w-9 h-9 flex justify-center 
-            items-center text-rs-text-tertiary"
+          <ToolButton
+            onClick={() => {
+              navigator.clipboard.writeText(property.value);
+            }}
           >
-            <ToolButton
-              onClick={() => {
-                navigator.clipboard.writeText(property.value);
-              }}
-            >
-              <Copy01Icon size={18} strokeWidth={1.5} />
-            </ToolButton>
-          </div>
+            <Copy01Icon size={18} strokeWidth={1.5} />
+          </ToolButton>
+          <ToolButton
+            onClick={() => {
+              setFoldContent(!foldContent);
+            }}
+          >
+            {foldContent ? (
+              <UnfoldMoreIcon size={18} strokeWidth={1.5} />
+            ) : (
+              <UnfoldLessIcon size={18} strokeWidth={1.5} />
+            )}
+          </ToolButton>
         </div>
       </div>
     </div>
