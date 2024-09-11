@@ -80,8 +80,13 @@ import { Prisma } from '@prisma/client'
 
 export function isKnownError(e) {
   if (e instanceof Prisma.PrismaClientKnownRequestError) {
-    console.warn("prisma error:", e.code, e.message)
-    return { message: "Database error", code: e.code }
+    console.warn("prisma error:", e)
+    return { message: "Database operation error", code: e.code }
+  }
+
+  if (e instanceof Prisma.PrismaClientValidationError) {
+    console.warn("prisma validation error:", e)
+    return { message: "Database validation error", code: "VALIDATION" }
   }
 
   if (e.type === "llm-fetch") {

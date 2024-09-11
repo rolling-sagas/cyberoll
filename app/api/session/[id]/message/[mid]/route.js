@@ -21,13 +21,7 @@ export async function GET(_, { params }) {
     return Response.json(res);
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error get message",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
 
@@ -63,13 +57,7 @@ export async function POST(req, { params }) {
     return Response.json({ ok: true, id: res.id });
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error update message",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json(isKnownError(e), { status: 400 })
   }
 }
 
@@ -130,13 +118,7 @@ export async function DELETE(req, { params }) {
       return Response.json({ ok: true });
     } catch (e) {
       console.log(e.code, e.message);
-      return Response.json(
-        {
-          message: "Error delete message",
-          code: e.code ?? "UNKNOWN",
-        },
-        { status: 400 },
-      );
+      return Response.json({ error: isKnownError(e) }, { status: 400 })
     }
   }
 }

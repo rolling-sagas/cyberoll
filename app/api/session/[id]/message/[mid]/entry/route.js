@@ -35,6 +35,6 @@ export async function POST(req, { params }) {
     return Response.json({ ok: true });
   } catch (e) {
     console.log(e);
-    return Response.json(isKnownError(e), { status: 400 })
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }

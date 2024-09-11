@@ -407,7 +407,7 @@ export default function Thread({ data }) {
   function alertError(e) {
     console.warn("thread error:", e, data.id)
     openAlert(<Alert title="Oops, something wrong!"
-      message={e.error.message + ", please try it later."}
+      message={e.error.message + ", please try again."}
       confirmLabel="OK" />)
   }
 

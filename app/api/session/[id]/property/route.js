@@ -20,13 +20,7 @@ export async function GET(req, { params }) {
     return Response.json(res);
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error list property",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
 
@@ -117,12 +111,6 @@ export async function PUT(req, { params }) {
     return Response.json({ ok: true });
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error create image property",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 400 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }

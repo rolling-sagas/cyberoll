@@ -12,7 +12,7 @@ export async function GET(_, { params }) {
     },);
     return Response.json(res);
   } catch (e) {
-    return Response.json(isKnownError(e), { status: 400 })
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
 
@@ -30,7 +30,7 @@ export async function POST(req, { params }) {
     });
     return Response.json({ ok: true, id: res.id });
   } catch (e) {
-    return Response.json(isKnownError(e), { status: 400 })
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
 
@@ -42,6 +42,6 @@ export async function DELETE(_, { params }) {
     });
     return Response.json({ ok: true });
   } catch (e) {
-    return Response.json(isKnownError(e), { status: 400 })
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
