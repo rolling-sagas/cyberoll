@@ -2,7 +2,7 @@ import prisma from "@/prisma/client";
 
 export const runtime = "edge";
 
-const LIST_LIMIT = 12;
+const LIST_LIMIT = 24;
 
 export async function GET(req) {
   const { limit, skip } = req.nextUrl.searchParams;
@@ -16,10 +16,6 @@ export async function GET(req) {
         _count: {
           select: { messages: true },
         },
-        // messages: {
-        //   take: 2,
-        //   orderBy: { updatedAt: "desc" },
-        // },
       },
       orderBy: { updatedAt: "desc" },
     });
