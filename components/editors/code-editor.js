@@ -25,7 +25,7 @@ export default function CodeEditor({ value, onChange, lang }) {
       extensions={[javascript()]}
       className="rounded-md"
       onChange={onChange}
-      basicSetup={onChange !== undefined ? false : { lineNumbers: false, foldGutter: false }}
+      basicSetup={onChange !== undefined ? true : { lineNumbers: false, foldGutter: false }}
       editable={onChange !== undefined}
       theme={isDark ? "dark" : "light"}
     />;
@@ -35,7 +35,7 @@ export default function CodeEditor({ value, onChange, lang }) {
     return <CodeMirror value={value}
       extensions={[json()]}
       className="rounded-md"
-      basicSetup={onChange !== undefined ? false : { lineNumbers: false, foldGutter: false }}
+      basicSetup={onChange !== undefined ? true : { lineNumbers: false, foldGutter: false }}
       onChange={onChange}
       editable={onChange !== undefined}
       theme={isDark ? "dark" : "light"}
@@ -45,7 +45,7 @@ export default function CodeEditor({ value, onChange, lang }) {
   return <CodeMirror value={value}
     extensions={[]}
     onChange={onChange}
-    basicSetup={onChange !== undefined ? false : { lineNumbers: false, foldGutter: false }}
+    basicSetup={onChange !== undefined ? true : { lineNumbers: false, foldGutter: false }}
     editable={onChange !== undefined}
     theme={isDark ? "dark" : "light"}
   />;
