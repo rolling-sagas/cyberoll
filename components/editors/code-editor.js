@@ -25,22 +25,27 @@ export default function CodeEditor({ value, onChange, lang }) {
   if (lang === "js") {
     return <CodeMirror value={value}
       extensions={[javascript()]}
+      className="rounded-md"
       onChange={onChange}
-      theme={isDark ? tokyoNight : tokyoNightDay}
+      editable={onChange !== undefined}
+      theme={isDark ? "dark" : "light"}
     />;
   }
 
   if (lang === "json") {
     return <CodeMirror value={value}
       extensions={[json()]}
+      className="rounded-md"
       onChange={onChange}
-      theme={isDark ? tokyoNight : tokyoNightDay}
+      editable={onChange !== undefined}
+      theme={isDark ? "dark" : "light"}
     />
   }
 
   return <CodeMirror value={value}
     extensions={[]}
     onChange={onChange}
-    theme={isDark ? tokyoNight : tokyoNightDay}
+    editable={onChange !== undefined}
+    theme={isDark ? "dark" : "light"}
   />;
 }

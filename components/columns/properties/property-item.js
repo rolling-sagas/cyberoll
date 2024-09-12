@@ -1,5 +1,10 @@
 import dayjs from "dayjs";
 
+
+import dynamic from "next/dynamic"
+const CodeEditor = dynamic(() => import('@/components/editors/code-editor'),
+  { ssr: false })
+
 import {
   Copy01Icon, Delete01Icon, Edit02Icon,
   UnfoldLessIcon,
@@ -25,8 +30,8 @@ export default function PropertyItem({
 
   return (
     <div
-      className="grid grid-cols-[48px_auto] px-6 py-3 h-fit
-      grid-rows-[21px_19px_max-content_max-conent] w-full border-b"
+      className="grid grid-cols-[48px_minmax(0,1fr)] px-6 py-3 h-fit
+      grid-rows-[fit-content_19px_max-content_max-conent] w-full border-b"
     >
       <div
         className="pt-1 relative col-start-1 
@@ -69,9 +74,13 @@ export default function PropertyItem({
             <div>{JSON.parse(property.value).desc}</div>
           </div>
         ) : (
-          !foldContent && (
-            <div className="whitespace-pre-wrap">{property.value}</div>
-          )
+          property.type !== "obj" && property.type !== "func" ?
+            (
+              !foldContent && <div className="whitespace-pre-wrap">{property.value}</div>
+            ) : (
+              !foldContent && <CodeEditor value={property.value}
+                lang={property.type === "obj" ? "json" : "js"} />
+            )
         )}
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 

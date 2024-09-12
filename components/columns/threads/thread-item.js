@@ -44,7 +44,7 @@ export default function ThreadItem({
 }) {
   return (
     <div
-      className="grid grid-cols-[48px_auto] px-6 py-3 cursor-pointer
+      className="grid grid-cols-[48px_minmax(0,1fr)] px-6 py-3 cursor-pointer
       grid-rows-[21px_19px_max-content_max-conent] w-full border-b"
       onClick={(evt) => {
         evt.preventDefault();

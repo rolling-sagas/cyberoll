@@ -23,8 +23,13 @@ export const createPropertyStore = (id) =>
 
     listProperties: async () => {
       const response = await fetch(`/api/session/${id}/property`);
-      const properties = await response.json();
-      set({ properties, loading: "loaded" });
+      const res = await response.json();
+
+      if (res.error) {
+        throw res.error
+      } else {
+        set({ properties: res, loading: "loaded" });
+      }
       // console.log("messages", data.id, messages);
     },
 
@@ -33,7 +38,9 @@ export const createPropertyStore = (id) =>
         method: "POST",
       });
       const res = await response.json();
-      console.log(res)
+      if (res.error) {
+        throw res.error
+      }
     },
 
     newImageProperty: async (name, imageDesc, image) => {
@@ -47,7 +54,9 @@ export const createPropertyStore = (id) =>
         body: formData,
       });
       const res = await response.json();
-      // console.log(res);
+      if (res.error) {
+        throw res.error
+      }
     },
 
     newProperty: async (name, type, value) => {
@@ -59,7 +68,9 @@ export const createPropertyStore = (id) =>
         body: JSON.stringify({ data: { name, type, value, initial: value } }),
       });
       const res = await response.json();
-      // console.log(res);
+      if (res.error) {
+        throw res.error
+      }
     },
 
     updateImageProperty: async (oldName, oldValue, name, desc, file,
@@ -83,7 +94,9 @@ export const createPropertyStore = (id) =>
         body: formData,
       });
       const res = await response.json();
-      console.log(res);
+      if (res.error) {
+        throw res.error
+      }
     },
 
     updateProperty: async (oldName, name, type, value, initial) => {
@@ -100,7 +113,9 @@ export const createPropertyStore = (id) =>
         },
       );
       const res = await response.json();
-      // console.log(message);
+      if (res.error) {
+        throw res.error
+      }
     },
 
     deleteProperty: async (name) => {
@@ -111,7 +126,9 @@ export const createPropertyStore = (id) =>
         },
       });
       const res = await response.json();
-      // console.log(res);
+      if (res.error) {
+        throw res.error
+      }
     },
 
     deletePropertiesBelow: async (pid) => {
@@ -124,8 +141,10 @@ export const createPropertyStore = (id) =>
           },
         },
       );
-      // const res = await response.json();
-      console.log(response);
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
     },
   }));
 
