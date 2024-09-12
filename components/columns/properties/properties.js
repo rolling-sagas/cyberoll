@@ -65,7 +65,12 @@ export const createPropertyStore = (id) =>
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ data: { name, type, value, initial: value } }),
+        body: JSON.stringify({
+          data: {
+            name, type,
+            value: value, initial: value
+          }
+        }),
       });
       const res = await response.json();
       if (res.error) {
@@ -256,11 +261,11 @@ export default function Properties({ storeRef }) {
           onClick={() => {
             openModal(
               <CreatePropertyDialog
-                onConfirm={async (name, type, value, imageDesc, image) => {
+                onConfirm={async (name, type, value, initial) => {
                   const tid = toast.loading("Creating property...", {
                     icon: <Spinner />,
                   });
-                  await newProperty(name, type, value, imageDesc, image);
+                  await newProperty(name, type, initial);
                   await listProperties();
                   toast.success("Property created", {
                     id: tid,
