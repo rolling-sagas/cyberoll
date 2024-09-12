@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getImageUrlById } from "@/components/images/utils";
 
-import { ArrayToKeyValue } from "@/components/utils";
+import { ArrayToKeyValue, isNumber } from "@/components/utils";
 
 function parseMarkdown(content) {
   const reg = /\*\*(.+?)\*\*/g;
@@ -24,29 +24,25 @@ if (typeof String.prototype.parseFunction != "function") {
 }
 
 export default function MessageContent({ content, props, onCall }) {
+  function callFunction(functionName, context) {
+    const funcProp = props.find(
+      (prop) => prop.name === functionName && prop.type === "func",
+    );
 
-  function callFunction(functionName, content) {
-    switch (functionName) {
-      case "send":
-        onSend({ data: [content] });
-        break;
-      default:
-        // console.log("props", props.properties);
-        // const [name, difficulty, label] = args;
-        const funcProp = props.find(
-          (prop) => prop.name === functionName && prop.type === "func",
-        );
+    if (!funcProp) {
+      console.warn("Function not found:", functionName);
+      return;
+    }
 
-        if (!funcProp) {
-          console.warn("Function not found:", functionName);
-          return;
-        }
+    const func = funcProp.value.parseFunction();
+    const res = func(context, ArrayToKeyValue(props));
 
-        const func = funcProp.value.parseFunction();
-        const res = func(content, ArrayToKeyValue(props));
-
-        onCall(res)
-        break;
+    if (res.nextCall) {
+      const funcName = res.nextCall;
+      delete res.nextCall;
+      callFunction(funcName, res)
+    } else {
+      onCall(res)
     }
   }
 
@@ -54,6 +50,9 @@ export default function MessageContent({ content, props, onCall }) {
     switch (content.type) {
       case "md":
         if (extra && extra.click) {
+          if (isNumber(extra.index)) {
+            content.index = extra.index + 1
+          }
           return (
             <li
               key={key}
@@ -107,7 +106,7 @@ export default function MessageContent({ content, props, onCall }) {
         return (
           <ul key={key} className="flex flex-col gap-2">
             {content.items.map((v, i) =>
-              parse(v, key + "-" + i, { click: content.click }))}
+              parse(v, key + "-" + i, { click: content.click, index: i }))}
           </ul>
         );
     }

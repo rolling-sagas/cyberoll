@@ -16,6 +16,7 @@ import ThreadItem from "./thread-item";
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import CreateSessionDialog from "./create-session-dialog";
+import { parseError } from "@/components/ui-utils";
 
 const useThreadsStore = create((set) => ({
   threads: [],
@@ -25,8 +26,12 @@ const useThreadsStore = create((set) => ({
 
   listThreads: async () => {
     const response = await fetch("/api/session");
-    const threads = await response.json();
-    set({ threads, loading: "loaded" });
+    const res = await response.json();
+    if (res.error) {
+      throw res.error
+    } else {
+      set({ threads: res, loading: "loaded" });
+    }
   },
 
   newThread: async (name, description) => {
@@ -37,8 +42,10 @@ const useThreadsStore = create((set) => ({
       },
       body: JSON.stringify({ data: { name: name, description: description } }),
     });
-    const thread = await response.json();
-    console.log(thread);
+    const res = await response.json();
+    if (res.error) {
+      throw res.error
+    }
   },
 
   updateThread: async (id, name, description) => {
@@ -49,8 +56,11 @@ const useThreadsStore = create((set) => ({
       },
       body: JSON.stringify({ data: { name: name, description: description } }),
     });
-    const thread = await response.json();
-    console.log(thread);
+
+    const res = await response.json();
+    if (res.error) {
+      throw res.error
+    }
   },
 
   copyThread: async (id, name, description) => {
@@ -62,7 +72,9 @@ const useThreadsStore = create((set) => ({
       body: JSON.stringify({ data: { name: name, description: description } }),
     });
     const res = await response.json();
-    return res
+    if (res.error) {
+      throw res.error
+    }
   },
 
   deleteThread: async (id) => {
@@ -73,7 +85,9 @@ const useThreadsStore = create((set) => ({
       },
     });
     const res = await response.json();
-    console.log(res);
+    if (res.error) {
+      throw res.error
+    }
   },
 }));
 
@@ -82,6 +96,14 @@ const CreateThread = function() {
   const newThread = useThreadsStore((state) => state.newThread);
   const listThreads = useThreadsStore((state) => state.listThreads);
 
+  const openAlert = useAlertStore((state) => state.open);
+
+  function AlertError(message) {
+    openAlert(<Alert title="Oops, something wrong!"
+      message={message}
+      confirmLabel="OK" />)
+  }
+
   return (
     <div className="w-full px-6 border-b">
       <div
@@ -89,17 +111,23 @@ const CreateThread = function() {
         onClick={() =>
           openModal(
             <CreateSessionDialog
-              title="Copy thread"
+              title={"Create thread"}
               onConfirm={async (name, desc) => {
                 const tid = toast.loading("Creating thread...", {
                   icon: <Spinner />,
                 });
-                await newThread(name, desc);
-                await listThreads();
-                toast.success("Thread created", {
-                  id: tid,
-                  icon: <CheckmarkCircle01Icon />,
-                });
+                try {
+                  await newThread(name, desc);
+                  toast.success("Thread created", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                } catch (e) {
+                  toast.dismiss(tid)
+                  AlertError("Can't create the thread: " + parseError(e))
+                } finally {
+                  await listThreads();
+                }
               }}
             />,
           )
@@ -129,7 +157,14 @@ export default function Threads() {
   const threads = useThreadsStore((state) => state.threads);
 
   const openModal = useModalStore((state) => state.open);
+
   const openAlert = useAlertStore((state) => state.open);
+
+  function AlertError(message) {
+    openAlert(<Alert title="Oops, something wrong!"
+      message={message}
+      confirmLabel="OK" />)
+  }
 
   useEffect(() => {
     listThreads();
@@ -195,12 +230,18 @@ export default function Threads() {
                   const tid = toast.loading("Updating thread...", {
                     icon: <Spinner />,
                   });
-                  await updateThread(thread.id, name, desc);
-                  await listThreads();
-                  toast.success("Thread updated", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  try {
+                    await updateThread(thread.id, name, desc);
+                    toast.success("Thread updated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } catch (e) {
+                    AlertError("Can't update the thread: " + parseError(e))
+                  } finally {
+                    await listThreads();
+                    toast.dismiss(tid)
+                  }
                 }}
               />,
             );
@@ -208,18 +249,25 @@ export default function Threads() {
           onDuplicateClick={() => {
             openModal(
               <CreateSessionDialog
+                title="Duplicate thread"
                 name={thread.name + " copy"}
                 desc={thread.description}
                 onConfirm={async (name, desc) => {
                   const tid = toast.loading("Duplicating thread...", {
                     icon: <Spinner />,
                   });
-                  const res = await copyThread(thread.id, name, desc);
-                  router.push("/th/" + res.id)
-                  toast.success("Thread duplicated", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  try {
+                    const res = await copyThread(thread.id, name, desc);
+                    router.push("/th/" + res.id)
+                    toast.success("Thread duplicated", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } catch (e) {
+                    AlertError("Can't dulicate the thread: " + parseError(e))
+                  } finally {
+                    toast.dismiss(tid)
+                  }
                 }}
               />,
             );
@@ -234,12 +282,19 @@ export default function Threads() {
                   const tid = toast.loading("Deleting thread...", {
                     icon: <Spinner />,
                   });
-                  await deleteThread(thread.id);
-                  await listThreads();
-                  toast.success("Thread deleted", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  try {
+
+                    await deleteThread(thread.id);
+                    toast.success("Thread deleted", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } catch (e) {
+                    AlertError("Can't delete the thread: " + parseError(e))
+                  } finally {
+                    await listThreads();
+                    toast.dismiss(tid)
+                  }
                 }}
               />,
             );

@@ -68,10 +68,11 @@ export default function PropertyItem({
             />
             <div>{JSON.parse(property.value).desc}</div>
           </div>
-        ) : !foldContent && (
-          <div className="whitespace-pre-wrap">{property.value}</div>
-        )
-        }
+        ) : (
+          !foldContent && (
+            <div className="whitespace-pre-wrap">{property.value}</div>
+          )
+        )}
         <div
           className="flex flex-row mt-[6px] -ml-2 -mb-1 
           text-rs-text-tertiary gap-8 h-9 items-center"

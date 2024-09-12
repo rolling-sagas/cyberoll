@@ -30,18 +30,19 @@ const createThreadStore = (data) =>
 
       const res = await response.json();
       if (res.error) {
-        if (res.error.code === "P2002") {
-          res.error.message = "Thread name already exists"
-        }
-        throw res
+        throw res.error
       }
-      return res
     },
 
     listMessages: async () => {
       const response = await fetch(`/api/session/${data.id}/message`);
-      const messages = await response.json();
-      set({ messages, loading: "loaded" });
+      const res = await response.json();
+
+      if (res.error) {
+        throw res.error
+      } else {
+        set({ messages: res, loading: "loaded" });
+      }
     },
 
     resetMessages: async () => {
@@ -49,19 +50,56 @@ const createThreadStore = (data) =>
         method: "POST",
       });
       const res = await response.json();
-      console.log(res)
+      if (res.error) {
+        throw res.error
+      }
     },
 
-    newMessage: async (role, content) => {
+    resetThread: async () => {
+      const response = await fetch(`/api/session/${data.id}/reset`, {
+        method: "POST",
+      });
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
+    },
+
+    newMessage: async (role, raw) => {
+      const content = { data: [{ type: "md", value: raw }] }
+      const newMessages = [{
+        role: role, content:
+          role === "user" || role === "assistant" ?
+            JSON.stringify(content) : raw
+      }]
+
+      set({
+        messages: [...newMessages.map((m, idx) => {
+          m.id = idx + 512
+          return m
+        }), ...get().messages]
+      })
+
       const response = await fetch(`/api/session/${data.id}/message`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify({ data: { role: role, content: content } }),
+        body: JSON.stringify({
+          data: {
+            role: role,
+            content: role === "user" || role === "assistant" ?
+              JSON.stringify(content) : raw
+          }
+        }),
       });
-      const message = await response.json();
-      return message
+
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
+
+      return res
       // TODO: maybe add the new message to list directly
       // console.log(message);
     },
@@ -79,8 +117,13 @@ const createThreadStore = (data) =>
           }),
         },
       );
-      const message = await response.json();
-      return message
+
+      const res = await response.json();
+
+      if (res.error) {
+        throw res.error
+      }
+      return res
       // TODO: maybe update the message from list directly
       // console.log(message);
     },
@@ -96,6 +139,10 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
+
+      if (res.error) {
+        throw res.error
+      }
       return res
     },
 
@@ -110,9 +157,10 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
       return res
-      // TODO: maybe remove the message from list directly
-      // console.log(res);
     },
 
     deleteMessagesBelow: async (mid) => {
@@ -126,8 +174,10 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
-      // TODO: maybe remove the messages from list directly
-      console.log(response);
+      if (res.error) {
+        throw res.error
+      }
+      return res
     },
 
     callFunction: async (funcName, content) => {
@@ -142,6 +192,9 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
       return res
     },
 
@@ -167,17 +220,10 @@ const createThreadStore = (data) =>
         }),
       });
 
-      if (!response.ok) {
-        try {
-          const res = await response.json();
-          throw res
-        } catch (e) {
-          console.warn("unknown error", e)
-          throw e
-        }
-      }
       const res = await response.json();
-      // TODO: maybe add the generated message from list directly
+      if (res.error) {
+        throw res.error
+      }
       return res
     },
 
@@ -193,9 +239,10 @@ const createThreadStore = (data) =>
         },
       );
       const res = await response.json();
-      // TODO: maybe update the generated message from list directly
+      if (res.error) {
+        throw res.error
+      }
       return res
-      // console.log(res);
     },
   }));
 
@@ -217,6 +264,7 @@ import { useColumnsStore } from "@/components/columns/pinned-columns";
 import Properties from "../properties/properties";
 import CircleIconButton from "@/components/buttons/circle-icon-button";
 import { ItemMenuButton, MenuButtonDivider, MenuButtonItem } from "@/components/buttons/menu-button";
+import { parseError } from "@/components/ui-utils";
 
 export default function Thread({ data }) {
   const router = useRouter();
@@ -225,14 +273,20 @@ export default function Thread({ data }) {
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
+  function AlertError(message) {
+    openAlert(<Alert title="Oops, something wrong!"
+      message={message}
+      confirmLabel="OK" />)
+  }
+
   const listMessages = useStore(
     storeRef.current,
     (state) => state.listMessages,
   );
 
-  const resetMessages = useStore(
+  const resetThread = useStore(
     storeRef.current,
-    (state) => state.resetMessages,
+    (state) => state.resetThread,
   );
 
   const copyThread = useStore(storeRef.current, (state) => state.copyThread);
@@ -274,8 +328,7 @@ export default function Thread({ data }) {
   const propsStore = useRef(createPropertyStore(data.id))
 
   const properties = useStore(propsStore.current, (state) => state.properties);
-  // const updatePropertiesValue = useStore(propsStore.current, (state) =>
-  //  state.updatePropertiesValue);
+
   const listProperties = useStore(propsStore.current, (state) =>
     state.listProperties);
 
@@ -283,6 +336,11 @@ export default function Thread({ data }) {
     (state) => state.resetProperties)
 
   const bottom = useRef(null)
+
+  function scrollToBottom() {
+    if (bottom.current) setTimeout(() =>
+      bottom.current.scrollIntoView({ behavior: 'smooth' }), 10)
+  }
 
   const [showProperties, setShowProperties] = useState(true)
 
@@ -313,12 +371,18 @@ export default function Thread({ data }) {
                       const tid = toast.loading("Reseting properties...", {
                         icon: <Spinner />,
                       });
-                      await resetProperties();
-                      await listProperties();
-                      toast.success("Properties updated", {
-                        id: tid,
-                        icon: <CheckmarkCircle01Icon />,
-                      });
+                      try {
+                        await resetProperties();
+                        toast.success("Properties updated", {
+                          id: tid,
+                          icon: <CheckmarkCircle01Icon />,
+                        });
+                      } catch (e) {
+                        toast.dismiss(tid)
+                        AlertError("Can't reset: " + parseError(e))
+                      } finally {
+                        await listProperties();
+                      }
                     }}
                   />)
                 }}
@@ -354,17 +418,18 @@ export default function Thread({ data }) {
                   const tid = toast.loading("Duplicating thread...", {
                     icon: <Spinner />,
                   });
+
                   try {
                     const res = await copyThread(data.id, name, desc);
-                    router.push("/th/" + res.id)
                     toast.success("Thread duplicated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
+                    router.push("/th/" + res.id)
                   } catch (e) {
-                    alertError(e)
+                    toast.dismiss(tid)
+                    AlertError("Can't duplicate the thread: " + parseError(e))
                   } finally {
-                    toast.dismiss(tid);
                   }
                 }}
               />,
@@ -377,25 +442,28 @@ export default function Thread({ data }) {
           left={"Reset"}
           right={<RefreshIcon />}
           onClick={() => {
-            openAlert(<Alert title="Reset messages"
-              message="Remove all messages after the entry point"
+            openAlert(<Alert title="Reset thread"
+              message={"Remove all messages after the entry point, " +
+                "and set all properties to initial value."}
               confirmLabel="OK"
               onConfirm={async () => {
-                const tid = toast.loading("Reseting messages...", {
+                const tid = toast.loading("Reseting thread...", {
                   icon: <Spinner />,
                 });
                 try {
-                  await resetMessages();
+                  await resetThread();
+                  toast.success("Thread reset", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
                 } catch (e) {
-                  alertError(e)
+                  toast.dismiss(tid)
+                  AlertError("Can't reset thread: " + parseError(e))
                 } finally {
                   await listMessages();
+                  await listProperties();
                   scrollToBottom()
                 }
-                toast.success("Messages reset", {
-                  id: tid,
-                  icon: <CheckmarkCircle01Icon />,
-                });
               }}
             />)
           }}
@@ -403,18 +471,6 @@ export default function Thread({ data }) {
       </ItemMenuButton>
     })
   }, [addColumn, rmColumn, showProperties, data.id]);
-
-  function alertError(e) {
-    console.warn("thread error:", e, data.id)
-    openAlert(<Alert title="Oops, something wrong!"
-      message={e.error.message + ", please try again."}
-      confirmLabel="OK" />)
-  }
-
-  function scrollToBottom() {
-    if (bottom.current) setTimeout(() =>
-      bottom.current.scrollIntoView({ behavior: 'smooth' }), 10)
-  }
 
   if (loading === "pending") {
     return (
@@ -440,21 +496,31 @@ export default function Thread({ data }) {
                   const tid = toast.loading("Creating message...", {
                     icon: <Spinner />,
                   });
-                  await newMessage(role, content);
-                  console.log(role, content, autoGen);
-                  if (autoGen) {
-                    await generate();
+                  try {
+                    await newMessage(role, content);
+                    scrollToBottom()
+                    if (autoGen) {
+                      toast.loading("Generating...", {
+                        id: tid,
+                        icon: <Spinner />,
+                      });
+                      await generate();
+                      toast.success("Message generated", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    } else {
+                      toast.success("Message created", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    }
+                  } catch (e) {
+                    toast.dismiss(tid)
+                    AlertError("Can't create message: " + parseError(e))
+                  } finally {
                     await listMessages();
-                    toast.success("Message generated", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                  } else {
-                    await listMessages();
-                    toast.success("Message created", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
+                    scrollToBottom()
                   }
                 }}
               />,
@@ -477,6 +543,7 @@ export default function Thread({ data }) {
             props={properties}
 
             onCall={async (c) => {
+              scrollToBottom()
               const tid = toast.loading("Generating...", {
                 icon: <Spinner />,
               });
@@ -632,7 +699,7 @@ export default function Thread({ data }) {
                         message={e.error.message + ", please try it later."}
                         confirmLabel="OK" />)
                     } else {
-                      alertError(e)
+                      AlertError(e)
                     }
                   }
                 }}
@@ -659,7 +726,7 @@ export default function Thread({ data }) {
               try {
                 await generate();
               } catch (e) {
-                alertError(e)
+                AlertError(e)
               } finally {
                 toast.loading("Fetching messages", {
                   id: tid,

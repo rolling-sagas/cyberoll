@@ -18,7 +18,7 @@ export async function POST(req, { params }) {
       orderBy: { createdAt: "desc" },
     });
 
-    const reset = await prisma.$transaction(res
+    await prisma.$transaction(res
       .filter(r => r.initial !== r.value)
       .map(r => {
         return prisma.property.update({
@@ -28,7 +28,6 @@ export async function POST(req, { params }) {
           }
         })
       }))
-    console.log(reset)
     return Response.json({ ok: true });
   } catch (e) {
     console.log(e)

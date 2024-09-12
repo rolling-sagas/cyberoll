@@ -271,7 +271,8 @@ export default function Properties({ storeRef }) {
   return (
     <div className="flex flex-col h-full">
       <CreateProperty store={storeRef.current} />
-      <div className="flex flex-col flex-1 scroll-smooth overflow-y-auto">
+      <div className="flex flex-col flex-1 scroll-smooth overflow-y-auto 
+        overflow-x-hidden">
         {properties.map((prop) => (
           <PropertyItem
             key={prop.name}
