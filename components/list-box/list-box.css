@@ -1,6 +1,6 @@
 .lb-button {
   @apply border rounded-xl p-2 data-[open]:bg-rs-background-hover capitalize
-  flex flex-row items-center w-full;
+  flex flex-row items-center w-full disabled:text-rs-text-secondary;
 }
 
 .lb-options {

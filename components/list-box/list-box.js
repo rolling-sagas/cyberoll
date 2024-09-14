@@ -4,11 +4,13 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions }
 import "./list-box.css"
 import { ArrowDown01Icon, Tick01Icon } from '@hugeicons/react'
 
-export default function ListBox({ list, value, onChange }) {
+export default function ListBox({ list, value, onChange, disabled = false }) {
   return (
-    <Listbox value={value} onChange={onChange}>
+    <Listbox value={value} onChange={onChange} disabled={disabled}>
       <ListboxButton className="lb-button">
-        <span className="flex-1">{(list.find(item => item.value === value)).label}</span>
+        <span className="flex-1">
+          {(list.find(item => item.value === value)).label}
+        </span>
         <ArrowDown01Icon size={20} />
       </ListboxButton>
       <ListboxOptions anchor="bottom" transition className="z-20 lb-options">

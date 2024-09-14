@@ -1,5 +1,6 @@
 import prisma from "@/prisma/client";
 export const runtime = "edge";
+import { isKnownError } from "@/app/api/common";
 
 import { Upload } from "@/components/images/cloudflare_upload";
 
@@ -98,6 +99,7 @@ export async function PUT(req, { params }) {
           create: {
             name: name,
             type: "img",
+            initial: JSON.stringify({ id: imageId, desc }),
             value: JSON.stringify({ id: imageId, desc }),
           },
         },

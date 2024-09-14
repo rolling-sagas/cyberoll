@@ -27,7 +27,7 @@ const dataTypes = [
   { key: "img", label: "image", value: "img" }
 ];
 
-const TypeSwitch = function({ value, onChange }) {
+const TypeSwitch = function({ value, disabled, onChange }) {
   return (
     <div
       className="grid grid-cols-[48px_auto] 
@@ -45,7 +45,8 @@ const TypeSwitch = function({ value, onChange }) {
         </div>
       </div>
       <div className="col-start-2 mt-1">
-        <ListBox list={dataTypes} value={value} onChange={onChange} />
+        <ListBox list={dataTypes} value={value} onChange={onChange}
+          disabled={disabled} />
       </div>
     </div>
   );
@@ -98,9 +99,11 @@ export default function CreatePropertyDialog({ name, type, value, initial,
         <div className="flex flex-col gap-2">
           <TypeSwitch value={pType} onChange={(value) => {
             setValue("")
+            setInitial("")
+
             setWidth(value === "obj" || value === "func" ? 720 : 560)
             setType(value)
-          }} />
+          }} disabled={name && name !== ""} />
 
           {pType === "str" && (
             <Input

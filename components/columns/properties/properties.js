@@ -12,6 +12,7 @@ import CreatePropertyDialog from "./create-property-dialog";
 import { toast } from "react-hot-toast/headless";
 import { Add01Icon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import PropertyItem from "./property-item";
+import { parseError } from "@/components/ui-utils";
 
 export const createPropertyStore = (id) =>
   createStore((set) => ({
@@ -98,6 +99,7 @@ export const createPropertyStore = (id) =>
         method: "PUT",
         body: formData,
       });
+
       const res = await response.json();
       if (res.error) {
         throw res.error
@@ -161,6 +163,14 @@ function CreateProperty({ store }) {
 
   const listProperties = useStore(store, (state) => state.listProperties);
 
+  const openAlert = useAlertStore((state) => state.open);
+
+  function AlertError(message) {
+    openAlert(<Alert title="Oops, something wrong!"
+      message={message}
+      confirmLabel="OK" />)
+  }
+
   return (
     <div className="w-full px-6 border-b">
       <div
@@ -172,23 +182,36 @@ function CreateProperty({ store }) {
                 const tid = toast.loading("Creating property...", {
                   icon: <Spinner />,
                 });
-                await newProperty(name, type, initial);
-                await listProperties();
-                toast.success("Property created", {
-                  id: tid,
-                  icon: <CheckmarkCircle01Icon />,
-                });
+                try {
+                  await newProperty(name, type, initial);
+                  toast.success("Property created", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                } catch (e) {
+                  toast.dismiss(tid);
+                  AlertError("Can't create the property: " + parseError(e))
+                } finally {
+                  await listProperties();
+                }
               }}
+
               onImageConfirm={async (name, imageDesc, image) => {
                 const tid = toast.loading("Creating image property...", {
                   icon: <Spinner />,
                 });
-                await newImageProperty(name, imageDesc, image);
-                await listProperties();
-                toast.success("Image property created", {
-                  id: tid,
-                  icon: <CheckmarkCircle01Icon />,
-                });
+                try {
+                  await newImageProperty(name, imageDesc, image);
+                  toast.success("Image property created", {
+                    id: tid,
+                    icon: <CheckmarkCircle01Icon />,
+                  });
+                } catch (e) {
+                  toast.dismiss(tid);
+                  AlertError("Can't create the property: " + parseError(e))
+                } finally {
+                  await listProperties();
+                }
               }}
             />,
           )

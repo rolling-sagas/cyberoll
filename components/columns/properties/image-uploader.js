@@ -4,19 +4,14 @@ import { Image01Icon } from "@hugeicons/react";
 import Image from "next/image";
 
 export default function ImageUploader({ value, onChange }) {
-  const [pValue, setValue] = useState(JSON.parse(value))
-
-  useEffect(() => {
-    // console.log(pValue)
-    setValue(JSON.parse(value))
-  }, [value])
+  const [pValue, setValue] = useState(value ? JSON.parse(value) : null)
 
   const imageInput = useRef(null);
 
   const [localUrl, setLocalUrl] = useState(null)
   const [localFile, setLocalFile] = useState(null);
 
-  const url = pValue
+  const url = pValue && pValue.id
     ? `https://imagedelivery.net/8VoaBhaig6kffmvxoWxkaw/${pValue.id}/public`
     : null;
 
@@ -25,7 +20,7 @@ export default function ImageUploader({ value, onChange }) {
       <Input
         name="Image"
         placeholder="Input image description here"
-        value={pValue.desc}
+        value={pValue ? pValue.desc : ""}
         icon={<Image01Icon size={20} className="text-rs-text-secondary" />}
         onChange={(value) => {
           setValue({ ...pValue, desc: value });
@@ -52,7 +47,7 @@ export default function ImageUploader({ value, onChange }) {
           setLocalUrl(src);
           setLocalFile(file);
 
-          onChange(pValue.desc, file);
+          onChange(pValue ? pValue.desc : "", file);
         }}
       />
 
