@@ -75,6 +75,8 @@ const useThreadsStore = create((set) => ({
     if (res.error) {
       throw res.error
     }
+
+    return res
   },
 
   deleteThread: async (id) => {
