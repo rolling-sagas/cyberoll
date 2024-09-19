@@ -288,24 +288,36 @@ export default function Properties({ storeRef }) {
                   const tid = toast.loading("Creating property...", {
                     icon: <Spinner />,
                   });
-                  await newProperty(name, type, initial);
-                  await listProperties();
-                  toast.success("Property created", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  try {
+                    await newProperty(name, type, initial);
+                    toast.success("Property created", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } catch (e) {
+                    toast.dismiss(tid);
+                    AlertError("Can't create the property: " + parseError(e))
+                  } finally {
+                    await listProperties();
+                  }
                 }}
 
                 onImageConfirm={async (name, imageDesc, image) => {
                   const tid = toast.loading("Creating image property...", {
                     icon: <Spinner />,
                   });
-                  await newImageProperty(name, imageDesc, image);
-                  await listProperties();
-                  toast.success("Image property created", {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
+                  try {
+                    await newImageProperty(name, imageDesc, image);
+                    toast.success("Image property created", {
+                      id: tid,
+                      icon: <CheckmarkCircle01Icon />,
+                    });
+                  } catch (e) {
+                    toast.dismiss(tid);
+                    AlertError("Can't create the property: " + parseError(e))
+                  } finally {
+                    await listProperties();
+                  }
                 }}
               />,
             );
@@ -335,12 +347,18 @@ export default function Properties({ storeRef }) {
                     const tid = toast.loading("Deleting property...", {
                       icon: <Spinner />,
                     });
-                    await deleteProperty(prop.name);
-                    await listProperties();
-                    toast.success("Property deleted", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
+                    try {
+                      await deleteProperty(prop.name);
+                      toast.success("Property deleted", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    } catch (e) {
+                      toast.dismiss(tid);
+                      AlertError("Can't delete the property: " + parseError(e))
+                    } finally {
+                      await listProperties();
+                    }
                   }}
                 />,
               );
@@ -356,30 +374,43 @@ export default function Properties({ storeRef }) {
                     const tid = toast.loading("Updating property...", {
                       icon: <Spinner />,
                     });
-                    await updateProperty(
-                      prop.name,
-                      name,
-                      type,
-                      value,
-                      initial,
-                    );
-                    await listProperties();
-                    toast.success("Property updated", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
+                    try {
+                      await updateProperty(
+                        prop.name,
+                        name,
+                        type,
+                        value,
+                        initial,
+                      );
+                      toast.success("Property updated", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    } catch (e) {
+                      toast.dismiss(tid);
+                      AlertError("Can't update the property: " + parseError(e))
+                    } finally {
+                      await listProperties();
+                    }
                   }}
                   onImageConfirm={async (name, imageDesc, image, isInitial) => {
                     const tid = toast.loading("Updating image property...", {
                       icon: <Spinner />,
                     });
-                    await updateImageProperty(prop.name, prop.value, name,
-                      imageDesc, image, isInitial);
-                    await listProperties();
-                    toast.success("Image property updated", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
+                    try {
+                      await updateImageProperty(prop.name, prop.value, name,
+                        imageDesc, image, isInitial);
+                      toast.success("Property updated", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    } catch (e) {
+                      toast.dismiss(tid);
+                      AlertError("Can't update the image property: " +
+                        parseError(e))
+                    } finally {
+                      await listProperties();
+                    }
                   }}
                 />,
               );
