@@ -3,7 +3,10 @@
 // Query D1 using Prisma ORM: 
 // https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm/
 
+// Create the local D1
 // pnpm wrangler d1 migrations create rsDb __YOUR_TABLE_NAME__
+// OR restore the EMPTY database from migrations:
+// pnpm wrangler d1 migrations apply rsDb
 
 // pnpm npx prisma migrate diff \
 //   --from-local-d1 \

@@ -59,6 +59,7 @@ async function generateWithOpenAIAPI(messages, cache) {
 
 async function generateWithAzureAPI(messages, cache) {
   const url = `https://gateway.ai.cloudflare.com/v1/${process.env.CLOUDFLARE_ACCOUNT_ID}/rollingsagas/azure-openai/dreameopenai04/gpt-4/chat/completions?api-version=2024-02-01`;
+  console.log("key:", process.env.AZURE_OPENAI_API_KEY)
 
   const chatCompletion = await fetch(url, {
     method: "POST",

@@ -22,7 +22,7 @@ export async function POST(req, { params }) {
       orderBy: { id: "asc" },
     });
 
-    // console.log("context:", res)
+    //  console.log("context:", res)
 
     let newMessages = []
     if (messages && messages.length > 0) {
@@ -33,7 +33,7 @@ export async function POST(req, { params }) {
       res.push(...newMessages)
     }
 
-    console.log("new messages:", newMessages)
+    // console.log("new messages:", newMessages)
 
     const props = await prisma.property.findMany({
       skip: 0, // always start from 0
