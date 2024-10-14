@@ -12,7 +12,7 @@ import CreatePropertyDialog from "./create-property-dialog";
 import { toast } from "react-hot-toast/headless";
 import { Add01Icon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import PropertyItem from "./property-item";
-import { parseError } from "@/components/ui-utils";
+import { parseError } from "@/components/utils";
 
 export const createPropertyStore = (id) =>
   createStore((set) => ({

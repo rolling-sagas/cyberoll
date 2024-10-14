@@ -264,7 +264,7 @@ import { useColumnsStore } from "@/components/columns/pinned-columns";
 import Properties from "../properties/properties";
 import CircleIconButton from "@/components/buttons/circle-icon-button";
 import { ItemMenuButton, MenuButtonDivider, MenuButtonItem } from "@/components/buttons/menu-button";
-import { parseError } from "@/components/ui-utils";
+import { parseError } from "@/components/utils";
 
 export default function Thread({ data }) {
   const router = useRouter();

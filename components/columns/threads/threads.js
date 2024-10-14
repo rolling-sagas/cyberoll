@@ -16,7 +16,7 @@ import ThreadItem from "./thread-item";
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import CreateSessionDialog from "./create-session-dialog";
-import { parseError } from "@/components/ui-utils";
+import { parseError } from "@/components/utils";
 
 const useThreadsStore = create((set) => ({
   threads: [],

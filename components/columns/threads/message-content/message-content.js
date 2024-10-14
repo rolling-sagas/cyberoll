@@ -37,15 +37,16 @@ export default function MessageContent({ content, props, onCall }) {
     const func = funcProp.value.parseFunction();
     const res = func(context, ArrayToKeyValue(props));
 
-    if (res.nextCall) {
-      const funcName = res.nextCall;
-      delete res.nextCall;
+    if (res.next) {
+      const funcName = res.next;
+      delete res.next;
       callFunction(funcName, res)
     } else {
       onCall(res)
     }
   }
 
+  // parse content based on type
   function parse(content, key, extra) {
     switch (content.type) {
       case "md":

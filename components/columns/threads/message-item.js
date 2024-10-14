@@ -21,7 +21,7 @@ import { useAlertStore } from "@/components/modal/alert-placeholder";
 import Alert from "@/components/modal/alert";
 
 import { useState } from "react";
-import MessageContent from "./message-content";
+import MessageContent from "./message-content/message-content";
 
 import { ArrayToKeyValue } from "@/components/utils";
 
