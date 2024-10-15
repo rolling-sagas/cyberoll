@@ -22,8 +22,6 @@ export async function POST(req, { params }) {
       orderBy: { id: "asc" },
     });
 
-    //  console.log("context:", res)
-
     let newMessages = []
     if (messages && messages.length > 0) {
       newMessages = messages.map(msg => (
@@ -42,8 +40,7 @@ export async function POST(req, { params }) {
       orderBy: { createdAt: "desc" },
     })
 
-    // console.log("props:", props)
-
+    // update properties if any
     if (update && update.length > 0) {
       props.map((prop) => {
         const found = update.find(up => up.name === prop.name)

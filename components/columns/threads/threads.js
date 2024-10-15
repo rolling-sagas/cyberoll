@@ -63,13 +63,16 @@ const useThreadsStore = create((set) => ({
     }
   },
 
-  copyThread: async (id, name, description) => {
-    const response = await fetch("/api/session/" + id + "/copy", {
+  copyThread: async (id, name, description, reset = true) => {
+    const url = "/api/session/" + id + "/copy"
+    const search = new URLSearchParams({ reset: reset }).toString();
+    console.log(url + "?" + search)
+    const response = await fetch(url + "?" + search, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify({ data: { name: name, description: description } }),
+      body: JSON.stringify({ data: { name, description } }),
     });
     const res = await response.json();
     if (res.error) {
@@ -172,9 +175,36 @@ export default function Threads() {
     listThreads();
   }, [listThreads]);
 
-  const onEnterThread = (thread) => {
+  const onEditThread = (thread) => {
     router.push("/th/" + thread.id)
   };
+
+  const onPlayThread = (thread) => {
+    openModal(
+      <CreateSessionDialog
+        title="Play from this template"
+        name={thread.name + " copy"}
+        desc={thread.description}
+        onConfirm={async (name, desc) => {
+          const tid = toast.loading("Duplicating from the template", {
+            icon: <Spinner />,
+          });
+          try {
+            const res = await copyThread(thread.id, name, desc, true);
+            router.push("/th/" + res.id)
+            toast.success("Thread duplicated", {
+              id: tid,
+              icon: <CheckmarkCircle01Icon />,
+            });
+          } catch (e) {
+            AlertError("Can't dulicate the thread: " + parseError(e))
+          } finally {
+            toast.dismiss(tid)
+          }
+        }}
+      />,
+    );
+  }
 
   if (loading === "pending") {
     return (
@@ -222,7 +252,8 @@ export default function Threads() {
         <ThreadItem
           key={thread.id}
           thread={thread}
-          onEnterThread={onEnterThread}
+          onPlayThread={onPlayThread}
+          onEditClick={onEditThread}
           onUpdateClick={() => {
             openModal(
               <CreateSessionDialog
@@ -259,7 +290,7 @@ export default function Threads() {
                     icon: <Spinner />,
                   });
                   try {
-                    const res = await copyThread(thread.id, name, desc);
+                    const res = await copyThread(thread.id, name, desc, false);
                     router.push("/th/" + res.id)
                     toast.success("Thread duplicated", {
                       id: tid,

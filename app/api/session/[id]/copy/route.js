@@ -6,16 +6,43 @@ const LIST_LIMIT = 512;
 
 export async function POST(req, { params }) {
   const sid = parseInt(params.id);
-  console.log("update id", params.id);
+  console.log("duplicate this thread", params.id);
+  // get the 'refresh' search params
+  let reset = req.nextUrl.searchParams.get('reset')
+  if (reset && reset === "true") {
+    console.log("reset the template")
+    reset = true
+  } else {
+    reset = false
+  }
+
   try {
     const { data } = await req.json();
 
-    let messages = await prisma.message.findMany({
-      skip: 0, // always start from 0
-      take: LIST_LIMIT,
-      where: { sessionId: sid },
-      orderBy: { id: "asc" },
-    });
+    let messages = []
+    if (reset) {
+      const prevEntry = await prisma.message.findFirst({
+        where: { sessionId: sid, entry: true },
+        orderBy: { createdAt: "asc" },
+      });
+
+      if (!prevEntry) {
+        throw { type: "not-found", message: "Entry point not found" }
+      }
+
+
+      messages = await prisma.message.findMany({
+        take: LIST_LIMIT,
+        where: { sessionId: sid, id: { lte: prevEntry.id } },
+        orderBy: { id: "asc" },
+      });
+    } else {
+      messages = await prisma.message.findMany({
+        take: LIST_LIMIT,
+        where: { sessionId: sid },
+        orderBy: { id: "asc" },
+      });
+    }
 
     messages = messages.map(msg => {
       delete msg.id
@@ -32,6 +59,9 @@ export async function POST(req, { params }) {
 
     props = props.map(prop => {
       delete prop.sessionId
+      if (reset) {
+        prop.value = prop.initial
+      }
       return prop
     })
 

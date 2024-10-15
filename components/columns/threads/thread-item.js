@@ -27,6 +27,7 @@ import {
   BubbleChatNotificationIcon,
   Copy01Icon,
   Delete01Icon,
+  Edit01Icon,
   Edit02Icon,
   Message02Icon,
   Share01Icon,
@@ -37,9 +38,10 @@ import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button
 
 export default function ThreadItem({
   thread,
-  onEnterThread,
+  onPlayThread,
   onUpdateClick,
   onDeleteClick,
+  onEditClick,
   onDuplicateClick
 }) {
   return (
@@ -48,7 +50,7 @@ export default function ThreadItem({
       grid-rows-[21px_19px_max-content_max-conent] w-full border-b"
       onClick={(evt) => {
         evt.preventDefault();
-        if (onEnterThread) onEnterThread(thread);
+        if (onPlayThread) onPlayThread(thread);
       }}
     >
       <div
@@ -71,6 +73,14 @@ export default function ThreadItem({
           </div>
           <div className="flex-0">
             <ItemMenuButton>
+              <MenuButtonItem
+                left="Edit"
+                right={<Edit01Icon size={20} />}
+                onClick={(evt) => {
+                  evt.stopPropagation();
+                  if (onEditClick) onEditClick(thread);
+                }}
+              />
               <MenuButtonItem
                 left="Duplicate"
                 right={<Copy01Icon size={20} />}

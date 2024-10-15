@@ -549,6 +549,7 @@ export default function Thread({ data }) {
               });
 
               try {
+                // console.log("update", c.update)
                 const res = await generate([{
                   role: "user",
                   content: { data: c.send }
