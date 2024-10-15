@@ -18,14 +18,14 @@ export async function POST(req, { params }) {
     const res = await prisma.message.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
-      where: { sessionId: id },
+      where: { chapterId: id },
       orderBy: { id: "asc" },
     });
 
     let newMessages = []
     if (messages && messages.length > 0) {
       newMessages = messages.map(msg => (
-        { sessionId: id, role: msg.role, content: msg.content }
+        { chapterId: id, role: msg.role, content: msg.content }
       ))
 
       res.push(...newMessages)
@@ -36,7 +36,7 @@ export async function POST(req, { params }) {
     const props = await prisma.property.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
-      where: { sessionId: id },
+      where: { chapterId: id },
       orderBy: { createdAt: "desc" },
     })
 
@@ -78,7 +78,7 @@ export async function POST(req, { params }) {
 
     await prisma.message.createMany({
       data: [...newMessages, {
-        sessionId: id,
+        chapterId: id,
         role: message.role,
         content: message.content,
       }]
@@ -87,7 +87,7 @@ export async function POST(req, { params }) {
     if (update && update.length > 0) {
       await prisma.$transaction(update.map(u => {
         return prisma.property.update({
-          where: { name_sessionId: { sessionId: id, name: u.name } },
+          where: { name_chapterId: { chapterId: id, name: u.name } },
           data: {
             value: String(u.value) // TODO:value type check
           }

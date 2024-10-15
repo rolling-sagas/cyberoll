@@ -1,14 +1,14 @@
 import prisma from "@/prisma/client";
 export const runtime = "edge";
 
-export async function POST(req, { params }) {
+export async function POST(_, { params }) {
   const sid = parseInt(params.id);
   const mid = parseInt(params.mid);
 
   try {
     // find existing message which entry field is true
     const prevEntries = await prisma.message.findMany({
-      where: { sessionId: sid, entry: true },
+      where: { chapterId: sid, entry: true },
       orderBy: { createdAt: "asc" },
     });
 
@@ -29,8 +29,8 @@ export async function POST(req, { params }) {
       })
     )
 
-    const res = await prisma.$transaction(transactions)
-    console.log("update res:", res)
+    await prisma.$transaction(transactions)
+    // console.log("update res:", res)
 
     return Response.json({ ok: true });
   } catch (e) {

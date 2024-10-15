@@ -14,7 +14,7 @@ export async function POST(req, { params }) {
       skip: skip ? parseInt(skip) : 0,
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
-      where: { sessionId: id },
+      where: { chapterId: id },
       orderBy: { createdAt: "desc" },
     });
 
@@ -22,7 +22,7 @@ export async function POST(req, { params }) {
       .filter(r => r.initial !== r.value)
       .map(r => {
         return prisma.property.update({
-          where: { name_sessionId: { sessionId: id, name: r.name } },
+          where: { name_chapterId: { chapterId: id, name: r.name } },
           data: {
             value: r.initial,
           }

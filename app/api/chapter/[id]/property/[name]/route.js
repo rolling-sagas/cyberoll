@@ -8,7 +8,7 @@ export async function GET(_, { params }) {
 
   try {
     const res = await prisma.property.findUnique({
-      where: { name_sessionId: { name: name, sessionId: sid } }
+      where: { name_chapterId: { name: name, chapterId: sid } }
     });
     if (!res) {
       return Response.json(
@@ -32,13 +32,13 @@ export async function POST(req, { params }) {
   try {
     const { data, include } = await req.json();
     console.log("update:", sid, name, data);
-    const res = await prisma.session.update({
+    const res = await prisma.chapter.update({
       where: { id: sid },
       data: {
         properties: {
           update: {
             data: data,
-            where: { name_sessionId: { name: name, sessionId: sid } },
+            where: { name_chapterId: { name: name, chapterId: sid } },
           },
         },
         updatedAt: new Date(),
@@ -65,12 +65,12 @@ export async function DELETE(req, { params }) {
   const name = params.name;
   const sid = parseInt(params.id);
   try {
-    await prisma.session.update({
+    await prisma.chapter.update({
       where: { id: sid },
       data: {
         properties: {
           delete: {
-            name_sessionId: { name: name, sessionId: sid }
+            name_chapterId: { name: name, chapterId: sid }
           },
         },
         updatedAt: new Date(),
@@ -108,7 +108,7 @@ export async function PUT(req, { params }) {
 
     if (file) {
       const uploadForm = new FormData();
-      uploadForm.append("file", file, "session-image-" + name);
+      uploadForm.append("file", file, "chapter-image-" + name);
 
       const upload = await Upload(uploadForm);
       if (!upload.success && upload.errors) {
@@ -130,14 +130,14 @@ export async function PUT(req, { params }) {
     }
     // const { data, include } = await req.json();
     // // console.log("new message", data.role, data.content);
-    const res = await prisma.session.update({
+    const res = await prisma.chapter.update({
       where: { id: sid },
       data: {
         properties: {
           update: {
             data: update,
             where: {
-              name_sessionId: { name: name, sessionId: sid }
+              name_chapterId: { name: name, chapterId: sid }
             },
           },
         },

@@ -11,7 +11,7 @@ export async function POST(req, { params }) {
   try {
     // find existing message which entry field is true
     const prevEntry = await prisma.message.findFirst({
-      where: { sessionId: sid, entry: true },
+      where: { chapterId: sid, entry: true },
       orderBy: { createdAt: "asc" },
     });
 
@@ -21,7 +21,7 @@ export async function POST(req, { params }) {
 
     const props = await prisma.property.findMany({
       take: LIST_LIMIT,
-      where: { sessionId: sid },
+      where: { chapterId: sid },
       orderBy: { createdAt: "desc" },
     });
 
@@ -30,14 +30,14 @@ export async function POST(req, { params }) {
         .filter(r => r.initial !== r.value)
         .map(r => {
           return prisma.property.update({
-            where: { name_sessionId: { sessionId: sid, name: r.name } },
+            where: { name_chapterId: { chapterId: sid, name: r.name } },
             data: {
               value: r.initial,
             }
           })
         }),
       prisma.message.deleteMany({
-        where: { sessionId: sid, id: { gt: prevEntry.id } }
+        where: { chapterId: sid, id: { gt: prevEntry.id } }
       })
     ]
 

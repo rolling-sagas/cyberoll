@@ -22,7 +22,7 @@ export async function POST(req, { params }) {
       skip: skip ? parseInt(skip) : 0,
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
-      where: { AND: [{ sessionId: id }, { id: { lt: mid } }] },
+      where: { AND: [{ chapterId: id }, { id: { lt: mid } }] },
       orderBy: { createdAt: "asc" },
     });
 
@@ -30,7 +30,7 @@ export async function POST(req, { params }) {
     const props = await prisma.property.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
-      where: { sessionId: id },
+      where: { chapterId: id },
       orderBy: { createdAt: "desc" },
     })
 

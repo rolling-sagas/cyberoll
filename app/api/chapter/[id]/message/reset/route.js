@@ -10,7 +10,7 @@ export async function POST(req, { params }) {
   try {
     // find existing message which entry field is true
     const prevEntry = await prisma.message.findFirst({
-      where: { sessionId: sid, entry: true },
+      where: { chapterId: sid, entry: true },
       orderBy: { createdAt: "asc" },
     });
 
@@ -19,7 +19,7 @@ export async function POST(req, { params }) {
     }
 
     const res = await prisma.message.deleteMany({
-      where: { sessionId: sid, id: { gt: prevEntry.id } }
+      where: { chapterId: sid, id: { gt: prevEntry.id } }
     })
     console.log("delete result", res)
 

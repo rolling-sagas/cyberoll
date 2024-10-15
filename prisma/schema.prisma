@@ -29,46 +29,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model System {
-  id       Int    @id @default(autoincrement())
-  name     String @unique
-  template String
-
-  Stories Story[]
-}
-
-model Rules {
-  id       Int    @id @default(autoincrement())
-  template String
-
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId Int
-}
-
-model Chapter {
-  id       Int     @id @default(autoincrement())
-  name     String
-  template String
-  rules    Rules[]
-
-  Story    Story?  @relation(fields: [storyId], references: [id])
-  storyId  Int?
-}
-
-model Story {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
-  description String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  system   System? @relation(fields: [systemId], references: [id], onDelete: SetNull)
-  systemId Int?
-
-  chapters Chapter[]
-}
-
 model Message {
   id      Int    @id @default(autoincrement())
   role    String
@@ -80,8 +40,8 @@ model Message {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId Int
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId Int
 }
 
 model Property {
@@ -93,12 +53,12 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId Int
-  @@id ([name, sessionId])
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId Int
+  @@id ([name, chapterId])
 }
 
-model Session {
+model Chapter {
   id Int @id @default(autoincrement())
 
   name        String  @unique

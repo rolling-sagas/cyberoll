@@ -13,7 +13,7 @@ export async function GET(req, { params }) {
       skip: skip ? parseInt(skip) : 0,
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
-      where: { sessionId: id },
+      where: { chapterId: id },
       orderBy: { id: "desc" },
     });
     return Response.json(res);
@@ -27,7 +27,7 @@ export async function POST(req, { params }) {
   try {
     const { data, include } = await req.json();
     // console.log("new message", data.role, data.content);
-    const res = await prisma.session.update({
+    const res = await prisma.chapter.update({
       where: { id: id },
       data: {
         messages: {
@@ -41,7 +41,7 @@ export async function POST(req, { params }) {
       },
     });
     // const res = await prisma.message.create({
-    //   data: { ...data, sessionId: id },
+    //   data: { ...data, chapterId: id },
     //   include: include || null,
     // });
     return Response.json({ ok: true, id: res.id });

@@ -36,9 +36,9 @@ import {
 import ToolButton from "./tool-button";
 import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
 
-export default function ThreadItem({
-  thread,
-  onPlayThread,
+export default function ChapterItem({
+  chapter,
+  onPlayChapter,
   onUpdateClick,
   onDeleteClick,
   onEditClick,
@@ -50,14 +50,14 @@ export default function ThreadItem({
       grid-rows-[21px_19px_max-content_max-conent] w-full border-b"
       onClick={(evt) => {
         evt.preventDefault();
-        if (onPlayThread) onPlayThread(thread);
+        if (onPlayChapter) onPlayChapter(chapter);
       }}
     >
       <div
         className="pt-1 relative col-start-1 
         row-span-2 text-rs-text-secondary"
       >
-        {thread._count.messages === 0 ? (
+        {chapter._count.messages === 0 ? (
           <BubbleChatNotificationIcon variant="twotone" strokeWidth={1} />
         ) : (
           <BubbleChatNotificationIcon strokeWidth={1} />
@@ -66,9 +66,9 @@ export default function ThreadItem({
       <div className="col-start-2 rows-start-1">
         <div className="flex flex-row items-start">
           <div className="flex-1">
-            <span className="font-semibold">{thread.name}</span>
+            <span className="font-semibold">{chapter.name}</span>
             <span className="text-rs-text-secondary ml-2">
-              {dayjs(thread.updatedAt).fromNow(true)}
+              {dayjs(chapter.updatedAt).fromNow(true)}
             </span>
           </div>
           <div className="flex-0">
@@ -78,7 +78,7 @@ export default function ThreadItem({
                 right={<Edit01Icon size={20} />}
                 onClick={(evt) => {
                   evt.stopPropagation();
-                  if (onEditClick) onEditClick(thread);
+                  if (onEditClick) onEditClick(chapter);
                 }}
               />
               <MenuButtonItem
@@ -103,8 +103,8 @@ export default function ThreadItem({
         </div>
       </div>
       <div className="col-start-2 rows-start-2 row-span-2">
-        {thread.description ? (
-          <div>{thread.description}</div>
+        {chapter.description ? (
+          <div>{chapter.description}</div>
         ) : (
           <div className="text-rs-text-secondary">Empty description</div>
         )}
@@ -115,9 +115,9 @@ export default function ThreadItem({
           <div className="w-9 h-9 flex justify-center items-center">
             <ToolButton>
               <Message02Icon size={18} strokeWidth={1.5} />
-              {thread._count.messages > 0 && (
+              {chapter._count.messages > 0 && (
                 <span className="text-[13px] ml-1 font-light">
-                  {thread._count.messages}
+                  {chapter._count.messages}
                 </span>
               )}
             </ToolButton>

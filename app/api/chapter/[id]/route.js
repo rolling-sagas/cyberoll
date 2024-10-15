@@ -7,7 +7,7 @@ export async function GET(_, { params }) {
   const id = parseInt(params.id);
 
   try {
-    const res = await prisma.session.findUniqueOrThrow({
+    const res = await prisma.chapter.findUniqueOrThrow({
       where: { id },
     },);
     return Response.json(res);
@@ -21,7 +21,7 @@ export async function POST(req, { params }) {
   console.log("update id", params.id);
   try {
     const { data, include } = await req.json();
-    const res = await prisma.session.update({
+    const res = await prisma.chapter.update({
       data: data,
       include: include || null,
       where: {
@@ -37,7 +37,7 @@ export async function POST(req, { params }) {
 export async function DELETE(_, { params }) {
   const id = parseInt(params.id);
   try {
-    await prisma.session.delete({
+    await prisma.chapter.delete({
       where: { id: id },
     });
     return Response.json({ ok: true });

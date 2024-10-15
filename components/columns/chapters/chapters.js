@@ -12,30 +12,30 @@ import Alert from "@/components/modal/alert";
 
 import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
-import ThreadItem from "./thread-item";
+import ChapterItem from "./chapter-item";
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
-import CreateSessionDialog from "./create-session-dialog";
+import CreateChapterDialog from "./create-chapter-dialog";
 import { parseError } from "@/components/utils";
 
-const useThreadsStore = create((set) => ({
-  threads: [],
+const useChaptersStore = create((set) => ({
+  chapters: [],
   errors: [],
 
   loading: "pending",
 
-  listThreads: async () => {
-    const response = await fetch("/api/session");
+  listChapters: async () => {
+    const response = await fetch("/api/chapter");
     const res = await response.json();
     if (res.error) {
       throw res.error
     } else {
-      set({ threads: res, loading: "loaded" });
+      set({ chapters: res, loading: "loaded" });
     }
   },
 
-  newThread: async (name, description) => {
-    const response = await fetch("/api/session", {
+  newChapter: async (name, description) => {
+    const response = await fetch("/api/chapter", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -48,8 +48,8 @@ const useThreadsStore = create((set) => ({
     }
   },
 
-  updateThread: async (id, name, description) => {
-    const response = await fetch("/api/session/" + id, {
+  updateChapter: async (id, name, description) => {
+    const response = await fetch("/api/chapter/" + id, {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -63,8 +63,8 @@ const useThreadsStore = create((set) => ({
     }
   },
 
-  copyThread: async (id, name, description, reset = true) => {
-    const url = "/api/session/" + id + "/copy"
+  copyChapter: async (id, name, description, reset = true) => {
+    const url = "/api/chapter/" + id + "/copy"
     const search = new URLSearchParams({ reset: reset }).toString();
     console.log(url + "?" + search)
     const response = await fetch(url + "?" + search, {
@@ -82,8 +82,8 @@ const useThreadsStore = create((set) => ({
     return res
   },
 
-  deleteThread: async (id) => {
-    const response = await fetch("/api/session/" + id, {
+  deleteChapter: async (id) => {
+    const response = await fetch("/api/chapter/" + id, {
       method: "DELETE",
       headers: {
         "Content-type": "application/json",
@@ -96,10 +96,10 @@ const useThreadsStore = create((set) => ({
   },
 }));
 
-const CreateThread = function() {
+const CreateChapter = function() {
   const openModal = useModalStore((state) => state.open);
-  const newThread = useThreadsStore((state) => state.newThread);
-  const listThreads = useThreadsStore((state) => state.listThreads);
+  const newChapter = useChaptersStore((state) => state.newChapter);
+  const listChapters = useChaptersStore((state) => state.listChapters);
 
   const openAlert = useAlertStore((state) => state.open);
 
@@ -115,23 +115,23 @@ const CreateThread = function() {
         className="flex flex-row py-4 items-center"
         onClick={() =>
           openModal(
-            <CreateSessionDialog
-              title={"Create thread"}
+            <CreateChapterDialog
+              title={"Create chapter"}
               onConfirm={async (name, desc) => {
-                const tid = toast.loading("Creating thread...", {
+                const tid = toast.loading("Creating chapter...", {
                   icon: <Spinner />,
                 });
                 try {
-                  await newThread(name, desc);
-                  toast.success("Thread created", {
+                  await newChapter(name, desc);
+                  toast.success("Chapter created", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
                 } catch (e) {
                   toast.dismiss(tid)
-                  AlertError("Can't create the thread: " + parseError(e))
+                  AlertError("Can't create the chapter: " + parseError(e))
                 } finally {
-                  await listThreads();
+                  await listChapters();
                 }
               }}
             />,
@@ -140,7 +140,7 @@ const CreateThread = function() {
       >
         <BubbleChatAddIcon className="text-rs-text-secondary" strokeWidth={1} />
         <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
-          Start a thread
+          Start a chapter
         </div>
         <BaseButton label="Create" />
       </div>
@@ -148,18 +148,18 @@ const CreateThread = function() {
   );
 };
 
-export default function Threads() {
+export default function Chapters() {
   const router = useRouter()
 
-  const loading = useThreadsStore((state) => state.loading);
+  const loading = useChaptersStore((state) => state.loading);
 
-  const listThreads = useThreadsStore((state) => state.listThreads);
-  const newThread = useThreadsStore((state) => state.newThread);
-  const copyThread = useThreadsStore((state) => state.copyThread);
-  const updateThread = useThreadsStore((state) => state.updateThread);
-  const deleteThread = useThreadsStore((state) => state.deleteThread);
+  const listChapters = useChaptersStore((state) => state.listChapters);
+  const newChapter = useChaptersStore((state) => state.newChapter);
+  const copyChapter = useChaptersStore((state) => state.copyChapter);
+  const updateChapter = useChaptersStore((state) => state.updateChapter);
+  const deleteChapter = useChaptersStore((state) => state.deleteChapter);
 
-  const threads = useThreadsStore((state) => state.threads);
+  const chapters = useChaptersStore((state) => state.chapters);
 
   const openModal = useModalStore((state) => state.open);
 
@@ -172,32 +172,32 @@ export default function Threads() {
   }
 
   useEffect(() => {
-    listThreads();
-  }, [listThreads]);
+    listChapters();
+  }, [listChapters]);
 
-  const onEditThread = (thread) => {
-    router.push("/th/" + thread.id)
+  const onEditChapter = (chapter) => {
+    router.push("/th/" + chapter.id)
   };
 
-  const onPlayThread = (thread) => {
+  const onPlayChapter = (chapter) => {
     openModal(
-      <CreateSessionDialog
+      <CreateChapterDialog
         title="Play from this template"
-        name={thread.name + " copy"}
-        desc={thread.description}
+        name={chapter.name + " copy"}
+        desc={chapter.description}
         onConfirm={async (name, desc) => {
           const tid = toast.loading("Duplicating from the template", {
             icon: <Spinner />,
           });
           try {
-            const res = await copyThread(thread.id, name, desc, true);
+            const res = await copyChapter(chapter.id, name, desc, true);
             router.push("/th/" + res.id)
-            toast.success("Thread duplicated", {
+            toast.success("Chapter duplicated", {
               id: tid,
               icon: <CheckmarkCircle01Icon />,
             });
           } catch (e) {
-            AlertError("Can't dulicate the thread: " + parseError(e))
+            AlertError("Can't dulicate the chapter: " + parseError(e))
           } finally {
             toast.dismiss(tid)
           }
@@ -214,25 +214,25 @@ export default function Threads() {
     );
   }
 
-  if (threads.length === 0) {
+  if (chapters.length === 0) {
     return (
       <div className="flex flex-col w-full h-full items-center justify-center">
         <div className="text-rs-text-secondary text-[16px]">
-          No thread here.
+          No chapter here.
         </div>
         <BaseButton
           label="Create"
           className="mt-2"
           onClick={() => {
             openModal(
-              <CreateSessionDialog
+              <CreateChapterDialog
                 onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Creating thread...", {
+                  const tid = toast.loading("Creating chapter...", {
                     icon: <Spinner />,
                   });
-                  await newThread(name, desc);
-                  await listThreads();
-                  toast.success("Thread created", {
+                  await newChapter(name, desc);
+                  await listChapters();
+                  toast.success("Chapter created", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
@@ -247,32 +247,32 @@ export default function Threads() {
 
   return (
     <>
-      <CreateThread />
-      {threads.map((thread) => (
-        <ThreadItem
-          key={thread.id}
-          thread={thread}
-          onPlayThread={onPlayThread}
-          onEditClick={onEditThread}
+      <CreateChapter />
+      {chapters.map((chapter) => (
+        <ChapterItem
+          key={chapter.id}
+          chapter={chapter}
+          onPlayChapter={onPlayChapter}
+          onEditClick={onEditChapter}
           onUpdateClick={() => {
             openModal(
-              <CreateSessionDialog
-                name={thread.name}
-                desc={thread.description}
+              <CreateChapterDialog
+                name={chapter.name}
+                desc={chapter.description}
                 onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Updating thread...", {
+                  const tid = toast.loading("Updating chapter...", {
                     icon: <Spinner />,
                   });
                   try {
-                    await updateThread(thread.id, name, desc);
-                    toast.success("Thread updated", {
+                    await updateChapter(chapter.id, name, desc);
+                    toast.success("Chapter updated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
                   } catch (e) {
-                    AlertError("Can't update the thread: " + parseError(e))
+                    AlertError("Can't update the chapter: " + parseError(e))
                   } finally {
-                    await listThreads();
+                    await listChapters();
                     toast.dismiss(tid)
                   }
                 }}
@@ -281,23 +281,23 @@ export default function Threads() {
           }}
           onDuplicateClick={() => {
             openModal(
-              <CreateSessionDialog
-                title="Duplicate thread"
-                name={thread.name + " copy"}
-                desc={thread.description}
+              <CreateChapterDialog
+                title="Duplicate chapter"
+                name={chapter.name + " copy"}
+                desc={chapter.description}
                 onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Duplicating thread...", {
+                  const tid = toast.loading("Duplicating chapter...", {
                     icon: <Spinner />,
                   });
                   try {
-                    const res = await copyThread(thread.id, name, desc, false);
+                    const res = await copyChapter(chapter.id, name, desc, false);
                     router.push("/th/" + res.id)
-                    toast.success("Thread duplicated", {
+                    toast.success("Chapter duplicated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
                   } catch (e) {
-                    AlertError("Can't dulicate the thread: " + parseError(e))
+                    AlertError("Can't dulicate the chapter: " + parseError(e))
                   } finally {
                     toast.dismiss(tid)
                   }
@@ -308,24 +308,24 @@ export default function Threads() {
           onDeleteClick={async () => {
             openAlert(
               <Alert
-                title="Delete thread?"
-                message="If you delete this thread, 
+                title="Delete chapter?"
+                message="If you delete this chapter, 
                 you won't be able to restore it."
                 onConfirm={async () => {
-                  const tid = toast.loading("Deleting thread...", {
+                  const tid = toast.loading("Deleting chapter...", {
                     icon: <Spinner />,
                   });
                   try {
 
-                    await deleteThread(thread.id);
-                    toast.success("Thread deleted", {
+                    await deleteChapter(chapter.id);
+                    toast.success("Chapter deleted", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
                   } catch (e) {
-                    AlertError("Can't delete the thread: " + parseError(e))
+                    AlertError("Can't delete the chapter: " + parseError(e))
                   } finally {
-                    await listThreads();
+                    await listChapters();
                     toast.dismiss(tid)
                   }
                 }}

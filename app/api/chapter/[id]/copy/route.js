@@ -22,7 +22,7 @@ export async function POST(req, { params }) {
     let messages = []
     if (reset) {
       const prevEntry = await prisma.message.findFirst({
-        where: { sessionId: sid, entry: true },
+        where: { chapterId: sid, entry: true },
         orderBy: { createdAt: "asc" },
       });
 
@@ -33,39 +33,39 @@ export async function POST(req, { params }) {
 
       messages = await prisma.message.findMany({
         take: LIST_LIMIT,
-        where: { sessionId: sid, id: { lte: prevEntry.id } },
+        where: { chapterId: sid, id: { lte: prevEntry.id } },
         orderBy: { id: "asc" },
       });
     } else {
       messages = await prisma.message.findMany({
         take: LIST_LIMIT,
-        where: { sessionId: sid },
+        where: { chapterId: sid },
         orderBy: { id: "asc" },
       });
     }
 
     messages = messages.map(msg => {
       delete msg.id
-      delete msg.sessionId
+      delete msg.chapterId
       return msg
     })
 
     let props = await prisma.property.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
-      where: { sessionId: sid },
+      where: { chapterId: sid },
       orderBy: { createdAt: "desc" },
     })
 
     props = props.map(prop => {
-      delete prop.sessionId
+      delete prop.chapterId
       if (reset) {
         prop.value = prop.initial
       }
       return prop
     })
 
-    const sess = await prisma.session.create({
+    const sess = await prisma.chapter.create({
       data: {
         ...data,
         messages: {

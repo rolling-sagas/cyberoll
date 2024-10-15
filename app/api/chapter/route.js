@@ -9,7 +9,7 @@ export async function GET(req) {
   const { limit, skip } = req.nextUrl.searchParams;
 
   try {
-    const res = await prisma.session.findMany({
+    const res = await prisma.chapter.findMany({
       skip: skip ? parseInt(skip) : 0,
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
@@ -30,7 +30,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const { data, include } = await req.json();
-    const res = await prisma.session.create({
+    const res = await prisma.chapter.create({
       data: data,
       include: include,
     });

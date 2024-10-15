@@ -31,7 +31,7 @@ export async function POST(req, { params }) {
   // console.log("update id", sid, id);
   try {
     const { data, include } = await req.json();
-    const res = await prisma.session.update({
+    const res = await prisma.chapter.update({
       where: { id: sid },
       data: {
         messages: {
@@ -71,7 +71,7 @@ export async function DELETE(req, { params }) {
   if (below) {
     console.log("delete below", id);
     try {
-      await prisma.session.update({
+      await prisma.chapter.update({
         where: { id: sid },
         data: {
           messages: {
@@ -86,7 +86,7 @@ export async function DELETE(req, { params }) {
         },
       });
       // await prisma.message.deleteMany({
-      //   where: { AND: [{ sessionId: sid }, { id: { gt: id } }] },
+      //   where: { AND: [{ chapterId: sid }, { id: { gt: id } }] },
       // });
       return Response.json({ ok: true });
     } catch (e) {
@@ -101,7 +101,7 @@ export async function DELETE(req, { params }) {
     }
   } else {
     try {
-      await prisma.session.update({
+      await prisma.chapter.update({
         where: { id: sid },
         data: {
           messages: {

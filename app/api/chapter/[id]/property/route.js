@@ -15,7 +15,7 @@ export async function GET(req, { params }) {
       skip: skip ? parseInt(skip) : 0,
       take:
         limit && parseInt(limit) < LIST_LIMIT ? parseInt(limit) : LIST_LIMIT,
-      where: { sessionId: id },
+      where: { chapterId: id },
       orderBy: { createdAt: "desc" },
     });
     return Response.json(res);
@@ -31,7 +31,7 @@ export async function POST(req, { params }) {
   console.log("data", data)
   try {
     if (data) {
-      const res = await prisma.session.update({
+      const res = await prisma.chapter.update({
         where: { id: id },
         data: {
           properties: {
@@ -47,7 +47,7 @@ export async function POST(req, { params }) {
       console.log("update", update)
       await prisma.$transaction(update.map(u => {
         return prisma.property.update({
-          where: { name_sessionId: { sessionId: id, name: u.name } },
+          where: { name_chapterId: { chapterId: id, name: u.name } },
           data: {
             value: String(u.value) // TODO:value type check
           }
@@ -55,7 +55,7 @@ export async function POST(req, { params }) {
       }))
     }
     // const res = await prisma.message.create({
-    //   data: { ...data, sessionId: id },
+    //   data: { ...data, chapterId: id },
     //   include: include || null,
     // });
     return Response.json({ ok: true });
@@ -78,7 +78,7 @@ export async function PUT(req, { params }) {
     const file = data.get("file");
 
     const uploadForm = new FormData();
-    uploadForm.append("file", file, "session-image");
+    uploadForm.append("file", file, "chapter-image");
 
     const upload = await Upload(uploadForm);
 
@@ -92,7 +92,7 @@ export async function PUT(req, { params }) {
     const desc = data.get("desc");
     // const { data, include } = await req.json();
     // // console.log("new message", data.role, data.content);
-    const res = await prisma.session.update({
+    const res = await prisma.chapter.update({
       where: { id: id },
       data: {
         properties: {

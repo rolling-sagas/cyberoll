@@ -5,7 +5,7 @@ import PinnedColumns from "@/components/columns/pinned-columns";
 import { useColumnsStore } from "@/components/columns/pinned-columns";
 import { useEffect } from "react";
 
-import Threads from "@/components/columns/threads/threads";
+import Chapters from "@/components/columns/chapters/chapters";
 
 export default function Page() {
   const addColumn = useColumnsStore((state) => state.addColumn);
@@ -13,7 +13,7 @@ export default function Page() {
 
   useEffect(() => {
     reset()
-    addColumn("threads", { headerCenter: <div>Threads</div> }, <Threads />);
+    addColumn("chapters", { headerCenter: <div>Threads</div> }, <Chapters />);
   }, [addColumn])
 
   return <PinnedColumns />;
