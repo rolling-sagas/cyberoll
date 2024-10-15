@@ -13,7 +13,7 @@ export default function Page() {
 
   useEffect(() => {
     reset()
-    addColumn("chapters", { headerCenter: <div>Threads</div> }, <Chapters />);
+    addColumn("chapters", { headerCenter: <div>Chapters</div> }, <Chapters />);
   }, [addColumn])
 
   return <PinnedColumns />;

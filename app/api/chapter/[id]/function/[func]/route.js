@@ -39,7 +39,7 @@ function callFunction(functionName, content, props) {
 }
 
 export async function POST(req, { params }) {
-  const sid = parseInt(params.id); // sessionId
+  const sid = parseInt(params.id); // chapterId
   const name = params.func
 
   let content = null
@@ -55,14 +55,14 @@ export async function POST(req, { params }) {
     const props = await prisma.property.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
-      where: { sessionId: sid },
+      where: { chapterId: sid },
       orderBy: { createdAt: "desc" },
     })
 
     const res = callFunction(name, content, props)
 
     if (res.send) {
-      await prisma.session.update({
+      await prisma.chapter.update({
         where: { id: sid },
         data: {
           messages: {

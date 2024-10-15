@@ -6,10 +6,10 @@ import Spinner from "../spinner";
 import BaseButton from "@/components/buttons/base-button";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
-import CreateSessionDialog from "./create-session-dialog";
+import CreateChapterDialog from "./create-chapter-dialog";
 import { createPropertyStore } from "@/components/columns/properties/properties";
 
-const createThreadStore = (data) =>
+const createChapterStore = (data) =>
   createStore((set, get) => ({
     id: data.id,
     name: data.name,
@@ -19,8 +19,8 @@ const createThreadStore = (data) =>
 
     messages: [],
 
-    copyThread: async (id, name, description) => {
-      const response = await fetch("/api/session/" + id + "/copy", {
+    copyChapter: async (id, name, description) => {
+      const response = await fetch("/api/chapter/" + id + "/copy", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -35,7 +35,7 @@ const createThreadStore = (data) =>
     },
 
     listMessages: async () => {
-      const response = await fetch(`/api/session/${data.id}/message`);
+      const response = await fetch(`/api/chapter/${data.id}/message`);
       const res = await response.json();
 
       if (res.error) {
@@ -46,7 +46,7 @@ const createThreadStore = (data) =>
     },
 
     resetMessages: async () => {
-      const response = await fetch(`/api/session/${data.id}/message/reset`, {
+      const response = await fetch(`/api/chapter/${data.id}/message/reset`, {
         method: "POST",
       });
       const res = await response.json();
@@ -55,8 +55,8 @@ const createThreadStore = (data) =>
       }
     },
 
-    resetThread: async () => {
-      const response = await fetch(`/api/session/${data.id}/reset`, {
+    resetChapter: async () => {
+      const response = await fetch(`/api/chapter/${data.id}/reset`, {
         method: "POST",
       });
       const res = await response.json();
@@ -80,7 +80,7 @@ const createThreadStore = (data) =>
         }), ...get().messages]
       })
 
-      const response = await fetch(`/api/session/${data.id}/message`, {
+      const response = await fetch(`/api/chapter/${data.id}/message`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -106,7 +106,7 @@ const createThreadStore = (data) =>
 
     updateMessage: async (mid, role, content) => {
       const response = await fetch(
-        "/api/session/" + data.id + "/message/" + mid,
+        "/api/chapter/" + data.id + "/message/" + mid,
         {
           method: "POST",
           headers: {
@@ -130,7 +130,7 @@ const createThreadStore = (data) =>
 
     setEntryMessage: async (mid) => {
       const response = await fetch(
-        "/api/session/" + data.id + "/message/" + mid + "/entry",
+        "/api/chapter/" + data.id + "/message/" + mid + "/entry",
         {
           method: "POST",
           headers: {
@@ -148,7 +148,7 @@ const createThreadStore = (data) =>
 
     deleteMessage: async (mid) => {
       const response = await fetch(
-        "/api/session/" + data.id + "/message/" + mid,
+        "/api/chapter/" + data.id + "/message/" + mid,
         {
           method: "DELETE",
           headers: {
@@ -165,7 +165,7 @@ const createThreadStore = (data) =>
 
     deleteMessagesBelow: async (mid) => {
       const response = await fetch(
-        "/api/session/" + data.id + "/message/" + mid + "?below=true",
+        "/api/chapter/" + data.id + "/message/" + mid + "?below=true",
         {
           method: "DELETE",
           headers: {
@@ -182,7 +182,7 @@ const createThreadStore = (data) =>
 
     callFunction: async (funcName, content) => {
       const response = await fetch(
-        "/api/session/" + data.id + "/function/" + funcName,
+        "/api/chapter/" + data.id + "/function/" + funcName,
         {
           method: "POST",
           headers: {
@@ -209,7 +209,7 @@ const createThreadStore = (data) =>
         })
       }
 
-      const response = await fetch("/api/session/" + data.id + "/generate", {
+      const response = await fetch("/api/chapter/" + data.id + "/generate", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -229,7 +229,7 @@ const createThreadStore = (data) =>
 
     regenerate: async (mid) => {
       const response = await fetch(
-        "/api/session/" + data.id + "/message/" + mid + "/regenerate",
+        "/api/chapter/" + data.id + "/message/" + mid + "/regenerate",
         {
           method: "POST",
           headers: {
@@ -266,9 +266,9 @@ import CircleIconButton from "@/components/buttons/circle-icon-button";
 import { ItemMenuButton, MenuButtonDivider, MenuButtonItem } from "@/components/buttons/menu-button";
 import { parseError } from "@/components/utils";
 
-export default function Thread({ data }) {
+export default function Chapter({ data }) {
   const router = useRouter();
-  const storeRef = useRef(createThreadStore(data));
+  const storeRef = useRef(createChapterStore(data));
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
@@ -284,12 +284,12 @@ export default function Thread({ data }) {
     (state) => state.listMessages,
   );
 
-  const resetThread = useStore(
+  const resetChapter = useStore(
     storeRef.current,
-    (state) => state.resetThread,
+    (state) => state.resetChapter,
   );
 
-  const copyThread = useStore(storeRef.current, (state) => state.copyThread);
+  const copyChapter = useStore(storeRef.current, (state) => state.copyChapter);
 
 
   const newMessage = useStore(storeRef.current, (state) => state.newMessage);
@@ -395,7 +395,7 @@ export default function Thread({ data }) {
       rmColumn("properties")
     }
 
-    setHeader("thread", {
+    setHeader("chapter", {
       headerRight: <ItemMenuButton
         btn={<CircleIconButton icon={<MoreHorizontalIcon size={12} />} />}>
         <MenuButtonItem
@@ -410,25 +410,25 @@ export default function Thread({ data }) {
           right={<Copy01Icon />}
           onClick={() => {
             openModal(
-              <CreateSessionDialog
-                title="Duplicate thread"
+              <CreateChapterDialog
+                title="Duplicate chapter"
                 name={data.name + " copy"}
                 desc={data.description}
                 onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Duplicating thread...", {
+                  const tid = toast.loading("Duplicating chapter...", {
                     icon: <Spinner />,
                   });
 
                   try {
-                    const res = await copyThread(data.id, name, desc);
-                    toast.success("Thread duplicated", {
+                    const res = await copyChapter(data.id, name, desc);
+                    toast.success("Chapter duplicated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
                     router.push("/th/" + res.id)
                   } catch (e) {
                     toast.dismiss(tid)
-                    AlertError("Can't duplicate the thread: " + parseError(e))
+                    AlertError("Can't duplicate the chapter: " + parseError(e))
                   } finally {
                   }
                 }}
@@ -442,23 +442,23 @@ export default function Thread({ data }) {
           left={"Reset"}
           right={<RefreshIcon />}
           onClick={() => {
-            openAlert(<Alert title="Reset thread"
+            openAlert(<Alert title="Reset chapter"
               message={"Remove all messages after the entry point, " +
                 "and set all properties to initial value."}
               confirmLabel="OK"
               onConfirm={async () => {
-                const tid = toast.loading("Reseting thread...", {
+                const tid = toast.loading("Reseting chapter...", {
                   icon: <Spinner />,
                 });
                 try {
-                  await resetThread();
-                  toast.success("Thread reset", {
+                  await resetChapter();
+                  toast.success("Chapter reset", {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
                 } catch (e) {
                   toast.dismiss(tid)
-                  AlertError("Can't reset thread: " + parseError(e))
+                  AlertError("Can't reset chapter: " + parseError(e))
                 } finally {
                   await listMessages();
                   await listProperties();

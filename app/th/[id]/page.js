@@ -8,38 +8,38 @@ import { useColumnsStore } from "@/components/columns/pinned-columns";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import Thread from "@/components/columns/threads/thread";
+import Chapter from "@/components/columns/chapters/chapter";
 import CircleIconButton from "@/components/buttons/circle-icon-button";
 
 export default function Page({ params }) {
   const router = useRouter()
 
   const id = params.id
-  const [thread, setThread] = useState(null)
+  const [chapter, setChapter] = useState(null)
 
   const addColumn = useColumnsStore((state) => state.addColumn);
   const reset = useColumnsStore((state) => state.reset);
 
   useEffect(() => {
-    async function fetchThread() {
-      let res = await fetch("/api/session/" + id)
+    async function fetchChapter() {
+      let res = await fetch("/api/chapter/" + id)
       let data = await res.json()
-      setThread(data)
+      setChapter(data)
     }
 
     reset()
-    fetchThread(id)
+    fetchChapter(id)
   }, [id])
 
   useEffect(() => {
-    if (!thread) return
-    addColumn("thread", {
+    if (!chapter) return
+    addColumn("chapter", {
       headerLeft: <CircleIconButton onClick={() => router.push("/")}
         icon={<ArrowLeft02Icon size={12} />}
       />,
-      headerCenter: thread.name,
-    }, <Thread data={thread} />);
-  }, [addColumn, thread])
+      headerCenter: chapter.name,
+    }, <Chapter data={chapter} />);
+  }, [addColumn, chapter])
 
   return <PinnedColumns />;
 }

@@ -15,7 +15,7 @@ export async function POST(req, { params }) {
     });
 
     if (!prevEntry) {
-      throw { type: "not-found", message: "thread entry point not found" }
+      throw { type: "not-found", message: "chapter entry point not found" }
     }
 
     const res = await prisma.message.deleteMany({

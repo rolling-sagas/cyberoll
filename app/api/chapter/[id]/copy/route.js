@@ -6,7 +6,7 @@ const LIST_LIMIT = 512;
 
 export async function POST(req, { params }) {
   const sid = parseInt(params.id);
-  console.log("duplicate this thread", params.id);
+  console.log("duplicate this chapter", params.id);
   // get the 'refresh' search params
   let reset = req.nextUrl.searchParams.get('reset')
   if (reset && reset === "true") {
