@@ -53,15 +53,16 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId Int
+  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId Int?
+
   @@id ([name, chapterId])
 }
 
 model Chapter {
   id Int @id @default(autoincrement())
 
-  name        String  @unique
+  name        String
   description String?
 
   createdAt DateTime @default(now())
@@ -69,4 +70,20 @@ model Chapter {
 
   messages Message[]
   properties Property[]
+
+  story   Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  storyId Int
+}
+
+model Story {
+  id          Int     @id @default(@autoincrement())
+
+  name        String  @unique
+  cover       String?
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  chapters    Chapter[]
 }
