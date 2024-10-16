@@ -176,7 +176,7 @@ export default function Chapters() {
   }, [listChapters]);
 
   const onEditChapter = (chapter) => {
-    router.push("/th/" + chapter.id)
+    router.push("/ch/" + chapter.id)
   };
 
   const onPlayChapter = (chapter) => {
@@ -191,7 +191,7 @@ export default function Chapters() {
           });
           try {
             const res = await copyChapter(chapter.id, name, desc, true);
-            router.push("/th/" + res.id)
+            router.push("/ch/" + res.id)
             toast.success("Chapter duplicated", {
               id: tid,
               icon: <CheckmarkCircle01Icon />,
@@ -291,7 +291,7 @@ export default function Chapters() {
                   });
                   try {
                     const res = await copyChapter(chapter.id, name, desc, false);
-                    router.push("/th/" + res.id)
+                    router.push("/ch/" + res.id)
                     toast.success("Chapter duplicated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,

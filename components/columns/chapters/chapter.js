@@ -425,7 +425,7 @@ export default function Chapter({ data }) {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
-                    router.push("/th/" + res.id)
+                    router.push("/ch/" + res.id)
                   } catch (e) {
                     toast.dismiss(tid)
                     AlertError("Can't duplicate the chapter: " + parseError(e))
