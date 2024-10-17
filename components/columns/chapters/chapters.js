@@ -4,7 +4,7 @@ import toast from "react-hot-toast/headless";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { create } from "zustand";
+import { create, createStore, useStore } from "zustand";
 
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import { useAlertStore } from "@/components/modal/alert-placeholder";
@@ -17,6 +17,86 @@ import ChapterItem from "./chapter-item";
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
 import CreateChapterDialog from "./create-chapter-dialog";
 import { parseError } from "@/components/utils";
+
+const createChaptersStore = (storyId) =>
+  createStore((set, get) => ({
+    chapters: [],
+    errors: [],
+
+    loading: "pending",
+
+    listChapters: async () => {
+      const response = await fetch(`/api/story/${storyId}/chapter`);
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      } else {
+        set({ chapters: res, loading: "loaded" });
+      }
+    },
+
+    newChapter: async (name, description) => {
+      const response = await fetch(`/api/story/${storyId}/chapter`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ data: { name: name, description: description } }),
+      });
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
+    },
+
+    updateChapter: async (id, name, description) => {
+      const response = await fetch(`/api/story/${storyId}/chapter/` + id, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ data: { name: name, description: description } }),
+      });
+
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
+    },
+
+    copyChapter: async (id, name, description, reset = true) => {
+      const url = `/api/story/${storyId}/chapter/` + id + "/copy"
+      const search = new URLSearchParams({ reset: reset }).toString();
+      console.log(url + "?" + search)
+      const response = await fetch(url + "?" + search, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ data: { name, description } }),
+      });
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
+
+      return res
+    },
+
+    deleteChapter: async (id) => {
+      const response = await fetch(`/api/story/${storyId}/chapter/` + id, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+      const res = await response.json();
+      if (res.error) {
+        throw res.error
+      }
+    },
+
+  }))
 
 const useChaptersStore = create((set) => ({
   chapters: [],
@@ -148,21 +228,27 @@ const CreateChapter = function() {
   );
 };
 
-export default function Chapters() {
+export default function Chapters({ storyId }) {
   const router = useRouter()
+
+  const storeRef = useRef(createChaptersStore(storyId));
+  const listChapters = useStore(storeRef.current, (state) => state.listChapters);
+  const newChapter = useStore(storeRef.current, (state) => state.newChapter);
+  const copyChapter = useStore(storeRef.current, (state) => state.copyChapter);
+  const updateChapter = useStore(storeRef.current, (state) => state.updateChapter);
+  const deleteChapter = useStore(storeRef.current, (state) => state.deleteChapter);
+  const chapters = useStore(storeRef.current, (state) => state.chapters);
 
   const loading = useChaptersStore((state) => state.loading);
 
-  const listChapters = useChaptersStore((state) => state.listChapters);
-  const newChapter = useChaptersStore((state) => state.newChapter);
-  const copyChapter = useChaptersStore((state) => state.copyChapter);
-  const updateChapter = useChaptersStore((state) => state.updateChapter);
-  const deleteChapter = useChaptersStore((state) => state.deleteChapter);
-
-  const chapters = useChaptersStore((state) => state.chapters);
+  // const listChapters = useChaptersStore((state) => state.listChapters);
+  // const newChapter = useChaptersStore((state) => state.newChapter);
+  // const copyChapter = useChaptersStore((state) => state.copyChapter);
+  // const updateChapter = useChaptersStore((state) => state.updateChapter);
+  // const deleteChapter = useChaptersStore((state) => state.deleteChapter);
+  // const chapters = useChaptersStore((state) => state.chapters);
 
   const openModal = useModalStore((state) => state.open);
-
   const openAlert = useAlertStore((state) => state.open);
 
   function AlertError(message) {

@@ -45,8 +45,10 @@ model Message {
 }
 
 model Property {
+  id Int @id @default(autoincrement())
+
   name    String
-  type    String // Skill type
+  type    String // property type
   value   String // Raw json obj or Origin Value
   initial String // initial value of the property
 
@@ -56,7 +58,8 @@ model Property {
   chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   chapterId Int?
 
-  @@id ([name, chapterId])
+  story   Story? @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  storyId Int?
 }
 
 model Chapter {
@@ -69,14 +72,14 @@ model Chapter {
   updatedAt DateTime @updatedAt
 
   messages Message[]
-  properties Property[]
+  properties Property[] // local properties
 
   story   Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
   storyId Int
 }
 
 model Story {
-  id          Int     @id @default(@autoincrement())
+  id Int @id @default(autoincrement())
 
   name        String  @unique
   cover       String?
@@ -86,4 +89,5 @@ model Story {
   updatedAt DateTime @updatedAt
 
   chapters    Chapter[]
+  properties  Property[] // story properties
 }
