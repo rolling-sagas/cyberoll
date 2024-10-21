@@ -331,7 +331,6 @@ export default function Chapters({ storyId }) {
         <ChapterItem
           key={chapter.id}
           chapter={chapter}
-          onPlayChapter={onPlayChapter}
           onEditClick={onEditChapter}
           onUpdateClick={() => {
             openModal(
