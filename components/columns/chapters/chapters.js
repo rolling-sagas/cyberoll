@@ -1,7 +1,7 @@
 "use client";
 import toast from "react-hot-toast/headless";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 import { create, createStore, useStore } from "zustand";
@@ -238,15 +238,8 @@ export default function Chapters({ storyId }) {
   const updateChapter = useStore(storeRef.current, (state) => state.updateChapter);
   const deleteChapter = useStore(storeRef.current, (state) => state.deleteChapter);
   const chapters = useStore(storeRef.current, (state) => state.chapters);
+  const loading = useStore(storeRef.current, (state) => state.loading);
 
-  const loading = useChaptersStore((state) => state.loading);
-
-  // const listChapters = useChaptersStore((state) => state.listChapters);
-  // const newChapter = useChaptersStore((state) => state.newChapter);
-  // const copyChapter = useChaptersStore((state) => state.copyChapter);
-  // const updateChapter = useChaptersStore((state) => state.updateChapter);
-  // const deleteChapter = useChaptersStore((state) => state.deleteChapter);
-  // const chapters = useChaptersStore((state) => state.chapters);
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);

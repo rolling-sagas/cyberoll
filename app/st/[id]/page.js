@@ -5,7 +5,7 @@ import PinnedColumns from "@/components/columns/pinned-columns";
 import { ArrowLeft02Icon } from "@hugeicons/react";
 
 import { useColumnsStore } from "@/components/columns/pinned-columns";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import Chapters from "@/components/columns/chapters/chapters";
@@ -20,16 +20,13 @@ export default function Page({ params }) {
 
   useEffect(() => {
     reset()
-  }, [id])
-
-  useEffect(() => {
     addColumn("chapters", {
       headerLeft: <CircleIconButton onClick={() => router.push("/")}
         icon={<ArrowLeft02Icon size={12} />}
       />,
       headerCenter: "Chapters",
     }, <Chapters storyId={id} />);
-  }, [addColumn])
+  })
 
   return <PinnedColumns />;
 }
