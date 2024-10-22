@@ -38,7 +38,6 @@ import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button
 
 export default function ChapterItem({
   chapter,
-  onPlayChapter,
   onUpdateClick,
   onDeleteClick,
   onEditClick,
@@ -50,7 +49,7 @@ export default function ChapterItem({
       grid-rows-[21px_19px_max-content_max-conent] w-full border-b"
       onClick={(evt) => {
         evt.preventDefault();
-        if (onPlayChapter) onPlayChapter(chapter);
+        if (onEditClick) onEditClick(chapter);
       }}
     >
       <div
@@ -73,14 +72,6 @@ export default function ChapterItem({
           </div>
           <div className="flex-0">
             <ItemMenuButton>
-              <MenuButtonItem
-                left="Edit"
-                right={<Edit01Icon size={20} />}
-                onClick={(evt) => {
-                  evt.stopPropagation();
-                  if (onEditClick) onEditClick(chapter);
-                }}
-              />
               <MenuButtonItem
                 left="Duplicate"
                 right={<Copy01Icon size={20} />}

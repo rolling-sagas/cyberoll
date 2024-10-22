@@ -255,35 +255,8 @@ export default function Chapters({ storyId }) {
   }, [listChapters]);
 
   const onEditChapter = (chapter) => {
-    router.push("/ch/" + chapter.id)
+    router.push(`/ch/${chapter.id}`)
   };
-
-  const onPlayChapter = (chapter) => {
-    openModal(
-      <CreateChapterDialog
-        title="Play from this template"
-        name={chapter.name + " copy"}
-        desc={chapter.description}
-        onConfirm={async (name, desc) => {
-          const tid = toast.loading("Duplicating from the template", {
-            icon: <Spinner />,
-          });
-          try {
-            const res = await copyChapter(chapter.id, name, desc, true);
-            router.push("/ch/" + res.id)
-            toast.success("Chapter duplicated", {
-              id: tid,
-              icon: <CheckmarkCircle01Icon />,
-            });
-          } catch (e) {
-            AlertError("Can't dulicate the chapter: " + parseError(e))
-          } finally {
-            toast.dismiss(tid)
-          }
-        }}
-      />,
-    );
-  }
 
   if (loading === "pending") {
     return (
@@ -369,7 +342,7 @@ export default function Chapters({ storyId }) {
                   });
                   try {
                     const res = await copyChapter(chapter.id, name, desc, false);
-                    router.push("/ch/" + res.id)
+                    router.push(`/ch/${res.id}`)
                     toast.success("Chapter duplicated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,

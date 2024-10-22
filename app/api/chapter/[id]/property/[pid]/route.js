@@ -1,14 +1,14 @@
 import prisma from "@/prisma/client";
 import { Upload } from "@/components/images/cloudflare_upload";
+import { isKnownError } from "@/app/api/common";
 export const runtime = "edge";
 
 export async function GET(_, { params }) {
-  const name = params.name;
-  const sid = parseInt(params.id)
+  const pid = parseInt(params.pid);
 
   try {
     const res = await prisma.property.findUnique({
-      where: { name_chapterId: { name: name, chapterId: sid } }
+      where: { id: pid }
     });
     if (!res) {
       return Response.json(
@@ -27,28 +27,26 @@ export async function GET(_, { params }) {
 }
 
 export async function POST(req, { params }) {
-  const name = params.name;
-  const sid = parseInt(params.id);
+  const pid = parseInt(params.pid);
+  const cid = parseInt(params.id);
   try {
-    const { data, include } = await req.json();
-    console.log("update:", sid, name, data);
+    const { data } = await req.json();
     const res = await prisma.chapter.update({
-      where: { id: sid },
+      where: { id: cid },
       data: {
         properties: {
           update: {
             data: data,
-            where: { name_chapterId: { name: name, chapterId: sid } },
+            where: { id: pid },
           },
         },
         updatedAt: new Date(),
       },
       include: {
-        ...include,
         properties: true,
       },
     });
-    return Response.json({ ok: true });
+    return Response.json({ ok: true, id: res.id });
   } catch (e) {
     console.log(e.code, e.message);
     return Response.json(
@@ -61,16 +59,15 @@ export async function POST(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
-  const name = params.name;
-  const sid = parseInt(params.id);
+export async function DELETE(_, { params }) {
+  const pid = parseInt(params.pid);
   try {
     await prisma.chapter.update({
       where: { id: sid },
       data: {
         properties: {
           delete: {
-            name_chapterId: { name: name, chapterId: sid }
+            id: pid
           },
         },
         updatedAt: new Date(),
@@ -93,8 +90,9 @@ export async function DELETE(req, { params }) {
 }
 
 export async function PUT(req, { params }) {
-  const name = params.name;
-  const sid = parseInt(params.id);
+  const cid = parseInt(params.id);
+  const pid = parseInt(params.pid);
+
   try {
     const data = await req.formData();
     const value = JSON.parse(data.get("value"))
@@ -131,13 +129,13 @@ export async function PUT(req, { params }) {
     // const { data, include } = await req.json();
     // // console.log("new message", data.role, data.content);
     const res = await prisma.chapter.update({
-      where: { id: sid },
+      where: { id: cid },
       data: {
         properties: {
           update: {
             data: update,
             where: {
-              name_chapterId: { name: name, chapterId: sid }
+              id: pid
             },
           },
         },

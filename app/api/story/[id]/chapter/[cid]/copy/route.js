@@ -5,8 +5,9 @@ export const runtime = "edge";
 const LIST_LIMIT = 512;
 
 export async function POST(req, { params }) {
-  const sid = parseInt(params.id);
-  console.log("duplicate this chapter", params.id);
+  const cid = parseInt(params.cid);
+  const sid = parseInt(params.id)
+  console.log("duplicate this chapter - id:", params.id);
   // get the 'refresh' search params
   let reset = req.nextUrl.searchParams.get('reset')
   if (reset && reset === "true") {
@@ -18,11 +19,12 @@ export async function POST(req, { params }) {
 
   try {
     const { data } = await req.json();
+    data.storyId = sid
 
     let messages = []
     if (reset) {
       const prevEntry = await prisma.message.findFirst({
-        where: { chapterId: sid, entry: true },
+        where: { chapterId: cid, entry: true },
         orderBy: { createdAt: "asc" },
       });
 
@@ -33,13 +35,13 @@ export async function POST(req, { params }) {
 
       messages = await prisma.message.findMany({
         take: LIST_LIMIT,
-        where: { chapterId: sid, id: { lte: prevEntry.id } },
+        where: { chapterId: cid, id: { lte: prevEntry.id } },
         orderBy: { id: "asc" },
       });
     } else {
       messages = await prisma.message.findMany({
         take: LIST_LIMIT,
-        where: { chapterId: sid },
+        where: { chapterId: cid },
         orderBy: { id: "asc" },
       });
     }
@@ -53,12 +55,14 @@ export async function POST(req, { params }) {
     let props = await prisma.property.findMany({
       skip: 0, // always start from 0
       take: LIST_LIMIT,
-      where: { chapterId: sid },
+      where: { chapterId: cid },
       orderBy: { createdAt: "desc" },
     })
 
     props = props.map(prop => {
       delete prop.chapterId
+      delete prop.id
+
       if (reset) {
         prop.value = prop.initial
       }

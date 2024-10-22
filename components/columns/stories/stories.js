@@ -191,7 +191,7 @@ export default function Stories() {
           });
           try {
             const res = await copyStory(story.id, name, desc, true);
-            router.push("/ch/" + res.id)
+            router.push("/st/" + res.id)
             toast.success("Story duplicated", {
               id: tid,
               icon: <CheckmarkCircle01Icon />,
@@ -291,7 +291,7 @@ export default function Stories() {
                   });
                   try {
                     const res = await copyStory(story.id, name, desc, false);
-                    router.push("/ch/" + res.id)
+                    router.push("/st/" + res.id)
                     toast.success("Story duplicated", {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,

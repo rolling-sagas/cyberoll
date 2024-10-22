@@ -22,7 +22,7 @@ export async function POST(req, { params }) {
       .filter(r => r.initial !== r.value)
       .map(r => {
         return prisma.property.update({
-          where: { name_chapterId: { chapterId: id, name: r.name } },
+          where: { id: r.id },
           data: {
             value: r.initial,
           }

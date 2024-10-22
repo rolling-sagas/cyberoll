@@ -43,22 +43,23 @@ export async function POST(req, { params }) {
           properties: true,
         },
       });
-    } else if (update) {
-      console.log("update", update)
-      await prisma.$transaction(update.map(u => {
-        return prisma.property.update({
-          where: { name_chapterId: { chapterId: id, name: u.name } },
-          data: {
-            value: String(u.value) // TODO:value type check
-          }
-        })
-      }))
     }
+    // else if (update) {
+    //  console.log("update", update)
+    //  await prisma.$transaction(update.map(u => {
+    //    return prisma.property.update({
+    //      where: { name_chapterId: { chapterId: id, name: u.name } },
+    //      data: {
+    //        value: String(u.value) // TODO:value type check
+    //      }
+    //    })
+    //  }))
+    //}
     // const res = await prisma.message.create({
     //   data: { ...data, chapterId: id },
     //   include: include || null,
     // });
-    return Response.json({ ok: true });
+    return Response.json({ ok: true, id: res.id });
   } catch (e) {
     console.log(e.code, e.message);
     return Response.json(

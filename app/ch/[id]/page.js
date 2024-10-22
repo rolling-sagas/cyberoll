@@ -24,9 +24,11 @@ export default function Page({ params }) {
     async function fetchChapter() {
       let res = await fetch("/api/chapter/" + id)
       let data = await res.json()
+      // console.log("chapter data", data)
       setChapter(data)
     }
 
+    // console.log("fetch chapter data", id)
     reset()
     fetchChapter(id)
   }, [id])
@@ -34,7 +36,7 @@ export default function Page({ params }) {
   useEffect(() => {
     if (!chapter) return
     addColumn("chapter", {
-      headerLeft: <CircleIconButton onClick={() => router.push("/")}
+      headerLeft: <CircleIconButton onClick={() => router.push("/st/" + chapter.storyId)}
         icon={<ArrowLeft02Icon size={12} />}
       />,
       headerCenter: chapter.name,
