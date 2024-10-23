@@ -12,7 +12,7 @@ import {
 } from "@hugeicons/react";
 
 import { ItemMenuButton as MenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
-import ToolButton from "../threads/tool-button";
+import ToolButton from "../chapters/tool-button";
 import TypeIcon from "./type-icon";
 
 import Image from "next/image";

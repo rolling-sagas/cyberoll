@@ -23,7 +23,7 @@ export const createPropertyStore = (id) =>
     properties: [],
 
     listProperties: async () => {
-      const response = await fetch(`/api/session/${id}/property`);
+      const response = await fetch(`/api/chapter/${id}/property`);
       const res = await response.json();
 
       if (res.error) {
@@ -35,9 +35,10 @@ export const createPropertyStore = (id) =>
     },
 
     resetProperties: async () => {
-      const response = await fetch(`/api/session/${id}/property/reset`, {
+      const response = await fetch(`/api/chapter/${id}/property/reset`, {
         method: "POST",
       });
+
       const res = await response.json();
       if (res.error) {
         throw res.error
@@ -50,7 +51,7 @@ export const createPropertyStore = (id) =>
       formData.append("name", name);
       formData.append("desc", imageDesc);
       formData.append("file", image);
-      const response = await fetch(`/api/session/${id}/property`, {
+      const response = await fetch(`/api/chapter/${id}/property`, {
         method: "PUT",
         body: formData,
       });
@@ -61,7 +62,7 @@ export const createPropertyStore = (id) =>
     },
 
     newProperty: async (name, type, value) => {
-      const response = await fetch(`/api/session/${id}/property`, {
+      const response = await fetch(`/api/chapter/${id}/property`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -95,7 +96,7 @@ export const createPropertyStore = (id) =>
         formData.append("file", file);
       }
 
-      const response = await fetch(`/api/session/${id}/property/${oldName}`, {
+      const response = await fetch(`/api/chapter/${id}/property/${oldName}`, {
         method: "PUT",
         body: formData,
       });
@@ -106,9 +107,9 @@ export const createPropertyStore = (id) =>
       }
     },
 
-    updateProperty: async (oldName, name, type, value, initial) => {
+    updateProperty: async (pid, name, type, value, initial) => {
       const response = await fetch(
-        "/api/session/" + id + "/property/" + oldName,
+        "/api/chapter/" + id + "/property/" + pid,
         {
           method: "POST",
           headers: {
@@ -125,8 +126,8 @@ export const createPropertyStore = (id) =>
       }
     },
 
-    deleteProperty: async (name) => {
-      const response = await fetch("/api/session/" + id + "/property/" + name, {
+    deleteProperty: async (pid) => {
+      const response = await fetch("/api/chapter/" + id + "/property/" + pid, {
         method: "DELETE",
         headers: {
           "Content-type": "application/json",
@@ -140,7 +141,7 @@ export const createPropertyStore = (id) =>
 
     deletePropertiesBelow: async (pid) => {
       const response = await fetch(
-        "/api/session/" + id + "/property/" + pid + "?below=true",
+        "/api/chapter/" + id + "/property/" + pid + "?below=true",
         {
           method: "DELETE",
           headers: {
@@ -348,7 +349,7 @@ export default function Properties({ storeRef }) {
                       icon: <Spinner />,
                     });
                     try {
-                      await deleteProperty(prop.name);
+                      await deleteProperty(prop.id);
                       toast.success("Property deleted", {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
@@ -376,7 +377,7 @@ export default function Properties({ storeRef }) {
                     });
                     try {
                       await updateProperty(
-                        prop.name,
+                        prop.id,
                         name,
                         type,
                         value,

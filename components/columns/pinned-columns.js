@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import Column from "@/components/column/column";
-import Threads from "./threads/threads";
+import Chapters from "./chapters/chapters";
 
 export const usePinStore = create(
   persist(
@@ -20,8 +20,8 @@ export const usePinStore = create(
       },
 
       unpin: (id) => {
-        // threads can't be unpinned
-        if (id === "threads") return;
+        // chapters can't be unpinned
+        if (id === "chapters") return;
 
         return set((state) => {
           return { pinned: state.pinned.filter((n) => n.id !== id) };
@@ -30,7 +30,7 @@ export const usePinStore = create(
     }),
     {
       name: "pinned", // name of the item in the storage (must be unique)
-      // storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
+      // storage: createJSONStorage(() => chapterStorage), // (optional) by default, 'localStorage' is used
     },
   ),
 );
@@ -112,8 +112,8 @@ export default function PinnedColumns() {
 
   pinned.forEach((pin) => {
     switch (pin.id) {
-      case "threads":
-        addColumn("threads", { headerCenter: <div>Threads</div> }, <Threads />);
+      case "chapters":
+        addColumn("chapters", { headerCenter: <div>Chapters</div> }, <Chapters />);
         break;
       default:
         break;
