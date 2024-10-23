@@ -30,6 +30,7 @@ import {
   Edit01Icon,
   Edit02Icon,
   Message02Icon,
+  ScrollIcon,
   Share01Icon,
 } from "@hugeicons/react";
 
@@ -57,9 +58,9 @@ export default function ChapterItem({
         row-span-2 text-rs-text-secondary"
       >
         {chapter._count.messages === 0 ? (
-          <BubbleChatNotificationIcon variant="twotone" strokeWidth={1} />
+          <ScrollIcon variant="twotone" strokeWidth={1} />
         ) : (
-          <BubbleChatNotificationIcon strokeWidth={1} />
+          <ScrollIcon strokeWidth={1} />
         )}
       </div>
       <div className="col-start-2 rows-start-1">

@@ -98,89 +98,11 @@ const createChaptersStore = (storyId) =>
 
   }))
 
-const useChaptersStore = create((set) => ({
-  chapters: [],
-  errors: [],
+const CreateChapter = function({ storeRef }) {
+  const listChapters = useStore(storeRef.current, (state) => state.listChapters);
+  const newChapter = useStore(storeRef.current, (state) => state.newChapter);
 
-  loading: "pending",
-
-  listChapters: async () => {
-    const response = await fetch("/api/chapter");
-    const res = await response.json();
-    if (res.error) {
-      throw res.error
-    } else {
-      set({ chapters: res, loading: "loaded" });
-    }
-  },
-
-  newChapter: async (name, description) => {
-    const response = await fetch("/api/chapter", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ data: { name: name, description: description } }),
-    });
-    const res = await response.json();
-    if (res.error) {
-      throw res.error
-    }
-  },
-
-  updateChapter: async (id, name, description) => {
-    const response = await fetch("/api/chapter/" + id, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ data: { name: name, description: description } }),
-    });
-
-    const res = await response.json();
-    if (res.error) {
-      throw res.error
-    }
-  },
-
-  copyChapter: async (id, name, description, reset = true) => {
-    const url = "/api/chapter/" + id + "/copy"
-    const search = new URLSearchParams({ reset: reset }).toString();
-    console.log(url + "?" + search)
-    const response = await fetch(url + "?" + search, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify({ data: { name, description } }),
-    });
-    const res = await response.json();
-    if (res.error) {
-      throw res.error
-    }
-
-    return res
-  },
-
-  deleteChapter: async (id) => {
-    const response = await fetch("/api/chapter/" + id, {
-      method: "DELETE",
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-    const res = await response.json();
-    if (res.error) {
-      throw res.error
-    }
-  },
-}));
-
-const CreateChapter = function() {
   const openModal = useModalStore((state) => state.open);
-  const newChapter = useChaptersStore((state) => state.newChapter);
-  const listChapters = useChaptersStore((state) => state.listChapters);
-
   const openAlert = useAlertStore((state) => state.open);
 
   function AlertError(message) {
@@ -232,6 +154,7 @@ export default function Chapters({ storyId }) {
   const router = useRouter()
 
   const storeRef = useRef(createChaptersStore(storyId));
+
   const listChapters = useStore(storeRef.current, (state) => state.listChapters);
   const newChapter = useStore(storeRef.current, (state) => state.newChapter);
   const copyChapter = useStore(storeRef.current, (state) => state.copyChapter);
@@ -299,7 +222,7 @@ export default function Chapters({ storyId }) {
 
   return (
     <>
-      <CreateChapter />
+      <CreateChapter storeRef={storeRef} />
       {chapters.map((chapter) => (
         <ChapterItem
           key={chapter.id}

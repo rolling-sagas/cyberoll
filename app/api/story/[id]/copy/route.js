@@ -25,8 +25,7 @@ export async function POST(req, { params }) {
             messages: true,
             properties: true
           }
-        },
-        properties: true
+        }
       },
     })
 
@@ -63,7 +62,7 @@ export async function POST(req, { params }) {
     // insert the new story
     // CAN'T nested createMany: https://www.prisma.io/docs/orm/prisma-client/queries/relation-queries#create-multiple-records-and-multiple-related-records
     // So, we have to do it manually
-    const res = await prisma.story.create({
+    let res = await prisma.story.create({
       data: {
         name: data.name,
         description: data.description,
@@ -72,17 +71,34 @@ export async function POST(req, { params }) {
             data: chapters
           }
         },
-        properties: {
-          createMany: {
-            data: story.properties
-          }
-        }
       },
       include: {
-        chapters: true,
-        properties: true
+        chapters: true
       }
     })
+
+    // insert messages and properties into the newly created chapters
+    await prisma.$transaction(res.chapters.map((ch, idx) => {
+      return prisma.chapter.update({
+        where: { id: ch.id },
+        data: {
+          messages: {
+            createMany: {
+              data: story.chapters[idx].messages
+            }
+          },
+          properties: {
+            createMany: {
+              data: story.chapters[idx].properties
+            }
+          }
+        },
+        include: {
+          messages: true,
+          properties: true
+        }
+      })
+    }))
 
     console.log("create result:", res)
     return Response.json({ ok: true, id: res.id });

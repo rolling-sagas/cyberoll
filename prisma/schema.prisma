@@ -55,11 +55,8 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  chapter Chapter? @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId Int?
-
-  story   Story? @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  storyId Int?
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  chapterId Int
 }
 
 model Chapter {
@@ -89,5 +86,4 @@ model Story {
   updatedAt DateTime @updatedAt
 
   chapters    Chapter[]
-  properties  Property[] // story properties
 }
