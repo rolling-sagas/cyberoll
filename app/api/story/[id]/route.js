@@ -3,6 +3,20 @@ import { isKnownError } from "@/app/api/common";
 
 export const runtime = "edge";
 
+
+export async function GET(_, { params }) {
+  try {
+    const id = parseInt(params.id); // story id
+    const res = await prisma.story.findUnique({
+      where: { id: id },
+    });
+    return Response.json(res);
+  } catch (e) {
+    console.log(e.code, e.message);
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
+  }
+}
+
 export async function POST(req, { params }) {
   try {
     const id = parseInt(params.id);

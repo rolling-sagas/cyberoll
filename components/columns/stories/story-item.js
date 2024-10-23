@@ -24,12 +24,10 @@ dayjs.updateLocale("en", {
 });
 
 import {
-  BubbleChatNotificationIcon,
   Copy01Icon,
   Delete01Icon,
   Edit01Icon,
   Edit02Icon,
-  Message02Icon,
   Share01Icon,
 } from "@hugeicons/react";
 

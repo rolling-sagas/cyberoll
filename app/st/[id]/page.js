@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 import Chapters from "@/components/columns/chapters/chapters";
 import CircleIconButton from "@/components/buttons/circle-icon-button";
+import Story from "@/components/columns/stories/story";
 
 export default function Page({ params }) {
   const router = useRouter()
@@ -20,10 +21,13 @@ export default function Page({ params }) {
 
   useEffect(() => {
     reset()
-    addColumn("chapters", {
+    addColumn("Story", {
       headerLeft: <CircleIconButton onClick={() => router.push("/")}
         icon={<ArrowLeft02Icon size={12} />}
       />,
+      headerCenter: "Story",
+    }, <Story storyId={id}/>);
+    addColumn("chapters", {
       headerCenter: "Chapters",
     }, <Chapters storyId={id} />);
   })
