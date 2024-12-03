@@ -23,12 +23,16 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  credits           Credits[]
+  credits Credits[]
 
-  stripeCustomer    StripeCustomer?
-  appleCustomer     AppleCustomer?
+  stripeCustomer StripeCustomer?
+  appleCustomer  AppleCustomer?
 
   subscriptionNotifications SubscriptionNotification[]
+  likes                     Like[]
+  comments                  Comment[]
+  storys                    Story[]
+  storySessions             StorySession[]
 }
 
 model Account {
@@ -100,71 +104,74 @@ model Credits {
 }
 
 model StripeCustomer {
-  userId     String   @unique
-  customerId String   @unique // Single customer mode
+  userId     String @unique
+  customerId String @unique // Single customer mode
 
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model AppleCustomer {
-  userId     String   @unique
-  appAccountToken String   @unique @default(uuid()) // Single customer mode
+  userId          String @unique
+  appAccountToken String @unique @default(uuid()) // Single customer mode
 
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model SubscriptionNotification {
-  id         String   @id
-  userId     String
-  platform   String
-  status     Int
-  raw        String   // raw JSON string
+  id       String @id
+  userId   String
+  platform String
+  status   Int
+  raw      String // raw JSON string
 
-  createdAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+// STORY TABLES
 model Story {
-  id          String        @id
+  id          String   @id @default(cuid())
   name        String
   cover       String?
   description String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  author      String
-  keepPrivate Boolean       @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  keepPrivate Boolean  @default(false)
   template    String?
-  chapters     Chapter[]
-  comments     Comment[]
-  sessions StorySession[]
-  occupations  Occupation[]
-  user        User          @relation(fields: [author], references: [id], onDelete: Cascade)
+
+  chapters    Chapter[]
+  comments    Comment[]
+  occupations Occupation[]
+  likes       Like[]
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 }
 
 model Chapter {
-  id           String        @id
-  name         String
-  initial      String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  description  String?
-  story        String
-  maxTurns     Int
-  nextChapter  String
-  first        Boolean
-  previous     String?
-  cover        String?
-  rulesChunk   String?
-  story        Story         @relation(fields: [story], references: [id], onDelete: Cascade)
-  sessions  StorySession[]
-  messages     Message[]
+  id          String   @id @default(cuid())
+  name        String
+  initial     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String?
+  maxTurns    Int
+  nextChapter String
+  first       Boolean
+  previous    String?
+  cover       String?
+  rulesChunk  String?
+
+  sessions StorySession[]
+
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
 }
 
 model Occupation {
-  id        String   @id
-  story     String?
+  id        String   @id @default(cuid())
   name      String
   stats     String?
   skills    String?
@@ -173,7 +180,9 @@ model Occupation {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   cover     String?
-  Story     Story?   @relation(fields: [story], references: [id])
+
+  storyId String?
+  story   Story?  @relation(fields: [storyId], references: [id])
 }
 
 model Comment {
@@ -181,53 +190,55 @@ model Comment {
   createdAt DateTime @default(now())
   commentBy String?
   content   String
-  story     String?
+  storyId   String?
   user      User?    @relation(fields: [commentBy], references: [id], onDelete: Cascade)
-  story     Story?   @relation(fields: [story], references: [id], onDelete: Cascade)
+  story     Story?   @relation(fields: [storyId], references: [id], onDelete: Cascade)
 }
 
 model StorySession {
-  id         Int       @id @default(autoincrement())
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  story      String
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   stats      String
   skills     String
-  player     String
   items      String?
   name       String
   age        Int
   backstory  String?
   occupation String?
   storyName  String?
-  chapter     String?
-  user        User      @relation(fields: [player], references: [id])
-  chapter     Chapter?  @relation(fields: [chapter], references: [id])
-  story       Story     @relation(fields: [story], references: [id])
-  messages    Message[]
+  storyId    String
+
+  messages StoryMessage[]
+
+  playerId  String
+  player    User     @relation(fields: [playerId], references: [id])
+  chapterId String?
+  chapter   Chapter? @relation(fields: [chapterId], references: [id])
 }
 
 model Like {
   createdAt DateTime @default(now())
   likedBy   String
-  story     String
+  storyId   String
 
-  @@id([likedBy, story])
+  user  User  @relation(fields: [likedBy], references: [id])
+  story Story @relation(fields: [storyId], references: [id])
+
+  @@id([likedBy, storyId])
 }
 
-model Message {
-  id          Int          @id @default(autoincrement())
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  role        String
-  content     String
-  template    String?
-  entry       Boolean      @default(false)
-  chapter     String
-  hash        String?
-  gameSession Int?
-  author      String?
-  user        User?        @relation(fields: [author], references: [id], onDelete: Cascade)
-  storySession StorySession? @relation(fields: [gameSession], references: [id])
-  chapter     Chapter      @relation(fields: [chapter], references: [id], onDelete: Cascade)
+model StoryMessage {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  role      String
+  content   String
+  template  String?
+  entry     Boolean       @default(false)
+  chapterId String
+  hash      String?
+  sessionId String?
+  author    String?
+  session   StorySession? @relation(fields: [sessionId], references: [id])
 }
