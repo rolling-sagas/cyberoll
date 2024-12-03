@@ -1,24 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-// Query D1 using Prisma ORM: 
-// https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm/
-
-// Create the local D1
-// pnpm wrangler d1 migrations create rsDb __YOUR_TABLE_NAME__
-// OR restore the EMPTY database from migrations:
-// pnpm wrangler d1 migrations apply rsDb
-
-// pnpm npx prisma migrate diff \
-//   --from-local-d1 \
-//   --to-schema-datamodel ./prisma/schema.prisma \
-//   --script \
-//   --output migrations/__YOUR_TABLE_SQL
-
-// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --local
-// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --remote
-// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --remote --preview
-// pnpm prisma generate
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
@@ -29,61 +8,214 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Message {
-  id      Int    @id @default(autoincrement())
-  role    String
+model Account {
+  id                String   @id
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  User              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  content  String?
-  template String?
-  entry    Boolean @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId Int
+  @@unique([provider, providerAccountId])
 }
 
-model Property {
-  id Int @id @default(autoincrement())
+model AppleCustomer {
+  userId          String   @unique
+  appAccountToken String   @unique
+  createdAt       DateTime @default(now())
+  User            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  name    String
-  type    String // property type
-  value   String // Raw json obj or Origin Value
-  initial String // initial value of the property
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+  User                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId Int
+  @@id([userId, credentialID])
 }
 
 model Chapter {
-  id Int @id @default(autoincrement())
-
+  id          String        @id
   name        String
+  initial     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   description String?
+  story       String
+  maxTurns    Int
+  nextChapter String
+  first       Boolean
+  previous    String?
+  cover       String?
+  rulesChunk  String?
+  Story       Story         @relation(fields: [story], references: [id], onDelete: Cascade)
+  GameSession GameSession[]
+  Message     Message[]
+}
 
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  commentBy String?
+  content   String
+  story     String?
+  User      User?    @relation(fields: [commentBy], references: [id], onDelete: Cascade)
+  Story     Story?   @relation(fields: [story], references: [id], onDelete: Cascade)
+}
+
+model Credits {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  type         String
+  value        Int
+  changeReason String
+  createdAt    DateTime @default(now())
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model GameSession {
+  id         Int       @id @default(autoincrement())
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  story      String
+  stats      String
+  skills     String
+  player     String
+  items      String?
+  name       String
+  age        Int
+  backstory  String?
+  occupation String?
+  storyName  String?
+  chapter    String?
+  User       User      @relation(fields: [player], references: [id])
+  Chapter    Chapter?  @relation(fields: [chapter], references: [id])
+  Story      Story     @relation(fields: [story], references: [id])
+  Message    Message[]
+}
+
+model Like {
+  createdAt DateTime @default(now())
+  likedBy   String
+  story     String
+
+  @@id([likedBy, story])
+}
+
+model Message {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  role        String
+  content     String
+  template    String?
+  entry       Boolean      @default(false)
+  chapter     String
+  hash        String?
+  gameSession Int?
+  author      String?
+  User        User?        @relation(fields: [author], references: [id], onDelete: Cascade)
+  GameSession GameSession? @relation(fields: [gameSession], references: [id])
+  Chapter     Chapter      @relation(fields: [chapter], references: [id], onDelete: Cascade)
+}
+
+model Occupation {
+  id        String   @id
+  story     String?
+  name      String
+  stats     String?
+  skills    String?
+  items     String?
+  backstory String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cover     String?
+  Story     Story?   @relation(fields: [story], references: [id])
+}
 
-  messages Message[]
-  properties Property[] // local properties
-
-  story   Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  storyId Int
+model Session {
+  id           String   @id
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  User         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Story {
-  id Int @id @default(autoincrement())
-
-  name        String  @unique
+  id          String        @id
+  name        String
   cover       String?
-  description String?
+  description String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  author      String
+  keepPrivate Boolean       @default(false)
+  template    String?
+  Chapter     Chapter[]
+  Comment     Comment[]
+  GameSession GameSession[]
+  Occupation  Occupation[]
+  User        User          @relation(fields: [author], references: [id], onDelete: Cascade)
+}
 
+model StripeCustomer {
+  userId     String   @unique
+  customerId String   @unique
+  createdAt  DateTime @default(now())
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SubscriptionNotification {
+  id        String   @id
+  userId    String
+  platform  String
+  raw       String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  chapters    Chapter[]
+model User {
+  id                       String                     @id
+  name                     String?
+  email                    String?                    @unique
+  emailVerified            DateTime?
+  image                    String?
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  Account                  Account[]
+  AppleCustomer            AppleCustomer?
+  Authenticator            Authenticator[]
+  Comment                  Comment[]
+  Credits                  Credits[]
+  GameSession              GameSession[]
+  Message                  Message[]
+  Session                  Session[]
+  Story                    Story[]
+  StripeCustomer           StripeCustomer?
+  SubscriptionNotification SubscriptionNotification[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
 }
