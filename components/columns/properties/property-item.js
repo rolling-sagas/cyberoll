@@ -1,6 +1,4 @@
 import dayjs from "dayjs";
-
-
 import dynamic from "next/dynamic"
 const CodeEditor = dynamic(() => import('@/components/editors/code-editor'),
   { ssr: false })

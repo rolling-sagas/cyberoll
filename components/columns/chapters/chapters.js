@@ -1,114 +1,41 @@
-"use client";
-import toast from "react-hot-toast/headless";
+'use client';
+import toast from 'react-hot-toast/headless';
 
-import { useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
-import { create, createStore, useStore } from "zustand";
+import { useModalStore } from '@/components/modal/dialog-placeholder';
+import { useAlertStore } from '@/components/modal/alert-placeholder';
+import Alert from '@/components/modal/alert';
 
-import { useModalStore } from "@/components/modal/dialog-placeholder";
-import { useAlertStore } from "@/components/modal/alert-placeholder";
-import Alert from "@/components/modal/alert";
+import Spinner from '../spinner';
+import BaseButton from '@/components/buttons/base-button';
+import ChapterItem from './chapter-item';
 
-import Spinner from "../spinner";
-import BaseButton from "@/components/buttons/base-button";
-import ChapterItem from "./chapter-item";
+import { BubbleChatAddIcon, CheckmarkCircle01Icon } from '@hugeicons/react';
+import CreateChapterDialog from './create-chapter-dialog';
+import { parseError } from '@/components/utils';
 
-import { BubbleChatAddIcon, CheckmarkCircle01Icon } from "@hugeicons/react";
-import CreateChapterDialog from "./create-chapter-dialog";
-import { parseError } from "@/components/utils";
+import {
+  getChapters,
+  createChapter,
+  deleteChapter,
+  updateChapter,
+  copyChapter,
+} from '@/service/chapter';
 
-const createChaptersStore = (storyId) =>
-  createStore((set, get) => ({
-    chapters: [],
-    errors: [],
-
-    loading: "pending",
-
-    listChapters: async () => {
-      const response = await fetch(`/api/story/${storyId}/chapter`);
-      const res = await response.json();
-      if (res.error) {
-        throw res.error
-      } else {
-        set({ chapters: res, loading: "loaded" });
-      }
-    },
-
-    newChapter: async (name, description) => {
-      const response = await fetch(`/api/story/${storyId}/chapter`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ data: { name: name, description: description } }),
-      });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error
-      }
-    },
-
-    updateChapter: async (id, name, description) => {
-      const response = await fetch(`/api/story/${storyId}/chapter/` + id, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ data: { name: name, description: description } }),
-      });
-
-      const res = await response.json();
-      if (res.error) {
-        throw res.error
-      }
-    },
-
-    copyChapter: async (id, name, description, reset = true) => {
-      const url = `/api/story/${storyId}/chapter/` + id + "/copy"
-      const search = new URLSearchParams({ reset: reset }).toString();
-      console.log(url + "?" + search)
-      const response = await fetch(url + "?" + search, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({ data: { name, description } }),
-      });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error
-      }
-
-      return res
-    },
-
-    deleteChapter: async (id) => {
-      const response = await fetch(`/api/story/${storyId}/chapter/` + id, {
-        method: "DELETE",
-        headers: {
-          "Content-type": "application/json",
-        },
-      });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error
-      }
-    },
-
-  }))
-
-const CreateChapter = function({ storeRef }) {
-  const listChapters = useStore(storeRef.current, (state) => state.listChapters);
-  const newChapter = useStore(storeRef.current, (state) => state.newChapter);
-
+const CreateChapter = function ({ listChapters, storyId }) {
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
   function AlertError(message) {
-    openAlert(<Alert title="Oops, something wrong!"
-      message={message}
-      confirmLabel="OK" />)
+    openAlert(
+      <Alert
+        title="Oops, something wrong!"
+        message={message}
+        confirmLabel="OK"
+      />
+    );
   }
 
   return (
@@ -118,25 +45,28 @@ const CreateChapter = function({ storeRef }) {
         onClick={() =>
           openModal(
             <CreateChapterDialog
-              title={"Create chapter"}
-              onConfirm={async (name, desc) => {
-                const tid = toast.loading("Creating chapter...", {
+              title={'Create chapter'}
+              onConfirm={async (data) => {
+                const tid = toast.loading('Creating chapter...', {
                   icon: <Spinner />,
                 });
                 try {
-                  await newChapter(name, desc);
-                  toast.success("Chapter created", {
+                  await createChapter({
+                    ...data,
+                    storyId,
+                  });
+                  toast.success('Chapter created', {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
                 } catch (e) {
-                  toast.dismiss(tid)
-                  AlertError("Can't create the chapter: " + parseError(e))
+                  toast.dismiss(tid);
+                  AlertError("Can't create the chapter: " + parseError(e));
                 } finally {
                   await listChapters();
                 }
               }}
-            />,
+            />
           )
         }
       >
@@ -151,37 +81,42 @@ const CreateChapter = function({ storeRef }) {
 };
 
 export default function Chapters({ storyId }) {
-  const router = useRouter()
+  const router = useRouter();
 
-  const storeRef = useRef(createChaptersStore(storyId));
-
-  const listChapters = useStore(storeRef.current, (state) => state.listChapters);
-  const newChapter = useStore(storeRef.current, (state) => state.newChapter);
-  const copyChapter = useStore(storeRef.current, (state) => state.copyChapter);
-  const updateChapter = useStore(storeRef.current, (state) => state.updateChapter);
-  const deleteChapter = useStore(storeRef.current, (state) => state.deleteChapter);
-  const chapters = useStore(storeRef.current, (state) => state.chapters);
-  const loading = useStore(storeRef.current, (state) => state.loading);
-
+  const [chapters, setChapters] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const listChapters = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getChapters(storyId);
+      setChapters(data.chapters || []);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
   function AlertError(message) {
-    openAlert(<Alert title="Oops, something wrong!"
-      message={message}
-      confirmLabel="OK" />)
+    openAlert(
+      <Alert
+        title="Oops, something wrong!"
+        message={message}
+        confirmLabel="OK"
+      />
+    );
   }
 
   useEffect(() => {
     listChapters();
-  }, [listChapters]);
+  }, [storyId]);
 
   const onEditChapter = (chapter) => {
-    router.push(`/ch/${chapter.id}`)
+    router.push(`/ch/${chapter.id}`);
   };
 
-  if (loading === "pending") {
+  if (loading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
         <Spinner />
@@ -201,18 +136,21 @@ export default function Chapters({ storyId }) {
           onClick={() => {
             openModal(
               <CreateChapterDialog
-                onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Creating chapter...", {
+                onConfirm={async (data) => {
+                  const tid = toast.loading('Creating chapter...', {
                     icon: <Spinner />,
                   });
-                  await newChapter(name, desc);
+                  await createChapter({
+                    ...data,
+                    storyId,
+                  });
                   await listChapters();
-                  toast.success("Chapter created", {
+                  toast.success('Chapter created', {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
                   });
                 }}
-              />,
+              />
             );
           }}
         />
@@ -222,7 +160,10 @@ export default function Chapters({ storyId }) {
 
   return (
     <>
-      <CreateChapter storeRef={storeRef} />
+      <CreateChapter
+        listChapters={listChapters}
+        storyId={storyId}
+      />
       {chapters.map((chapter) => (
         <ChapterItem
           key={chapter.id}
@@ -231,52 +172,56 @@ export default function Chapters({ storyId }) {
           onUpdateClick={() => {
             openModal(
               <CreateChapterDialog
-                name={chapter.name}
-                desc={chapter.description}
-                onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Updating chapter...", {
+                data={chapter}
+                onConfirm={async (data) => {
+                  const tid = toast.loading('Updating chapter...', {
                     icon: <Spinner />,
                   });
                   try {
-                    await updateChapter(chapter.id, name, desc);
-                    toast.success("Chapter updated", {
+                    await updateChapter({
+                      ...chapter,
+                      ...data
+                    });
+                    toast.success('Chapter updated', {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
                   } catch (e) {
-                    AlertError("Can't update the chapter: " + parseError(e))
+                    AlertError("Can't update the chapter: " + parseError(e));
                   } finally {
                     await listChapters();
-                    toast.dismiss(tid)
+                    toast.dismiss(tid);
                   }
                 }}
-              />,
+              />
             );
           }}
           onDuplicateClick={() => {
             openModal(
               <CreateChapterDialog
                 title="Duplicate chapter"
-                name={chapter.name + " copy"}
-                desc={chapter.description}
-                onConfirm={async (name, desc) => {
-                  const tid = toast.loading("Duplicating chapter...", {
+                data={{ name: chapter.name + ' copy', description: chapter.description }}
+                onConfirm={async (data) => {
+                  const tid = toast.loading('Duplicating chapter...', {
                     icon: <Spinner />,
                   });
                   try {
-                    const res = await copyChapter(chapter.id, name, desc, false);
-                    router.push(`/ch/${res.id}`)
-                    toast.success("Chapter duplicated", {
+                    const res = await copyChapter({
+                      ...chapter,
+                      ...data,
+                    });
+                    router.push(`/ch/${res.id}`);
+                    toast.success('Chapter duplicated', {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
                   } catch (e) {
-                    AlertError("Can't dulicate the chapter: " + parseError(e))
+                    AlertError("Can't dulicate the chapter: " + parseError(e));
                   } finally {
-                    toast.dismiss(tid)
+                    toast.dismiss(tid);
                   }
                 }}
-              />,
+              />
             );
           }}
           onDeleteClick={async () => {
@@ -286,24 +231,23 @@ export default function Chapters({ storyId }) {
                 message="If you delete this chapter, 
                 you won't be able to restore it."
                 onConfirm={async () => {
-                  const tid = toast.loading("Deleting chapter...", {
+                  const tid = toast.loading('Deleting chapter...', {
                     icon: <Spinner />,
                   });
                   try {
-
                     await deleteChapter(chapter.id);
-                    toast.success("Chapter deleted", {
+                    toast.success('Chapter deleted', {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
-                  } catch (e) {
-                    AlertError("Can't delete the chapter: " + parseError(e))
-                  } finally {
                     await listChapters();
-                    toast.dismiss(tid)
+                  } catch (e) {
+                    AlertError("Can't delete the chapter: " + parseError(e));
+                  } finally {
+                    toast.dismiss(tid);
                   }
                 }}
-              />,
+              />
             );
           }}
         />

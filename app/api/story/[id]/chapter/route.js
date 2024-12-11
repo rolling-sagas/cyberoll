@@ -8,7 +8,6 @@ const LIST_LIMIT = 24;
 export async function GET(req, { params }) {
   try {
     const { limit, skip } = req.nextUrl.searchParams;
-    const storyId = parseInt(params.id);
 
     const res = await prisma.chapter.findMany({
       skip: skip ? parseInt(skip) : 0,
@@ -19,7 +18,7 @@ export async function GET(req, { params }) {
           select: { messages: true },
         },
       },
-      where: { storyId: storyId },
+      where: { storyId: params.id },
       orderBy: { updatedAt: "desc" },
     });
 

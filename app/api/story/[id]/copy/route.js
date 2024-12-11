@@ -5,8 +5,7 @@ export const runtime = "edge";
 const LIST_LIMIT = 512;
 
 export async function POST(req, { params }) {
-  const sid = parseInt(params.id)
-  console.log("duplicate this story - id:", sid);
+  console.log("duplicate this story - id:", params.id);
   // get the 'refresh' search params
   let reset = req.nextUrl.searchParams.get('reset')
   if (reset && reset === "true") {
@@ -18,7 +17,7 @@ export async function POST(req, { params }) {
 
   try {
     const story = await prisma.story.findUnique({
-      where: { id: sid },
+      where: { id: params.id },
       include: {
         chapters: {
           include: {

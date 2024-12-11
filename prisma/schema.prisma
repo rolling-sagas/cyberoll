@@ -31,7 +31,7 @@ model User {
   subscriptionNotifications SubscriptionNotification[]
   likes                     Like[]
   comments                  Comment[]
-  storys                    Story[]
+  stories                   Story[]
   storySessions             StorySession[]
 }
 

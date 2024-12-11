@@ -6,9 +6,9 @@ export const runtime = "edge";
 
 export async function GET(_, { params }) {
   try {
-    const id = parseInt(params.id); // story id
+    const { id } = params; // story id
     const res = await prisma.story.findUnique({
-      where: { id: id },
+      where: { id, },
     });
     return Response.json(res);
   } catch (e) {
@@ -19,11 +19,11 @@ export async function GET(_, { params }) {
 
 export async function POST(req, { params }) {
   try {
-    const id = parseInt(params.id);
+    const { id } = params;
     const { data } = await req.json()
 
     await prisma.story.update({
-      where: { id: id },
+      where: { id, },
       data: data
     });
     return Response.json({ ok: true });
@@ -34,10 +34,10 @@ export async function POST(req, { params }) {
 }
 
 export async function DELETE(_, { params }) {
-  const id = parseInt(params.id);
+  const { id } = params;
   try {
     await prisma.story.delete({
-      where: { id: id },
+      where: { id, },
     });
     return Response.json({ ok: true });
   } catch (e) {

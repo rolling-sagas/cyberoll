@@ -1,0 +1,47 @@
+// this file is used for client
+import http from '@/utils/http';
+
+// 获取 story chapter 列表
+export async function getMessages(chid) {
+  const res = await http.get(`/m`, {
+    params: {
+      chid,
+    }
+  });
+  return res;
+}
+
+export async function getMessage(chid) {
+  const res = await http.get(`/m/${chid}`);
+  return res;
+}
+
+export async function createMessage(chid, role, raw) {
+  const content = { data: [{ type: "md", value: raw }] }
+  const msg = {
+    chapterId: chid,
+    role,
+    content: role === "user" || role === "assistant" ? JSON.stringify(content) : raw
+  }
+
+  const res = await http.post(`/m`, msg);
+  return res;
+}
+
+export async function updateMessage(mid, role, content) {
+  const res = await http.post(`/m/${mid}`, {
+    role,
+    content,
+  });
+  return res;
+}
+
+export async function deleteMessage(mid) {
+  const res = await http.delete(`/m/${mid}`);
+  return res;
+}
+
+export async function copyMessage(data) {
+  const res = await http.post(`/m/${data.id}/copy`, data);
+  return res;
+}

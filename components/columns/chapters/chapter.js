@@ -1,5 +1,5 @@
 import toast from "react-hot-toast/headless";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createStore, useStore } from "zustand";
 import Spinner from "../spinner";
@@ -8,6 +8,14 @@ import { useModalStore } from "@/components/modal/dialog-placeholder";
 import CreateMessageDialog from "./create-message-dialog";
 import CreateChapterDialog from "./create-chapter-dialog";
 import { createPropertyStore } from "@/components/columns/properties/properties";
+import {
+  getMessage,
+  getMessages,
+  createMessage,
+  copyMessage,
+  deleteMessage,
+  updateMessage,
+} from '@/service/message';
 
 const createChapterStore = (data) =>
   createStore((set, get) => ({
@@ -34,17 +42,6 @@ const createChapterStore = (data) =>
       }
     },
 
-    listMessages: async () => {
-      const response = await fetch(`/api/chapter/${data.id}/message`);
-      const res = await response.json();
-
-      if (res.error) {
-        throw res.error
-      } else {
-        set({ messages: res, loading: "loaded" });
-      }
-    },
-
     resetMessages: async () => {
       const response = await fetch(`/api/chapter/${data.id}/message/reset`, {
         method: "POST",
@@ -65,69 +62,6 @@ const createChapterStore = (data) =>
       }
     },
 
-    newMessage: async (role, raw) => {
-      const content = { data: [{ type: "md", value: raw }] }
-      const newMessages = [{
-        role: role, content:
-          role === "user" || role === "assistant" ?
-            JSON.stringify(content) : raw
-      }]
-
-      set({
-        messages: [...newMessages.map((m, idx) => {
-          m.id = idx + 512
-          return m
-        }), ...get().messages]
-      })
-
-      const response = await fetch(`/api/chapter/${data.id}/message`, {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            role: role,
-            content: role === "user" || role === "assistant" ?
-              JSON.stringify(content) : raw
-          }
-        }),
-      });
-
-      const res = await response.json();
-      if (res.error) {
-        throw res.error
-      }
-
-      return res
-      // TODO: maybe add the new message to list directly
-      // console.log(message);
-    },
-
-    updateMessage: async (mid, role, content) => {
-      const response = await fetch(
-        "/api/chapter/" + data.id + "/message/" + mid,
-        {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify({
-            data: { role: role, content: content },
-          }),
-        },
-      );
-
-      const res = await response.json();
-
-      if (res.error) {
-        throw res.error
-      }
-      return res
-      // TODO: maybe update the message from list directly
-      // console.log(message);
-    },
-
     setEntryMessage: async (mid) => {
       const response = await fetch(
         "/api/chapter/" + data.id + "/message/" + mid + "/entry",
@@ -140,23 +74,6 @@ const createChapterStore = (data) =>
       );
       const res = await response.json();
 
-      if (res.error) {
-        throw res.error
-      }
-      return res
-    },
-
-    deleteMessage: async (mid) => {
-      const response = await fetch(
-        "/api/chapter/" + data.id + "/message/" + mid,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-type": "application/json",
-          },
-        },
-      );
-      const res = await response.json();
       if (res.error) {
         throw res.error
       }
@@ -268,6 +185,24 @@ import { parseError } from "@/components/utils";
 
 export default function Chapter({ data }) {
   const router = useRouter();
+  const [messages, setMessages] = useState([])
+  const [loading, setLoading] = useState(true)
+  const listMessages = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await getMessages(data.id);
+      setMessages((res.messages || []).reverse());
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    listMessages();
+  }, []);
+
+
+
   const storeRef = useRef(createChapterStore(data));
 
   const openModal = useModalStore((state) => state.open);
@@ -279,34 +214,15 @@ export default function Chapter({ data }) {
       confirmLabel="OK" />)
   }
 
-  const listMessages = useStore(
-    storeRef.current,
-    (state) => state.listMessages,
-  );
-
   const resetChapter = useStore(
     storeRef.current,
     (state) => state.resetChapter,
   );
 
   const copyChapter = useStore(storeRef.current, (state) => state.copyChapter);
-
-
-  const newMessage = useStore(storeRef.current, (state) => state.newMessage);
-
-  const deleteMessage = useStore(
-    storeRef.current,
-    (state) => state.deleteMessage,
-  );
-
   const deleteMessagesBelow = useStore(
     storeRef.current,
     (state) => state.deleteMessagesBelow,
-  );
-
-  const updateMessage = useStore(
-    storeRef.current,
-    (state) => state.updateMessage,
   );
 
   const setEntryMessage = useStore(
@@ -318,9 +234,6 @@ export default function Chapter({ data }) {
 
   const generate = useStore(storeRef.current, (state) => state.generate);
   const regenerate = useStore(storeRef.current, (state) => state.regenerate);
-
-  const messages = useStore(storeRef.current, (state) => state.messages);
-  const loading = useStore(storeRef.current, (state) => state.loading);
 
   const addColumn = useColumnsStore((state) => state.addColumn);
   const rmColumn = useColumnsStore(state => state.rmColumn);
@@ -343,12 +256,6 @@ export default function Chapter({ data }) {
   }
 
   const [showProperties, setShowProperties] = useState(true)
-
-  useEffect(() => {
-    if (listMessages) {
-      listMessages();
-    }
-  }, [listMessages]);
 
   useEffect(() => {
     if (showProperties) {
@@ -472,7 +379,7 @@ export default function Chapter({ data }) {
     })
   }, [addColumn, rmColumn, showProperties, data.id]);
 
-  if (loading === "pending") {
+  if (loading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
         <Spinner />
@@ -497,7 +404,8 @@ export default function Chapter({ data }) {
                     icon: <Spinner />,
                   });
                   try {
-                    await newMessage(role, content);
+                    await createMessage(data.id, role, content);
+                    await listMessages()
                     scrollToBottom()
                     if (autoGen) {
                       toast.loading("Generating...", {
@@ -626,13 +534,16 @@ export default function Chapter({ data }) {
                     const tid = toast.loading("Updating message...", {
                       icon: <Spinner />,
                     });
-                    // console.log(role, content);
-                    await updateMessage(msg.id, role, content);
-                    await listMessages();
-                    toast.success("Message updated", {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
+                    try {
+                      await updateMessage(msg.id, role, content);
+                      await listMessages();
+                      toast.success("Message updated", {
+                        id: tid,
+                        icon: <CheckmarkCircle01Icon />,
+                      });
+                    } finally {
+                      toast.dismiss(tid)
+                    }
                   }}
                 />,
               );
@@ -674,7 +585,8 @@ export default function Chapter({ data }) {
                     icon: <Spinner />,
                   });
                   try {
-                    await newMessage(role, content);
+                    await createMessage(data.id, role, content);
+                    await listMessages()
                     // console.log(role, content, autoGen);
                     if (autoGen) {
                       await generate();

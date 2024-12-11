@@ -8,17 +8,17 @@ import { TextIcon, Menu01Icon } from "@hugeicons/react";
 
 import Dialog, { Input } from "@/components/modal/dialog";
 
-export default function CreateChapterDialog({ name, desc, onConfirm, title }) {
+export default function CreateChapterDialog({ data = {}, onConfirm, title }) {
   const closeModal = useModalStore((state) => state.close);
 
-  const [tName, setTName] = useState(name || "");
-  const [tDesc, setTDesc] = useState(desc || "");
+  const [tName, setTName] = useState(data.name || "");
+  const [tDesc, setTDesc] = useState(data.description || "");
 
   const canCreate = tName.trim().length > 0;
 
   return (
     <Dialog
-      title={title ? title : (name ? "Edit chapter" : "New chapter")}
+      title={title ? title : (data.name ? "Edit chapter" : "New chapter")}
       header={
         <Input
           name="name"
@@ -45,7 +45,10 @@ export default function CreateChapterDialog({ name, desc, onConfirm, title }) {
           disabled={!canCreate}
           onClick={async () => {
             closeModal();
-            onConfirm(tName, tDesc);
+            onConfirm({
+              name: tName,
+              description: tDesc
+            });
           }}
         />
       }

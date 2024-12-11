@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 
 import Chapter from "@/components/columns/chapters/chapter";
 import CircleIconButton from "@/components/buttons/circle-icon-button";
+import { getChapter } from "@/service/chapter";
 
 export default function Page({ params }) {
   const router = useRouter()
@@ -21,14 +22,11 @@ export default function Page({ params }) {
   const reset = useColumnsStore((state) => state.reset);
 
   useEffect(() => {
-    async function fetchChapter() {
-      let res = await fetch("/api/chapter/" + id)
-      let data = await res.json()
-      // console.log("chapter data", data)
-      setChapter(data)
+    async function fetchChapter(id) {
+      let res = await getChapter(id)
+      setChapter(res)
     }
 
-    // console.log("fetch chapter data", id)
     reset()
     fetchChapter(id)
   }, [id])

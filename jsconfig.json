@@ -16,6 +16,12 @@
       ],
       "@/api/*": [
         "api/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ],
+      "@/service/*": [
+        "service/*"
       ]
     }
   }
