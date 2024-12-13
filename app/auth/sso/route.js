@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import ifetch from '@/utils/ifetch';
-import { NextResponse } from 'next/server';
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
 
 export const runtime = 'edge';
@@ -18,12 +17,21 @@ export async function GET({ url }) {
     if (!res.ok) throw "[sso] can't validate token";
     const session = await res.json();
     if (!session) throw "[sso] can't validate token";
-    const response = NextResponse.redirect(origin);
-    response.cookies.set(SSO_TOKEN_KEY, token, {
-      expires: new Date(session.expires),
+
+    const expires = new Date(session.expires).toUTCString(); //  确保 expires 是 UTC 格式
+    const cookieValue = `${SSO_TOKEN_KEY}=${token}; Path=/; Expires=${expires}; SameSite=Strict`; //  构建 Cookie 字符串
+
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': origin,
+        'Set-Cookie': cookieValue,
+      },
     });
-    return response;
   } catch (e) {
+    return new Response(e.message, {
+      status: 200
+    })
     console.error('[sso] error', e);
     redirect('/auth');
   }
