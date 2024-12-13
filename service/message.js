@@ -36,8 +36,12 @@ export async function updateMessage(mid, role, content) {
   return res;
 }
 
-export async function deleteMessage(mid) {
-  const res = await http.delete(`/m/${mid}`);
+export async function deleteMessage(mid, deleteBelow = false) {
+  const res = await http.delete(`/m/${mid}`, {
+    params: {
+      below: deleteBelow ? 'true' : ''
+    }
+  });
   return res;
 }
 

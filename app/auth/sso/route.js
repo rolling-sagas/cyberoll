@@ -3,6 +3,7 @@ import ifetch from '@/utils/ifetch';
 import { NextResponse } from 'next/server';
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
 
+export const runtime = 'edge';
 
 export async function GET({ url }) {
   try {
