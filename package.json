@@ -38,10 +38,12 @@
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
     "react-textarea-autosize": "^8.5.3",
-    "zustand": "^4.5.4"
+    "wrangler": "^3.95.0",
+    "zustand": "^4.5.4",
+    "vercel": "39.1.1"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.2",
+    "@cloudflare/next-on-pages": "^1.13.7",
     "@next/bundle-analyzer": "^14.2.5",
     "@prisma/adapter-d1": "^5.18.0",
     "@prisma/client": "^5.18.0",
@@ -51,7 +53,9 @@
     "eslint-plugin-storybook": "^0.8.0",
     "postcss": "^8.4.41",
     "prisma": "^5.18.0",
-    "tailwindcss": "^3.4.8",
-    "wrangler": "^3.91.0"
+    "tailwindcss": "^3.4.8"
+  },
+  "overrides": {
+    "vercel": "$vercel"
   }
 }

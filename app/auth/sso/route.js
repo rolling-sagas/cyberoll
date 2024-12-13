@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { NextResponse } from "next/server";
 import ifetch from '@/utils/ifetch';
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
 
@@ -29,10 +29,7 @@ export async function GET({ url }) {
       },
     });
   } catch (e) {
-    return new Response(e.message, {
-      status: 200
-    })
     console.error('[sso] error', e);
-    redirect('/auth');
+    return NextResponse.redirect('/auth');
   }
 }
