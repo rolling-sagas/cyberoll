@@ -52,7 +52,7 @@ const TypeSwitch = function({ value, disabled, onChange }) {
   );
 };
 
-export default function CreatePropertyDialog({ name, type, value, initial,
+export default function CreateComponentDialog({ name, type, value, initial,
   onConfirm, onImageConfirm }) {
 
   const closeModal = useModalStore((state) => state.close);
@@ -82,7 +82,7 @@ export default function CreatePropertyDialog({ name, type, value, initial,
   return (
     <Dialog
       width={width}
-      title={name ? "Edit property" : "New property"}
+      title={name ? "Edit component" : "New component"}
 
       header={
         <Input
@@ -111,7 +111,7 @@ export default function CreatePropertyDialog({ name, type, value, initial,
               value={showInitial ? pInitial : pValue}
               onChange={showInitial ? setInitial : setValue}
               icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
-              placeholder="Required, value of the property"
+              placeholder="Required, value of the component"
               autoSize={true}
             />
           )}
@@ -122,7 +122,7 @@ export default function CreatePropertyDialog({ name, type, value, initial,
               value={showInitial ? pInitial : pValue}
               onChange={showInitial ? setInitial : setValue}
               icon=<Menu01Icon className="text-rs-text-secondary" size={20} />
-              placeholder="Required, value of the property"
+              placeholder="Required, value of the component"
               autoSize={false}
             />
           )}

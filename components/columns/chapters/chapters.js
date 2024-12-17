@@ -93,7 +93,7 @@ export default function Chapters({ storyId }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [storyId]);
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);

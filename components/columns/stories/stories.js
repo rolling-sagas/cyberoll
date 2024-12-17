@@ -210,12 +210,15 @@ export default function Stories() {
               <CreateStoryDialog
                 name={story.name}
                 desc={story.description}
-                onConfirm={async data => {
+                onConfirm={async (name, description) => {
                   const tid = toast.loading('Updating story...', {
                     icon: <Spinner />,
                   });
                   try {
-                    await updateStory(story.id, data);
+                    await updateStory(story.id, {
+                      name,
+                      description,
+                    });
                     toast.success('Story updated', {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,

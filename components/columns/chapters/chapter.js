@@ -7,7 +7,7 @@ import BaseButton from '@/components/buttons/base-button';
 import { useModalStore } from '@/components/modal/dialog-placeholder';
 import CreateMessageDialog from './create-message-dialog';
 import CreateChapterDialog from './create-chapter-dialog';
-import { createPropertyStore } from '@/components/columns/properties/properties';
+import { createComponentStore } from '@/components/columns/components/components';
 import {
   getMessage,
   getMessages,
@@ -15,9 +15,10 @@ import {
   copyMessage,
   deleteMessage,
   updateMessage,
+  setEntryMessage,
 } from '@/service/message';
 
-import { copyChapter } from '@/service/chapter';
+import { copyChapter, resetChapter } from '@/service/chapter';
 
 const createChapterStore = (data) =>
   createStore((set, get) => ({
@@ -31,34 +32,6 @@ const createChapterStore = (data) =>
       if (res.error) {
         throw res.error;
       }
-    },
-
-    resetChapter: async () => {
-      const response = await fetch(`/api/chapter/${data.id}/reset`, {
-        method: 'POST',
-      });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
-    },
-
-    setEntryMessage: async (mid) => {
-      const response = await fetch(
-        '/api/chapter/' + data.id + '/message/' + mid + '/entry',
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        }
-      );
-      const res = await response.json();
-
-      if (res.error) {
-        throw res.error;
-      }
-      return res;
     },
 
     callFunction: async (funcName, content) => {
@@ -147,7 +120,7 @@ import MessageItem from './message-item';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
 import Alert from '@/components/modal/alert';
 import { useColumnsStore } from '@/components/columns/pinned-columns';
-import Properties from '../properties/properties';
+import Components from '../components/components';
 import CircleIconButton from '@/components/buttons/circle-icon-button';
 import {
   ItemMenuButton,
@@ -168,7 +141,7 @@ export default function Chapter({ data }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     listMessages();
@@ -189,21 +162,6 @@ export default function Chapter({ data }) {
     );
   }
 
-  const resetChapter = useStore(
-    storeRef.current,
-    (state) => state.resetChapter
-  );
-
-  const deleteMessagesBelow = useStore(
-    storeRef.current,
-    (state) => state.deleteMessagesBelow
-  );
-
-  const setEntryMessage = useStore(
-    storeRef.current,
-    (state) => state.setEntryMessage
-  );
-
   // const callFunction = useStore(storeRef.current, (state) => state.callFunction);
 
   const generate = useStore(storeRef.current, (state) => state.generate);
@@ -212,18 +170,18 @@ export default function Chapter({ data }) {
   const addColumn = useColumnsStore((state) => state.addColumn);
   const rmColumn = useColumnsStore((state) => state.rmColumn);
   const setHeader = useColumnsStore((state) => state.setHeader);
-  const propsStore = useRef(createPropertyStore(data.id));
+  const propsStore = useRef(createComponentStore(data.id));
 
-  const properties = useStore(propsStore.current, (state) => state.properties);
+  const components = useStore(propsStore.current, (state) => state.components);
 
-  const listProperties = useStore(
+  const listComponents = useStore(
     propsStore.current,
-    (state) => state.listProperties
+    (state) => state.listComponents
   );
 
-  const resetProperties = useStore(
+  const resetComponents = useStore(
     propsStore.current,
-    (state) => state.resetProperties
+    (state) => state.resetComponents
   );
 
   const bottom = useRef(null);
@@ -236,14 +194,14 @@ export default function Chapter({ data }) {
       );
   }
 
-  const [showProperties, setShowProperties] = useState(true);
+  const [showComponents, setShowComponents] = useState(true);
 
   useEffect(() => {
-    if (showProperties) {
+    if (showComponents) {
       addColumn(
-        'properties',
+        'components',
         {
-          headerCenter: 'Properties',
+          headerCenter: 'Components',
           headerRight: (
             <ItemMenuButton
               btn={<CircleIconButton icon={<MoreHorizontalIcon size={12} />} />}
@@ -255,16 +213,16 @@ export default function Chapter({ data }) {
                 onClick={() => {
                   openAlert(
                     <Alert
-                      title="Reset all properties"
-                      message="Reset all properties' value."
+                      title="Reset all components"
+                      message="Reset all components' value."
                       confirmLabel="OK"
                       onConfirm={async () => {
-                        const tid = toast.loading('Reseting properties...', {
+                        const tid = toast.loading('Reseting components...', {
                           icon: <Spinner />,
                         });
                         try {
-                          await resetProperties();
-                          toast.success('Properties updated', {
+                          await resetComponents();
+                          toast.success('Components updated', {
                             id: tid,
                             icon: <CheckmarkCircle01Icon />,
                           });
@@ -272,7 +230,7 @@ export default function Chapter({ data }) {
                           toast.dismiss(tid);
                           AlertError("Can't reset: " + parseError(e));
                         } finally {
-                          await listProperties();
+                          await listComponents();
                         }
                       }}
                     />
@@ -282,10 +240,10 @@ export default function Chapter({ data }) {
             </ItemMenuButton>
           ),
         },
-        <Properties storeRef={propsStore} />
+        <Components storeRef={propsStore} />
       );
     } else {
-      rmColumn('properties');
+      rmColumn('components');
     }
 
     setHeader('chapter', {
@@ -294,10 +252,10 @@ export default function Chapter({ data }) {
           btn={<CircleIconButton icon={<MoreHorizontalIcon size={12} />} />}
         >
           <MenuButtonItem
-            left={showProperties ? 'Hide properties' : 'Show properties'}
-            right={showProperties ? <ViewOffIcon /> : <ViewIcon />}
+            left={showComponents ? 'Hide components' : 'Show components'}
+            right={showComponents ? <ViewOffIcon /> : <ViewIcon />}
             onClick={() => {
-              setShowProperties(!showProperties);
+              setShowComponents(!showComponents);
             }}
           />
           <MenuButtonItem
@@ -307,7 +265,10 @@ export default function Chapter({ data }) {
               openModal(
                 <CreateChapterDialog
                   title="Duplicate chapter"
-                  data={{ name: data.name + ' copy', description: data.description }}
+                  data={{
+                    name: data.name + ' copy',
+                    description: data.description,
+                  }}
                   onConfirm={async (ch) => {
                     const tid = toast.loading('Duplicating chapter...', {
                       icon: <Spinner />,
@@ -346,7 +307,7 @@ export default function Chapter({ data }) {
                   title="Reset chapter"
                   message={
                     'Remove all messages after the entry point, ' +
-                    'and set all properties to initial value.'
+                    'and set all components to initial value.'
                   }
                   confirmLabel="OK"
                   onConfirm={async () => {
@@ -354,7 +315,7 @@ export default function Chapter({ data }) {
                       icon: <Spinner />,
                     });
                     try {
-                      await resetChapter();
+                      await resetChapter(data.id);
                       toast.success('Chapter reset', {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
@@ -364,7 +325,7 @@ export default function Chapter({ data }) {
                       AlertError("Can't reset chapter: " + parseError(e));
                     } finally {
                       await listMessages();
-                      await listProperties();
+                      await listComponents();
                       scrollToBottom();
                     }
                   }}
@@ -375,7 +336,7 @@ export default function Chapter({ data }) {
         </ItemMenuButton>
       ),
     });
-  }, [addColumn, rmColumn, showProperties, data.id]);
+  }, [addColumn, rmColumn, showComponents, data.id]);
 
   if (loading) {
     return (
@@ -446,7 +407,7 @@ export default function Chapter({ data }) {
             key={msg.id}
             isFirst={msg.id === messages[0].id}
             message={msg}
-            props={properties}
+            props={components}
             onCall={async (c) => {
               scrollToBottom();
               const tid = toast.loading('Generating...', {
@@ -466,7 +427,7 @@ export default function Chapter({ data }) {
                 );
 
                 if (res.update) {
-                  await listProperties();
+                  await listComponents();
                 }
               } catch (e) {
                 if (e.error) {
@@ -499,7 +460,7 @@ export default function Chapter({ data }) {
                       const tid = toast.loading('Deleting messages...', {
                         icon: <Spinner />,
                       });
-                      await deleteMessage(msg.id, true)
+                      await deleteMessage(msg.id, true);
                       await listMessages();
                       toast.success('Messages deleted', {
                         id: tid,

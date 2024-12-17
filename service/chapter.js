@@ -35,3 +35,8 @@ export async function copyChapter(data) {
   const res = await http.post(`/ch/${data.id}/copy`, data);
   return res;
 }
+
+export async function resetChapter(chid) {
+  const res = await http.post(`/ch/${chid}/reset`);
+  return res;
+}

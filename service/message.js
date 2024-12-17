@@ -49,3 +49,8 @@ export async function copyMessage(data) {
   const res = await http.post(`/m/${data.id}/copy`, data);
   return res;
 }
+
+export async function setEntryMessage(mid) {
+  const res = await http.post(`/m/${mid}/entry`);
+  return res;
+}

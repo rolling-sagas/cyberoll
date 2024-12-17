@@ -17,14 +17,14 @@ import Image from "next/image";
 import { getImageUrlById } from "@/components/images/utils";
 import { useState } from "react";
 
-export default function PropertyItem({
-  property,
+export default function ComponentItem({
+  component,
   onUpdateClick,
   onDeleteClick,
 }) {
 
-  const [foldContent, setFoldContent] = useState(property.type === "func"
-    || property.type === "obj")
+  const [foldContent, setFoldContent] = useState(component.type === "func"
+    || component.type === "obj")
 
   return (
     <div
@@ -35,14 +35,14 @@ export default function PropertyItem({
         className="pt-1 relative col-start-1 
         row-span-2 text-rs-text-secondary"
       >
-        <TypeIcon type={property.type} />
+        <TypeIcon type={component.type} />
       </div>
       <div className="col-start-2 rows-start-1">
         <div className="flex flex-row items-start">
           <div className="flex-1">
-            <span className="font-semibold">{property.name}</span>
+            <span className="font-semibold">{component.name}</span>
             <span className="text-rs-text-secondary ml-2">
-              {dayjs(property.updatedAt).fromNow(true)}
+              {dayjs(component.updatedAt).fromNow(true)}
             </span>
           </div>
           <div className="flex-0">
@@ -60,24 +60,24 @@ export default function PropertyItem({
         </div>
       </div>
       <div className="col-start-2 rows-start-2 row-span-2 h-ful">
-        {property.type === "img" ? (
+        {component.type === "img" ? (
           <div>
             <Image
-              src={getImageUrlById(JSON.parse(property.value).id)}
+              src={getImageUrlById(JSON.parse(component.value).id)}
               width={720}
               height={360}
               className="w-full h-full rounded-xl"
-              alt={JSON.parse(property.value).desc}
+              alt={JSON.parse(component.value).desc}
             />
-            <div>{JSON.parse(property.value).desc}</div>
+            <div>{JSON.parse(component.value).desc}</div>
           </div>
         ) : (
-          property.type !== "obj" && property.type !== "func" ?
+          component.type !== "obj" && component.type !== "func" ?
             (
-              !foldContent && <div className="whitespace-pre-wrap">{property.value}</div>
+              !foldContent && <div className="whitespace-pre-wrap">{component.value}</div>
             ) : (
-              !foldContent && <CodeEditor value={property.value}
-                lang={property.type === "obj" ? "json" : "js"} />
+              !foldContent && <CodeEditor value={component.value}
+                lang={component.type === "obj" ? "json" : "js"} />
             )
         )}
         <div
@@ -94,7 +94,7 @@ export default function PropertyItem({
 
           <ToolButton
             onClick={() => {
-              navigator.clipboard.writeText(property.value);
+              navigator.clipboard.writeText(component.value);
             }}
           >
             <Copy01Icon size={18} strokeWidth={1.5} />
