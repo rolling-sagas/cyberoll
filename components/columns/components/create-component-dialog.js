@@ -145,8 +145,10 @@ export default function CreateComponentDialog({ name, type, value, initial,
 
           {pType === "img" && (
             <ImageUploader
+              key={showInitial}
               value={showInitial ? pInitial : pValue}
               onChange={(desc, file) => {
+                console.log(desc, file)
                 setImageDesc(desc)
                 setImage(file)
               }} />

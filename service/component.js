@@ -15,52 +15,18 @@ export async function getComponent(coid) {
   return res;
 }
 
-export async function createComponent(coid, role, raw) {
-  const content = { data: [{ type: "md", value: raw }] }
-  const msg = {
-    chapterId: coid,
-    role,
-    content: role === "user" || role === "assistant" ? JSON.stringify(content) : raw
-  }
-
-  const res = await http.post(`/co`, msg);
+export async function createComponent(data) {
+  const res = await http.post(`/co`, data);
   return res;
 }
 
-export async function createImageComponent(coid, role, raw) {
-  const content = { data: [{ type: "md", value: raw }] }
-  const msg = {
-    chapterId: coid,
-    role,
-    content: role === "user" || role === "assistant" ? JSON.stringify(content) : raw
-  }
-
-  const res = await http.post(`/co`, msg);
+export async function updateComponent(coid, data) {
+  const res = await http.post(`/co/${coid}`, data);
   return res;
 }
 
-export async function updateComponent(mid, role, content) {
-  const res = await http.post(`/co/${mid}`, {
-    role,
-    content,
-  });
-  return res;
-}
-
-export async function updateImageComponent(mid, role, content) {
-  const res = await http.post(`/co/${mid}`, {
-    role,
-    content,
-  });
-  return res;
-}
-
-export async function deleteComponent(mid, deleteBelow = false) {
-  const res = await http.delete(`/co/${mid}`, {
-    params: {
-      below: deleteBelow ? 'true' : ''
-    }
-  });
+export async function deleteComponent(coid) {
+  const res = await http.delete(`/co/${coid}`);
   return res;
 }
 
@@ -69,7 +35,7 @@ export async function copyComponent(data) {
   return res;
 }
 
-export async function setEntryComponent(mid) {
-  const res = await http.post(`/co/${mid}/entry`);
+export async function setEntryComponent(coid) {
+  const res = await http.post(`/co/${coid}/entry`);
   return res;
 }

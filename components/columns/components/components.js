@@ -13,23 +13,32 @@ import { toast } from 'react-hot-toast/headless';
 import { Add01Icon, CheckmarkCircle01Icon } from '@hugeicons/react';
 import ComponentItem from './component-item';
 import { parseError } from '@/components/utils';
+import {
+  getComponents,
+  createComponent,
+  deleteComponent,
+  updateComponent,
+} from '@/service/component';
+import { uploadImage } from '@/service/upload';
 
 export const createComponentStore = (id) =>
-  createStore((set) => ({
+  createStore((set, get) => ({
     id: id,
-    loading: 'pending',
+    loading: true,
     components: [],
 
     listComponents: async () => {
-      const response = await fetch(`/api/chapter/${id}/component`);
-      const res = await response.json();
-
-      if (res.error) {
-        throw res.error;
-      } else {
-        set({ components: res, loading: 'loaded' });
+      set({
+        loading: true,
+      });
+      try {
+        const res = await getComponents(id);
+        set({ components: res });
+      } finally {
+        set({
+          loading: false,
+        });
       }
-      // console.log("messages", data.id, messages);
     },
 
     resetComponents: async () => {
@@ -43,119 +52,59 @@ export const createComponentStore = (id) =>
       }
     },
 
-    newImageComponent: async (name, imageDesc, image) => {
-      const formData = new FormData();
-
-      formData.append('name', name);
-      formData.append('desc', imageDesc);
-      formData.append('file', image);
-      const response = await fetch(`/api/chapter/${id}/component`, {
-        method: 'PUT',
-        body: formData,
+    newImageComponent: async (name, desc, image) => {
+      const img = await uploadImage(image);
+      const value = JSON.stringify({
+        ...img,
+        desc,
       });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
+      await get().newComponent(name, 'img', value);
     },
 
     newComponent: async (name, type, value) => {
-      const response = await fetch(`/api/chapter/${id}/component`, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: {
-            name,
-            type,
-            value: value,
-            initial: value,
-          },
-        }),
+      await createComponent({
+        name,
+        type,
+        value: value,
+        initial: value,
+        chapterId: id,
       });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
     },
 
     updateImageComponent: async (
-      oldName,
-      oldValue,
+      component,
       name,
       desc,
-      file,
+      image,
       isInitial
     ) => {
-      const formData = new FormData();
-
-      formData.append('name', name);
-      formData.append('value', oldValue);
-      formData.append('isInitial', isInitial);
-
-      if (desc !== '') {
-        formData.append('desc', desc);
+      let newVal = JSON.parse(isInitial ? component.initial : component.value)
+      if (image) {
+        const img = await uploadImage(image);
+        newVal = {
+          ...img,
+          desc,
+        };
       }
-
-      if (file) {
-        formData.append('file', file);
+      if (newVal.desc !== desc) {
+        newVal.desc = desc
       }
-
-      const response = await fetch(`/api/chapter/${id}/component/${oldName}`, {
-        method: 'PUT',
-        body: formData,
-      });
-
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
+      newVal = JSON.stringify(newVal)
+      const value = isInitial ? component.value : newVal
+      const initial = isInitial ? newVal : component.initial
+      await get().updateComponent(component.id, name, component.type, value, initial)
     },
 
-    updateComponent: async (pid, name, type, value, initial) => {
-      const response = await fetch('/api/chapter/' + id + '/component/' + pid, {
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: { name, type, value, initial },
-        }),
+    updateComponent: async (coid, name, type, value, initial) => {
+      await updateComponent(coid, {
+        name,
+        type,
+        value,
+        initial,
       });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
     },
-
-    deleteComponent: async (pid) => {
-      const response = await fetch('/api/chapter/' + id + '/component/' + pid, {
-        method: 'DELETE',
-        headers: {
-          'Content-type': 'application/json',
-        },
-      });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
-    },
-
-    deleteComponentsBelow: async (pid) => {
-      const response = await fetch(
-        '/api/chapter/' + id + '/component/' + pid + '?below=true',
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-type': 'application/json',
-          },
-        }
-      );
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
+    deleteComponent: async (coid) => {
+      await deleteComponent(coid);
     },
   }));
 
@@ -238,6 +187,16 @@ export default function Components({ storeRef }) {
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
 
+  function AlertError(message) {
+    openAlert(
+      <Alert
+        title="Oops, something wrong!"
+        message={message}
+        confirmLabel="OK"
+      />
+    );
+  }
+
   const components = useStore(storeRef.current, (state) => state.components);
   const loading = useStore(storeRef.current, (state) => state.loading);
 
@@ -276,7 +235,7 @@ export default function Components({ storeRef }) {
     }
   }, [listComponents]);
 
-  if (loading === 'pending') {
+  if (loading) {
     return (
       <div className="flex w-full h-full items-center justify-center">
         <Spinner />
@@ -306,11 +265,10 @@ export default function Components({ storeRef }) {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
+                    await listComponents();
                   } catch (e) {
                     toast.dismiss(tid);
                     AlertError("Can't create the component: " + parseError(e));
-                  } finally {
-                    await listComponents();
                   }
                 }}
                 onImageConfirm={async (name, imageDesc, image) => {
@@ -323,11 +281,10 @@ export default function Components({ storeRef }) {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
                     });
+                    await listComponents();
                   } catch (e) {
                     toast.dismiss(tid);
                     AlertError("Can't create the component: " + parseError(e));
-                  } finally {
-                    await listComponents();
                   }
                 }}
               />
@@ -345,11 +302,11 @@ export default function Components({ storeRef }) {
         className="flex flex-col flex-1 scroll-smooth overflow-y-auto 
         overflow-x-hidden"
       >
-        {components.map((prop) => (
+        {components.map((component) => (
           <ComponentItem
-            key={prop.name}
-            isLast={prop.name === components[components.length - 1].name}
-            component={prop}
+            key={component.name}
+            isLast={component.name === components[components.length - 1].name}
+            component={component}
             onDeleteClick={() => {
               openAlert(
                 <Alert
@@ -361,7 +318,7 @@ export default function Components({ storeRef }) {
                       icon: <Spinner />,
                     });
                     try {
-                      await deleteComponent(prop.id);
+                      await deleteComponent(component.id);
                       toast.success('Component deleted', {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
@@ -381,17 +338,17 @@ export default function Components({ storeRef }) {
             onUpdateClick={() => {
               openModal(
                 <CreateComponentDialog
-                  name={prop.name}
-                  type={prop.type}
-                  value={prop.value}
-                  initial={prop.initial}
+                  name={component.name}
+                  type={component.type}
+                  value={component.value}
+                  initial={component.initial}
                   onConfirm={async (name, type, value, initial) => {
                     const tid = toast.loading('Updating component...', {
                       icon: <Spinner />,
                     });
                     try {
                       await updateComponent(
-                        prop.id,
+                        component.id,
                         name,
                         type,
                         value,
@@ -401,13 +358,12 @@ export default function Components({ storeRef }) {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
                       });
+                      await listComponents();
                     } catch (e) {
                       toast.dismiss(tid);
                       AlertError(
                         "Can't update the component: " + parseError(e)
                       );
-                    } finally {
-                      await listComponents();
                     }
                   }}
                   onImageConfirm={async (name, imageDesc, image, isInitial) => {
@@ -416,8 +372,7 @@ export default function Components({ storeRef }) {
                     });
                     try {
                       await updateImageComponent(
-                        prop.name,
-                        prop.value,
+                        component,
                         name,
                         imageDesc,
                         image,
@@ -427,13 +382,13 @@ export default function Components({ storeRef }) {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
                       });
+                      await listComponents();
                     } catch (e) {
+                      console.error(e)
                       toast.dismiss(tid);
                       AlertError(
                         "Can't update the image component: " + parseError(e)
                       );
-                    } finally {
-                      await listComponents();
                     }
                   }}
                 />
