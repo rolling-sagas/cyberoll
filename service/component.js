@@ -30,6 +30,16 @@ export async function deleteComponent(coid) {
   return res;
 }
 
+export async function resetComponents(sid = undefined, chid = undefined) {
+  const res = await http.post(`/co/_/reset`, {}, {
+    params: {
+      sid,
+      chid,
+    }
+  });
+  return res;
+}
+
 export async function copyComponent(data) {
   const res = await http.post(`/co/${data.id}/copy`, data);
   return res;

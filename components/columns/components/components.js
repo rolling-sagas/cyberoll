@@ -18,6 +18,7 @@ import {
   createComponent,
   deleteComponent,
   updateComponent,
+  resetComponents
 } from '@/service/component';
 import { uploadImage } from '@/service/upload';
 
@@ -42,14 +43,7 @@ export const createComponentStore = (id) =>
     },
 
     resetComponents: async () => {
-      const response = await fetch(`/api/chapter/${id}/component/reset`, {
-        method: 'POST',
-      });
-
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
+      await resetComponents(undefined, id)
     },
 
     newImageComponent: async (name, desc, image) => {

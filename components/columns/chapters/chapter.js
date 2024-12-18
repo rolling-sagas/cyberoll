@@ -226,11 +226,10 @@ export default function Chapter({ data }) {
                             id: tid,
                             icon: <CheckmarkCircle01Icon />,
                           });
+                          await listComponents();
                         } catch (e) {
                           toast.dismiss(tid);
                           AlertError("Can't reset: " + parseError(e));
-                        } finally {
-                          await listComponents();
                         }
                       }}
                     />
