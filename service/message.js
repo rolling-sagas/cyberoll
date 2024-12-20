@@ -17,7 +17,12 @@ export async function getMessage(chid) {
 }
 
 export async function createMessage(chid, role, raw) {
-  const content = { data: [{ type: "md", value: raw }] }
+  let content = raw
+  if (typeof raw === 'string') {
+    content = { data: [{ type: "md", value: raw }] }
+  } else {
+    content = { data: [raw] }
+  }
   const msg = {
     chapterId: chid,
     role,

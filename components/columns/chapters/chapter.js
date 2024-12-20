@@ -17,23 +17,15 @@ import {
   updateMessage,
   setEntryMessage,
 } from '@/service/message';
+import { azure } from '@/service/ai';
 
 import { copyChapter, resetChapter } from '@/service/chapter';
+import { formatMessages } from '@/components/utils';
 
 const createChapterStore = (data) =>
   createStore((set, get) => ({
     id: data.id,
     name: data.name,
-    resetMessages: async () => {
-      const response = await fetch(`/api/chapter/${data.id}/message/reset`, {
-        method: 'POST',
-      });
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
-    },
-
     callFunction: async (funcName, content) => {
       const response = await fetch(
         '/api/chapter/' + data.id + '/function/' + funcName,
@@ -138,6 +130,10 @@ export default function Chapter({ data }) {
     try {
       const res = await getMessages(data.id);
       setMessages((res.messages || []).reverse());
+      return res.messages;
+    } catch (e) {
+      console.error(e);
+      return [];
     } finally {
       setLoading(false);
     }
@@ -187,11 +183,10 @@ export default function Chapter({ data }) {
   const bottom = useRef(null);
 
   function scrollToBottom() {
-    if (bottom.current)
-      setTimeout(
-        () => bottom.current.scrollIntoView({ behavior: 'smooth' }),
-        10
-      );
+    setTimeout(
+      () => bottom.current?.scrollIntoView({ behavior: 'smooth' }),
+      10
+    );
   }
 
   const [showComponents, setShowComponents] = useState(true);
@@ -319,13 +314,12 @@ export default function Chapter({ data }) {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
                       });
-                    } catch (e) {
-                      toast.dismiss(tid);
-                      AlertError("Can't reset chapter: " + parseError(e));
-                    } finally {
                       await listMessages();
                       await listComponents();
                       scrollToBottom();
+                    } catch (e) {
+                      toast.dismiss(tid);
+                      AlertError("Can't reset chapter: " + parseError(e));
                     }
                   }}
                 />
@@ -363,18 +357,24 @@ export default function Chapter({ data }) {
                   });
                   try {
                     await createMessage(data.id, role, content);
-                    await listMessages();
+                    const msgs = await listMessages();
                     scrollToBottom();
                     if (autoGen) {
                       toast.loading('Generating...', {
                         id: tid,
                         icon: <Spinner />,
                       });
-                      await generate();
+                      // await generate();
+                      await azure(formatMessages(msgs, components));
+                      for (let m of arr) {
+                        await createMessage(data.id, 'assistant', m);
+                      }
                       toast.success('Message generated', {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
                       });
+                      await listMessages();
+                      scrollToBottom();
                     } else {
                       toast.success('Message created', {
                         id: tid,
@@ -384,9 +384,6 @@ export default function Chapter({ data }) {
                   } catch (e) {
                     toast.dismiss(tid);
                     AlertError("Can't create message: " + parseError(e));
-                  } finally {
-                    await listMessages();
-                    scrollToBottom();
                   }
                 }}
               />
@@ -428,6 +425,12 @@ export default function Chapter({ data }) {
                 if (res.update) {
                   await listComponents();
                 }
+                await listMessages();
+                scrollToBottom();
+                toast.success('Generated', {
+                  id: tid,
+                  icon: <CheckmarkCircle01Icon />,
+                });
               } catch (e) {
                 if (e.error) {
                   openAlert(
@@ -438,15 +441,7 @@ export default function Chapter({ data }) {
                     />
                   );
                 }
-              } finally {
-                await listMessages();
-                scrollToBottom();
               }
-
-              toast.success('Generated', {
-                id: tid,
-                icon: <CheckmarkCircle01Icon />,
-              });
             }}
             onDeleteClick={(below) => {
               if (below) {
@@ -516,7 +511,13 @@ export default function Chapter({ data }) {
               const tid = toast.loading('Regenerating message...', {
                 icon: <Spinner />,
               });
-              await regenerate(msg.id);
+              // await regenerate(msg.id);
+              const { data: arr = [] } = await azure(
+                formatMessages([...messages].reverse(), components, msg.id),
+                true
+              );
+              const newM = arr && arr[0];
+              await updateMessage(msg.id, msg.role, JSON.stringify(newM));
               await listMessages();
               toast.success('Message regenerated', {
                 id: tid,
@@ -550,10 +551,17 @@ export default function Chapter({ data }) {
                   });
                   try {
                     await createMessage(data.id, role, content);
-                    await listMessages();
+                    const msgs = await listMessages();
                     // console.log(role, content, autoGen);
                     if (autoGen) {
-                      await generate();
+                      // await generate();
+                      const { data: arr = [] } = await azure(
+                        formatMessages(msgs, components)
+                      );
+                      for (let m of arr) {
+                        await createMessage(data.id, 'assistant', m);
+                      }
+
                       toast.success('Generating message...', {
                         id: tid,
                         icon: <CheckmarkCircle01Icon />,
@@ -605,7 +613,14 @@ export default function Chapter({ data }) {
               });
 
               try {
-                await generate();
+                // await generate();
+                const { data: arr = [] } = await azure(
+                  formatMessages([...messages].reverse(), components)
+                );
+                console.log('ai res', arr);
+                for (let m of arr) {
+                  await createMessage(data.id, 'assistant', m);
+                }
               } catch (e) {
                 AlertError(e);
               } finally {

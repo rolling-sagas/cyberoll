@@ -1,3 +1,6 @@
+import { COMPONENT_TYPE } from "./common"
+import mustache from 'mustache'
+
 export function ArrayToKeyValue(list) {
   const result = { meta: {} }
   for (const item of list) {
@@ -15,7 +18,7 @@ export function ArrayToKeyValue(list) {
         obj.name = item.name
         result.meta[item.type].push(obj)
       } catch (e) {
-        console.log(e)
+        console.log(item, e)
         console.error("json template rendering error")
       }
     } else if (item.type === "num") {
@@ -48,4 +51,35 @@ export function parseError(e) {
     default:
       return e.message;
   }
+}
+
+export function componentsToMap(components = []) {
+  let res = {}
+  components.forEach(co => {
+    const {type, value, name} = co
+    try {
+      switch(type) {
+        case COMPONENT_TYPE.number: res[name] = Number(value); break;
+        case COMPONENT_TYPE.object: res[name] = eval(`(${value})`); break;
+        default: res[name] = value;
+      }
+    } catch(e) {
+      console.error('[parse component fail]', e)
+      res[name] = value
+    }
+  })
+  return res
+}
+
+export function formatMessages(messages, components, beforeMsgId = '') {
+  messages = [...messages]
+  if (beforeMsgId) {
+    const index = messages.findIndex(m => m.id === beforeMsgId)
+    if (index > -1) messages.length = index
+  }
+  const context = componentsToMap(components)
+  return messages.map(m => ({
+    role: m.role,
+    content: mustache.render(m.content, context)
+  }))
 }
