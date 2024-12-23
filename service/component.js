@@ -31,11 +31,9 @@ export async function deleteComponent(coid) {
 }
 
 export async function resetComponents(sid = undefined, chid = undefined) {
-  const res = await http.post(`/co/_/reset`, {}, {
-    params: {
-      sid,
+  const res = await http.post(`/co/_/reset`, {
+    sid,
       chid,
-    }
   });
   return res;
 }
@@ -48,4 +46,11 @@ export async function copyComponent(data) {
 export async function setEntryComponent(coid) {
   const res = await http.post(`/co/${coid}/entry`);
   return res;
+}
+
+export async function updateComponentsWithName(chid, updates) {
+  const res = await http.post(`/co/_/update`, {
+    chid,
+    updates,
+  });
 }

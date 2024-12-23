@@ -18,6 +18,7 @@ import {
   setEntryMessage,
 } from '@/service/message';
 import { azure } from '@/service/ai';
+import { updateComponentsWithName } from '@/service/component'
 
 import { copyChapter, resetChapter } from '@/service/chapter';
 import { formatMessages } from '@/components/utils';
@@ -412,17 +413,28 @@ export default function Chapter({ data }) {
 
               try {
                 // console.log("update", c.update)
-                const res = await generate(
-                  [
-                    {
-                      role: 'user',
-                      content: { data: c.send },
-                    },
-                  ],
-                  c.update
+                console.log('[oncall]', c)
+                await createMessage(data.id, 'user', c.send[0]);
+                // const res = await generate(
+                //   [
+                //     {
+                //       role: 'user',
+                //       content: { data: c.send },
+                //     },
+                //   ],
+                //   c.update
+                // );
+                const { data: arr = [] } = await azure(
+                  formatMessages([...messages].reverse().concat([{
+                    role: 'user',
+                    content: JSON.stringify({ data: c.send }),
+                  }]), components, undefined, c.update)
                 );
-
-                if (res.update) {
+                for (let m of arr) {
+                  await createMessage(data.id, 'assistant', m);
+                }
+                if (c.update) {
+                  await updateComponentsWithName(data.id, c.update)
                   await listComponents();
                 }
                 await listMessages();
@@ -432,15 +444,14 @@ export default function Chapter({ data }) {
                   icon: <CheckmarkCircle01Icon />,
                 });
               } catch (e) {
-                if (e.error) {
-                  openAlert(
-                    <Alert
-                      title="Oops, something wrong!"
-                      message={e.error.message + ', please try it later.'}
-                      confirmLabel="OK"
-                    />
-                  );
-                }
+                console.error(e)
+                openAlert(
+                  <Alert
+                    title="Oops, something wrong!"
+                    message={(e.error?.message || e.toString) + ', please try it later.'}
+                    confirmLabel="OK"
+                  />
+                );
               }
             }}
             onDeleteClick={(below) => {

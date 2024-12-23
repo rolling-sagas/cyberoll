@@ -71,13 +71,16 @@ export function componentsToMap(components = []) {
   return res
 }
 
-export function formatMessages(messages, components, beforeMsgId = '') {
+export function formatMessages(messages, components, beforeMsgId = '', update = {}) {
   messages = [...messages]
   if (beforeMsgId) {
     const index = messages.findIndex(m => m.id === beforeMsgId)
     if (index > -1) messages.length = index
   }
-  const context = componentsToMap(components)
+  const context = {
+    ...componentsToMap(components),
+    ...update,
+  }
   return messages.map(m => ({
     role: m.role,
     content: mustache.render(m.content, context)
