@@ -38,3 +38,11 @@ input {
 ::-webkit-scrollbar-button {
     display:none;
 }
+
+#dice-box-canvas {
+  width: 80%;
+  position: fixed;
+  height: 80%;
+  top: 10%;
+  left: 10%;
+}

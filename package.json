@@ -20,6 +20,7 @@
   "author": "aspirin2d@outlook.com",
   "license": "MIT",
   "dependencies": {
+    "@3d-dice/dice-box": "^1.1.4",
     "@auth/prisma-adapter": "^2.4.2",
     "@codemirror/lang-javascript": "^6.2.2",
     "@codemirror/lang-json": "^6.0.1",
@@ -38,9 +39,9 @@
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
     "react-textarea-autosize": "^8.5.3",
+    "vercel": "39.1.1",
     "wrangler": "^3.95.0",
-    "zustand": "^4.5.4",
-    "vercel": "39.1.1"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.13.7",
