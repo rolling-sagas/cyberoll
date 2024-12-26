@@ -1,5 +1,6 @@
 import { COMPONENT_TYPE } from "./common"
 import mustache from 'mustache'
+import { IMAGE_HOST, DEFAULT_STORY_IMAGE } from "./common"
 
 export function ArrayToKeyValue(list) {
   const result = { meta: {} }
@@ -85,4 +86,8 @@ export function formatMessages(messages, components, beforeMsgId = '', update = 
     role: m.role,
     content: mustache.render(m.content, context)
   }))
+}
+
+export function getImageUrl(id) {
+  return id ? `${IMAGE_HOST}${id}/public` : DEFAULT_STORY_IMAGE
 }

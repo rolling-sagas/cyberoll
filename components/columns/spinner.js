@@ -1,8 +1,8 @@
-export default function Spinner() {
+export default function Spinner({className}) {
   return (
     <div
-      className="flex flex-row w-full items-center justify-center 
-      p-2 opacity-50"
+      className={`flex flex-row w-full items-center justify-center 
+      p-2 opacity-50 ${className}`}
     >
       <div role="status">
         <svg

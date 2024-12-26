@@ -7,6 +7,11 @@ export async function getStories() {
   return res;
 }
 
+export async function getPublicStories() {
+  const res = await http.get('/s/_/public');
+  return res;
+}
+
 export async function getStory(sid) {
   const res = await http.get(`/s/${sid}`);
   return res;
@@ -24,6 +29,16 @@ export async function updateStory(sid, data) {
 
 export async function deleteStory(sid) {
   const res = await http.delete(`/s/${sid}`);
+  return res;
+}
+
+export async function likeStory(sid) {
+  const res = await http.post(`/s/${sid}/like`);
+  return res;
+}
+
+export async function dislikeStory(sid) {
+  const res = await http.delete(`/s/${sid}/like`);
   return res;
 }
 

@@ -8,6 +8,7 @@ import {
   Menu08Icon,
   Search01Icon,
   UserIcon,
+  Notebook01Icon,
 } from "@hugeicons/react";
 
 import Link from "next/link";
@@ -22,16 +23,11 @@ import PinButton from "./pin-button";
 
 export default function NavBar() {
   const pathname = usePathname();
-  const [active, setActive] = useState(null);
+  const [l1Pathname, setL1Pathname] = useState('');
 
   useEffect(() => {
-    if (pathname === "/") {
-      setActive("home");
-    } else if (pathname.startsWith("/search")) {
-      setActive("search");
-    } else {
-      setActive(null);
-    }
+    const match = pathname.match(/\/([^/]+)/) || []
+    setL1Pathname(match[1] || '')
   }, [pathname]);
 
   return (
@@ -40,25 +36,31 @@ export default function NavBar() {
         <CinnamonRollIcon strokeWidth="2.5" />
       </Link>
       <div className="nav flex-1">
-        <NavButton href="/" active={active === "home"}>
+        <NavButton href="/" active={l1Pathname === ""}>
           <Home02Icon
             strokeWidth="2"
-            variant={active === "home" ? "solid" : "stroke"}
+            variant={l1Pathname === "" ? "solid" : "stroke"}
+          />
+        </NavButton>
+        <NavButton href="/st" active={l1Pathname === "st"}>
+          <Notebook01Icon
+            strokeWidth="2"
+            variant={l1Pathname === "st" ? "solid" : "stroke"}
           />
         </NavButton>
         <NavButton href="/">
-          <Search01Icon strokeWidth={active === "search" ? "3" : "2"} />
+          <Search01Icon strokeWidth={l1Pathname === "search" ? "3" : "2"} />
         </NavButton>
         <NavButton href="/">
           <FavouriteIcon
             strokeWidth="2"
-            variant={active === "search" ? "solid" : "stroke"}
+            variant={l1Pathname === "search" ? "solid" : "stroke"}
           />
         </NavButton>
-        <NavButton href="/" active={active === "search"}>
+        <NavButton href="/" active={l1Pathname === "search"}>
           <UserIcon
             strokeWidth="2"
-            variant={active === "user" ? "solid" : "stroke"}
+            variant={l1Pathname === "user" ? "solid" : "stroke"}
           />
         </NavButton>
       </div>

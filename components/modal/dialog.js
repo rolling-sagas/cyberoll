@@ -77,7 +77,7 @@ const Dialog = function({ title, header, body, footer, width = 460 }) {
             <div className="pt-6 px-6">{header}</div>
             <div className="px-6 py-4 overflow-auto">{body}</div>
           </div>
-          <div className="pb-6 px-6 flex flex-row-reverse items-center w-full">
+          <div className="pb-6 px-6 pt-6 flex flex-row-reverse items-center w-full">
             {footer}
           </div>
         </div>

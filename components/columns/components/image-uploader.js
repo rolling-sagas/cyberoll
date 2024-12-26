@@ -3,7 +3,7 @@ import { Input } from "@/components/modal/dialog";
 import { Image01Icon } from "@hugeicons/react";
 import Image from "next/image";
 
-export default function ImageUploader({ value, onChange }) {
+export default function ImageUploader({ value, onChange, showDesc = true }) {
   const [pValue, setValue] = useState(value ? JSON.parse(value) : null)
 
   const imageInput = useRef(null);
@@ -17,7 +17,7 @@ export default function ImageUploader({ value, onChange }) {
 
   return (
     <div className="flex flex-col w-full">
-      <Input
+      {showDesc ? <Input
         name="Image"
         placeholder="Input image description here"
         value={pValue ? pValue.desc : ""}
@@ -26,7 +26,7 @@ export default function ImageUploader({ value, onChange }) {
           setValue({ ...pValue, desc: value });
           onChange(value, localFile);
         }}
-      />
+      /> : null}
 
       <input
         ref={imageInput}

@@ -9,76 +9,17 @@ import { useAlertStore } from '@/components/modal/alert-placeholder';
 import Alert from '@/components/modal/alert';
 
 import Spinner from '../spinner';
-import BaseButton from '@/components/buttons/base-button';
-import StoryItem from './story-item';
+import PublicStoryItem from './public-story-item';
 
-import { BubbleChatAddIcon, CheckmarkCircle01Icon } from '@hugeicons/react';
+import { CheckmarkCircle01Icon } from '@hugeicons/react';
 import CreateStoryDialog from './create-story-dialog';
 import { parseError } from '@/components/utils';
 import {
-  getStories,
-  createStory,
+  getPublicStories,
   deleteStory,
   updateStory,
   copyStory,
 } from '@/service/story';
-
-const CreateStory = function ({ listStories }) {
-  const openModal = useModalStore((state) => state.open);
-  const openAlert = useAlertStore((state) => state.open);
-
-  function AlertError(message) {
-    openAlert(
-      <Alert
-        title="Oops, something wrong!"
-        message={message}
-        confirmLabel="OK"
-      />
-    );
-  }
-
-  return (
-    <div className="w-full px-6 border-b">
-      <div
-        className="flex flex-row py-4 items-center"
-        onClick={() =>
-          openModal(
-            <CreateStoryDialog
-              title={'Create story'}
-              onConfirm={async (name, description, image) => {
-                const tid = toast.loading('Creating story...', {
-                  icon: <Spinner />,
-                });
-                try {
-                  await createStory({
-                    name,
-                    description,
-                    image,
-                  });
-                  toast.success('Story created', {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
-                  await listStories();
-                } catch (e) {
-                  AlertError('Can\'t create the story: ' + parseError(e));
-                } finally {
-                  toast.dismiss(tid);
-                }
-              }}
-            />
-          )
-        }
-      >
-        <BubbleChatAddIcon className="text-rs-text-secondary" strokeWidth={1} />
-        <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
-          Start a story
-        </div>
-        <BaseButton label="Create" />
-      </div>
-    </div>
-  );
-};
 
 export default function Stories() {
   const router = useRouter();
@@ -88,7 +29,7 @@ export default function Stories() {
   const listStories = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getStories();
+      const data = await getPublicStories();
       setStories(data.stories || []);
     } finally {
       setLoading(false);
@@ -123,7 +64,6 @@ export default function Stories() {
         title="Play from this template"
         name={story.name + ' copy'}
         desc={story.description}
-        image={story.image}
         onConfirm={async (name, description) => {
           const tid = toast.loading('Duplicating from the template', {
             icon: <Spinner />,
@@ -161,47 +101,14 @@ export default function Stories() {
     return (
       <div className="flex flex-col w-full h-full items-center justify-center">
         <div className="text-rs-text-secondary text-[16px]">No story here.</div>
-        <BaseButton
-          label="Create"
-          className="mt-2"
-          onClick={() => {
-            openModal(
-              <CreateStoryDialog
-                onConfirm={async (name, description, image) => {
-                  const tid = toast.loading('Creating story...', {
-                    icon: <Spinner />,
-                  });
-                  try {
-                    await createStory({
-                      name,
-                      description,
-                      image,
-                    });
-                    await listStories();
-                  } catch (e) {
-                    return toast.error('Story create failed!', {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                  }
-                  toast.success('Story created', {
-                    id: tid,
-                    icon: <CheckmarkCircle01Icon />,
-                  });
-                }}
-              />
-            );
-          }}
-        />
       </div>
     );
   }
 
   return (
     <>
-      <CreateStory listStories={listStories} />
       {stories.map((story) => (
-        <StoryItem
+        <PublicStoryItem
           key={story.id}
           story={story}
           onPlayStory={onPlayStory}
@@ -211,8 +118,7 @@ export default function Stories() {
               <CreateStoryDialog
                 name={story.name}
                 desc={story.description}
-                image={story.image}
-                onConfirm={async (name, description, image) => {
+                onConfirm={async (name, description) => {
                   const tid = toast.loading('Updating story...', {
                     icon: <Spinner />,
                   });
@@ -220,7 +126,6 @@ export default function Stories() {
                     await updateStory(story.id, {
                       name,
                       description,
-                      image,
                     });
                     toast.success('Story updated', {
                       id: tid,
@@ -242,7 +147,6 @@ export default function Stories() {
                 title="Duplicate story"
                 name={story.name + ' copy'}
                 desc={story.description}
-                image={story.image}
                 onConfirm={async (name, description) => {
                   const tid = toast.loading('Duplicating story...', {
                     icon: <Spinner />,
