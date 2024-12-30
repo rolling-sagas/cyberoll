@@ -27,24 +27,6 @@ const createChapterStore = (data) =>
   createStore((set, get) => ({
     id: data.id,
     name: data.name,
-    callFunction: async (funcName, content) => {
-      const response = await fetch(
-        '/api/chapter/' + data.id + '/function/' + funcName,
-        {
-          method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
-          body: JSON.stringify({ content }),
-        }
-      );
-      const res = await response.json();
-      if (res.error) {
-        throw res.error;
-      }
-      return res;
-    },
-
     generate: async (newMessages, update) => {
       if (newMessages && newMessages.length > 0) {
         set({
@@ -158,8 +140,6 @@ export default function Chapter({ data }) {
       />
     );
   }
-
-  // const callFunction = useStore(storeRef.current, (state) => state.callFunction);
 
   const generate = useStore(storeRef.current, (state) => state.generate);
   const regenerate = useStore(storeRef.current, (state) => state.regenerate);
@@ -404,7 +384,7 @@ export default function Chapter({ data }) {
             key={msg.id}
             isFirst={msg.id === messages[0].id}
             message={msg}
-            props={components}
+            components={components}
             onCall={async (c) => {
               scrollToBottom();
               const tid = toast.loading('Generating...', {

@@ -1,93 +1,37 @@
 'use client';
-import toast from 'react-hot-toast/headless';
-
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Button } from "@headlessui/react";
 
-import { useModalStore } from '@/components/modal/dialog-placeholder';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
-import Alert from '@/components/modal/alert';
 
 import Spinner from '../spinner';
 import PublicStoryItem from './public-story-item';
 
-import { CheckmarkCircle01Icon } from '@hugeicons/react';
-import CreateStoryDialog from './create-story-dialog';
-import { parseError } from '@/components/utils';
 import {
   getPublicStories,
-  deleteStory,
-  updateStory,
-  copyStory,
 } from '@/service/story';
 
 export default function Stories() {
-  const router = useRouter();
-
   const [loading, setLoading] = useState(true);
   const [stories, setStories] = useState([]);
-  const listStories = useCallback(async () => {
+  const [page, setPage] = useState(0)
+  const [total, setTotal] = useState(100)
+  console.log('updated', page, stories.length)
+  const listStories = async (page) => {
     setLoading(true);
     try {
-      const data = await getPublicStories();
-      setStories(data.stories || []);
+      const data = await getPublicStories(page);
+      setStories([...stories, ...(data.stories || [])]);
+      setTotal(data.total)
     } finally {
       setLoading(false);
     }
-  }, []);
-
-  const openModal = useModalStore((state) => state.open);
-
-  const openAlert = useAlertStore((state) => state.open);
-
-  function AlertError(message) {
-    openAlert(
-      <Alert
-        title="Oops, something wrong!"
-        message={message}
-        confirmLabel="OK"
-      />
-    );
   }
 
   useEffect(() => {
-    listStories();
-  }, []);
-
-  const onEditStory = (story) => {
-    router.push('/st/' + story.id);
-  };
-
-  const onPlayStory = (story) => {
-    openModal(
-      <CreateStoryDialog
-        title="Play from this template"
-        name={story.name + ' copy'}
-        desc={story.description}
-        onConfirm={async (name, description) => {
-          const tid = toast.loading('Duplicating from the template', {
-            icon: <Spinner />,
-          });
-          try {
-            const res = await copyStory({
-              ...story,
-              name,
-              description
-            });
-            router.push('/st/' + res.id);
-            toast.success('Story duplicated', {
-              id: tid,
-              icon: <CheckmarkCircle01Icon />,
-            });
-          } catch (e) {
-            AlertError("Can't dulicate the story: " + parseError(e));
-          } finally {
-            toast.dismiss(tid);
-          }
-        }}
-      />
-    );
-  };
+    listStories(page);
+  }, [page]);
 
   if (loading) {
     return (
@@ -106,99 +50,18 @@ export default function Stories() {
   }
 
   return (
-    <>
+    <div className='overflow-y-auto overflow-x-hidden scrollbar-none w-full'>
       {stories.map((story) => (
         <PublicStoryItem
           key={story.id}
           story={story}
-          onPlayStory={onPlayStory}
-          onEditClick={onEditStory}
-          onUpdateClick={() => {
-            openModal(
-              <CreateStoryDialog
-                name={story.name}
-                desc={story.description}
-                onConfirm={async (name, description) => {
-                  const tid = toast.loading('Updating story...', {
-                    icon: <Spinner />,
-                  });
-                  try {
-                    await updateStory(story.id, {
-                      name,
-                      description,
-                    });
-                    toast.success('Story updated', {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                  } catch (e) {
-                    AlertError("Can't update the story: " + parseError(e));
-                  } finally {
-                    await listStories();
-                    toast.dismiss(tid);
-                  }
-                }}
-              />
-            );
-          }}
-          onDuplicateClick={() => {
-            openModal(
-              <CreateStoryDialog
-                title="Duplicate story"
-                name={story.name + ' copy'}
-                desc={story.description}
-                onConfirm={async (name, description) => {
-                  const tid = toast.loading('Duplicating story...', {
-                    icon: <Spinner />,
-                  });
-                  try {
-                    const res = await copyStory({
-                      ...story,
-                      name,
-                      description
-                    });
-                    router.push('/st/' + res.id);
-                    toast.success('Story duplicated', {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                  } catch (e) {
-                    AlertError("Can't dulicate the story: " + parseError(e));
-                  } finally {
-                    toast.dismiss(tid);
-                  }
-                }}
-              />
-            );
-          }}
-          onDeleteClick={async () => {
-            openAlert(
-              <Alert
-                title="Delete story?"
-                message="If you delete this story, 
-                you won't be able to restore it."
-                onConfirm={async () => {
-                  const tid = toast.loading('Deleting story...', {
-                    icon: <Spinner />,
-                  });
-                  try {
-                    await deleteStory(story.id);
-                    toast.success('Story deleted', {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                    await listStories();
-                  } catch (e) {
-                    AlertError("Can't delete the story: " + parseError(e));
-                  } finally {
-                    toast.dismiss(tid);
-                  }
-                }}
-              />
-            );
-          }}
         />
       ))}
-    </>
+      <div className='text-center'>
+        <Button disabled={loading || page * 10 + 10 >= total} onClick={() => setPage(page + 1)} className="my-6">{
+          page * 10 + 10 >= total ? 'No more story' : 'Load more'
+        }</Button>
+      </div>
+    </div>
   );
 }

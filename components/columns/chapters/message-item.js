@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from '@/components/day';
 import mustache from 'mustache'
 
 import {
@@ -27,7 +27,7 @@ import { ArrayToKeyValue } from "@/components/utils";
 
 export default function MessageItem({
   message,
-  props,
+  components,
   onUpdateClick,
   onDeleteClick,
   onGenerateClick,
@@ -115,12 +115,12 @@ export default function MessageItem({
         {!foldContent &&
           (raw || message.role === "system" ? (
             <div className="whitespace-pre-wrap">{
-              mustache.render(message.content, ArrayToKeyValue(props))
+              mustache.render(message.content, ArrayToKeyValue(components))
             }</div>
           ) : (
             <MessageContent
               content={message.content}
-              props={props}
+              components={components}
               actionNeeded={message.role === "assistant" && isFirst}
               onSend={(c) => {
                 if (isFirst) {

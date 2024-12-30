@@ -45,7 +45,22 @@ const config = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addUtilities }) {
+      addUtilities({
+        '.scrollbar-none': {
+          /* For Firefox */
+          'scrollbar-width': 'none',
+          /* For Internet Explorer, Edge */
+          '-ms-overflow-style': 'none',
+          /* For Webkit-based browsers */
+          '&::-webkit-scrollbar': {
+            display: 'none',
+          },
+        },
+      });
+    },
+  ],
 };
 
 export default config;

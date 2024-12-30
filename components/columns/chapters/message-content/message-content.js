@@ -14,7 +14,6 @@ if (typeof String.prototype.parseFunction != "function") {
   String.prototype.parseFunction = function() {
     var funcReg = /function *\(([^()]*)\)[ \n\t]*{(.*)}/gim;
     var match = funcReg.exec(this.replace(/\n/g, " "));
-
     if (match) {
       return new Function(match[1].split(","), match[2]);
     }
@@ -23,19 +22,20 @@ if (typeof String.prototype.parseFunction != "function") {
   };
 }
 
-export default function MessageContent({ content, props, onCall }) {
+export default function MessageContent({ content, components, onCall }) {
   function callFunction(functionName, context) {
-    const funcProp = props.find(
-      (prop) => prop.name === functionName && prop.type === "func",
+    const funcComp = components.find(
+      (comp) => comp.name === functionName && comp.type === "func",
     );
 
-    if (!funcProp) {
+    if (!funcComp) {
       console.warn("Function not found:", functionName);
       return;
     }
 
-    const func = funcProp.value.parseFunction();
-    const res = func(context, ArrayToKeyValue(props));
+    const func = funcComp.value.parseFunction();
+
+    const res = func(context, ArrayToKeyValue(components));
 
     if (res.next) {
       const funcName = res.next;
@@ -70,9 +70,9 @@ export default function MessageContent({ content, props, onCall }) {
           />
         );
       case "img":
-        const prop = props.find((prop) => prop.name === content.value)
-        if (prop) {
-          const obj = JSON.parse(prop.value)
+        const comp = components.find((comp) => comp.name === content.value)
+        if (comp) {
+          const obj = JSON.parse(comp.value)
           return (
             <li key={key}>
               <Image src={getImageUrlById(obj.id)}

@@ -3,29 +3,36 @@ import Image from "next/legacy/image";
 import Link from "next/link";
 import { FavouriteIcon, Comment02Icon, SentIcon } from '@hugeicons/react';
 import { getImageUrl } from "@/components/utils";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { likeStory, dislikeStory } from "@/service/story";
+import { createSession } from "@/service/session";
+import { useRouter } from 'next/navigation';
 
-export default function StoryItem({
+export default function PublicStoryItem({
   story,
 }) {
+  const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes.length > 0)
+  const play = useCallback(async () => {
+    const seid = await createSession(story.id)
+    router.push(`/sess/${seid}`)
+  }, [story])
 
   return (
-    <div key={story.id} className="ml-6 mr-2 py-3 border-b-1 border-gray-200">
+    <div className="mx-6 py-3 border-b-1 border-gray-200">
       <div className="flex gap-2 items-center mb-3">
         <img src={story.author.image} className="w-8 h-8 rounded-full" alt={story.author.name}/>
         <span className="text-xs">
-          <span class="font-semibold">{story.author.name}</span>
+          <span className="font-semibold">{story.author.name}</span>
           <span className="text-base-content/50 font-light">•</span>
           <span className="text-base-content/50 font-light">
             {dayjs(story.updatedAt).fromNow()}
           </span>
         </span>
       </div>
-      <Link
+      <div
         className="w-full flex flex-col cursor-pointer mb-3"
-        href={`/play/${story.id}/start`}
+        onClick={play}
       >
         <Image
           src={getImageUrl(story.image)}
@@ -36,7 +43,7 @@ export default function StoryItem({
           alt={story.name}
           priority
         />
-      </Link>
+      </div>
       <div className="flex flex-row items-center gap-4 post-info text-[#1f2937] mb-3">
         {
           likedByMe ?

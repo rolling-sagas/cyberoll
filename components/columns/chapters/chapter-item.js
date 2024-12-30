@@ -1,10 +1,8 @@
-import dayjs from "dayjs";
+import dayjs from "@/components/day";
 
 import {
-  BubbleChatNotificationIcon,
   Copy01Icon,
   Delete01Icon,
-  Edit01Icon,
   Edit02Icon,
   Message02Icon,
   ScrollIcon,

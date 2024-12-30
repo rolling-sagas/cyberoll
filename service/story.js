@@ -7,8 +7,13 @@ export async function getStories() {
   return res;
 }
 
-export async function getPublicStories() {
-  const res = await http.get('/s/_/public');
+export async function getPublicStories(page = 0) {
+  const res = await http.get('/s/_/public', {
+    params: {
+      take: 10,
+      skip: page * 10,
+    }
+  });
   return res;
 }
 
