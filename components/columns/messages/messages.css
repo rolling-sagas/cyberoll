@@ -1,0 +1,137 @@
+.message-list {
+  @apply h-full overflow-hidden !flex-1 relative;
+}
+
+#dice-box {
+  @apply absolute z-40 top-0 left-0 bottom-0 right-0 pointer-events-none flex justify-center;
+}
+
+.dice-box-canvas {
+  @apply w-full h-full z-[41];
+}
+
+#dice-box.active {
+  @apply !pointer-events-auto;
+}
+
+#dice-box .roll-result {
+  @apply z-[42] pointer-events-none flex justify-center items-center mt-[-200px];
+}
+
+#dice-box .roll-result .number {
+  @apply bg-black/75 h-fit w-fit rounded-xl p-4;
+  @apply text-lime-500 text-6xl font-bold;
+}
+
+.dice-box-canvas {
+  @apply w-full h-full bg-transparent absolute;
+}
+
+.message-container {
+  @apply absolute top-0 left-0 right-0 bottom-0 flex flex-col overflow-y-auto gap-6;
+}
+
+.message {
+  @apply flex flex-row gap-4 items-start;
+}
+
+.message .action-buttons button {
+  @apply text-gray-400 font-normal hover:text-gray-800;
+}
+
+.message.play-mode .action-buttons {
+  @apply hidden;
+}
+
+.message.system.play-mode {
+  @apply !hidden;
+}
+
+.message .role {
+  @apply border border-gray-200 rounded-full p-2 font-semibold;
+}
+
+.message.user .role::after {
+  content: "U";
+}
+.message.system .role::after {
+  content: "S";
+}
+.message.assistant .role::after {
+  content: "A";
+}
+
+.message-body {
+  @apply flex-1 flex flex-col gap-4;
+}
+
+.message-content .views {
+  @apply flex-1 flex flex-col gap-4;
+}
+
+.message-content .plain-text {
+  @apply flex-1 line-clamp-1;
+}
+
+.message-content .markdown {
+}
+
+.message-content .button {
+  @apply border border-gray-300 px-2 py-1 w-fit rounded self-center mb-1 text-sm text-gray-800 font-semibold box-border;
+  @apply hover:bg-gray-200 hover:text-black cursor-pointer;
+}
+
+.message:not(:last-child) .input {
+  @apply hidden;
+}
+
+.message:last-child .input {
+  @apply flex;
+}
+
+.message:not(:last-child) .button {
+  @apply hidden;
+}
+
+.message:last-child .button {
+  @apply flex;
+}
+
+.message-content .input {
+  @apply bg-gray-100 px-4 py-2 rounded flex-col gap-2;
+}
+
+.message-content .input-text {
+  @apply outline-none border border-gray-300 px-2 py-1 w-full rounded;
+}
+
+.message-content .submit-btn {
+  @apply border border-gray-300 px-2 py-1 w-fit rounded self-end mb-1 text-sm text-gray-800;
+  @apply hover:bg-gray-200 hover:text-black;
+}
+
+.message-content .input-options {
+  @apply flex flex-col gap-2;
+}
+
+.message-content .input-options button {
+  @apply w-full justify-start;
+  @apply border border-gray-300 px-2 py-1 rounded mb-1 text-sm text-gray-800;
+  @apply hover:bg-gray-200 hover:text-black;
+}
+
+.message-content .roll {
+  @apply justify-start w-fit self-center font-semibold;
+  @apply bg-orange-300 px-2 py-1 rounded mb-1 text-gray-800;
+  @apply hover:bg-orange-400 hover:text-black;
+  @apply disabled:bg-gray-200;
+}
+
+.message-container .divider {
+  @apply w-full border border-gray-200 flex justify-center rounded-full;
+  @apply py-1 px-2 font-semibold text-sm sticky;
+}
+
+.message-tail {
+  @apply w-full min-h-8;
+}

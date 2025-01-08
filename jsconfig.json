@@ -6,7 +6,11 @@
         "app/*"
       ],
       "@/components/*": [
-        "components/*"
+        "components/*",
+        "app/components/*"
+      ],
+      "@/stores/*": [
+        "stores/*"
       ],
       "@/prisma/*": [
         "prisma/*"

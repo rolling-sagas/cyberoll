@@ -91,3 +91,39 @@ export function formatMessages(messages, components, beforeMsgId = '', update = 
 export function getImageUrl(id) {
   return id ? `${IMAGE_HOST}${id}/public` : DEFAULT_STORY_IMAGE
 }
+
+export function parseMarkdown(markdownText) {
+  if (!markdownText) return "";
+
+  // Helper function to escape special characters in regular expressions
+  const escapeRegExp = (string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
+
+  let text = markdownText;
+
+  // Parse titles (supports h1 to h6)
+  text = text.replace(/^(#{1,6})\s(.+)$/gm, (match, hashes, content) => {
+    const level = hashes.length;
+    return `<h${level}>${content.trim()}</h${level}>`;
+  });
+
+  // Parse bold text
+  text = text.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+
+  // Parse italic text
+  text = text.replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+  // Parse code blocks
+  text = text.replace(/```([\s\S]*?)```/g, (match, code) => {
+    return `<pre><code>${escapeRegExp(code.trim())}</code></pre>`;
+  });
+
+  // Parse quotes
+  text = text.replace(/^>\s(.+)$/gm, "<blockquote>$1</blockquote>");
+
+  // Convert line breaks
+  text = text.replace(/\n/g, "<br>");
+
+  return text;
+}

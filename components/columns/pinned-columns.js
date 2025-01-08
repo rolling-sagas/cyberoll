@@ -103,7 +103,7 @@ export const useColumnsStore = create((set) => ({
   },
 }));
 
-export default function PinnedColumns() {
+export default function PinnedColumns({ children }) {
   const pinned = usePinStore((state) => state.pinned);
 
   const columns = useColumnsStore((state) => state.columns);
@@ -127,6 +127,7 @@ export default function PinnedColumns() {
           {col.children}
         </Column>
       ))}
+      {children}
     </>
   );
 }

@@ -114,7 +114,7 @@ export default function Stories() {
   }, []);
 
   const onEditStory = (story) => {
-    router.push('/st/' + story.id);
+    router.push('/st/' + story.id + '/edit');
   };
 
   const onPlayStory = (story) => {
