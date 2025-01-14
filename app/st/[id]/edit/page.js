@@ -8,6 +8,8 @@ import { useEffect } from "react";
 import MessagesView from "@/components/columns/messages/messages-view";
 import Editor from "@/components/columns/editor/editor";
 import Column from "@/components/column/column";
+import useStore from "@/stores/editor";
+import { initStory } from "@/stores/actions/story";
 
 export default function Page({ params }) {
   const id = params.id
@@ -16,6 +18,11 @@ export default function Page({ params }) {
 
   useEffect(() => {
     reset()
+    useStore.getState().reset()
+    useStore.setState(() => ({
+      storyId: id,
+    }))
+    initStory(id)
   }, [addColumn, id])
 
   return (

@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.editor {
+	@apply w-full;
+}
+
+.editor pre {
+	padding-top: 0 !important;
+	counter-reset: line;
+	padding-left: 2em !important;
+	font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+		"Liberation Mono", monospace;
+	min-height: 100lh !important;
+}
+
+.editor pre .editor-line-number:before {
+	@apply absolute left-0 bg-neutral-50 text-primary/35 pr-[2px];
+	@apply text-xs pt-[5px] select-none w-[2em] h-full border-r;
+	@apply dark:bg-neutral-900 dark:border-neutral-950;
+	text-align: right;
+	counter-increment: line;
+	content: counter(line);
+}
+
+.editor textarea {
+	padding-top: 0 !important;
+	padding-left: 2em !important;
+	outline: none !important;
+	min-height: 100lh !important;
+}
+
+.token.operator {
+	@apply !bg-transparent;
+}

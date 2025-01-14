@@ -1,4 +1,4 @@
-import dayjs from "@/components/day";
+import dayjs from "@/utils/day";
 
 import {
   Copy01Icon,

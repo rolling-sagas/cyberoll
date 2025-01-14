@@ -1,6 +1,7 @@
 import { TabPanel } from "@headlessui/react";
 import { restart, exportTemplate, importTemplate } from '@/stores/actions/game';
 import { setScript } from "@/stores/actions/ui";
+import { js } from "js-beautify";
 
 import useStore from '@/stores/editor'
 

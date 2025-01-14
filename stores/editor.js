@@ -1,45 +1,35 @@
 import { devtools } from "zustand/middleware";
-import { persist, createJSONStorage } from "zustand/middleware";
 import { create } from "zustand";
 
+const initialState = {
+  storyId: '',
+  storySessionId: '',
+  editingComponent: null,
+  viewingMessage: null,
+  modal: null,
+  isEditing: false,
+
+  diceBox: null,
+  rolling: 0,
+  lastRoll: null,
+
+  autoGenerate: false,
+  playMode: true,
+
+  script: "",
+  components: [],
+  messages: [],
+
+  gameSession: {},
+}
+
 const useStore = create(
-  persist(
-    devtools(() => ({
-      editingComponent: null,
-      editingFunction: null,
-      viewingMessage: null,
-      modal: null,
-
-      diceBox: null,
-      rolling: 0,
-      lastRoll: null,
-
-      firstColumnWidth: "50%",
-      autoGenerate: false,
-      playMode: true,
-
-      script: "",
-      components: [],
-      messages: [],
-      functions: [],
-
-      gameSession: {},
-    })),
-    {
-      name: "game-storage",
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        firstColumnWidth: state.firstColumnWidth,
-        autoGenerate: state.autoGenerate,
-        gameSession: state.gameSession,
-        hideSystem: state.hideSystem,
-        script: state.script,
-        components: state.components,
-        functions: state.functions,
-        messages: state.messages,
-      }),
+  devtools((set) => ({
+    ...initialState,
+    reset: () => {
+      set(initialState)
     },
-  ),
+  })),
 );
 
 export default useStore;

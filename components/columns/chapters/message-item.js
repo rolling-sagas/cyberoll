@@ -1,4 +1,4 @@
-import dayjs from '@/components/day';
+import dayjs from '@/utils/day';
 import mustache from 'mustache'
 
 import {
@@ -23,7 +23,7 @@ import Alert from "@/components/modal/alert";
 import { useState } from "react";
 import MessageContent from "./message-content/message-content";
 
-import { ArrayToKeyValue } from "@/components/utils";
+import { ArrayToKeyValue } from "@/utils/utils";
 
 export default function MessageItem({
   message,

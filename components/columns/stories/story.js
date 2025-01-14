@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import dayjs from '@/components/day';
+import dayjs from '@/utils/day';
 
 import { getStory } from '@/service/story';
 

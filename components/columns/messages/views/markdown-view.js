@@ -1,6 +1,6 @@
 'use-client'
 
-import { parseMarkdown } from "@/components/utils";
+import { parseMarkdown } from "@/utils/utils";
 
 export default function MarkdownView({ view }) {
   return (

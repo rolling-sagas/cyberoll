@@ -12,7 +12,7 @@ import CreateComponentDialog from './create-component-dialog';
 import { toast } from 'react-hot-toast/headless';
 import { Add01Icon, CheckmarkCircle01Icon } from '@hugeicons/react';
 import ComponentItem from './component-item';
-import { parseError } from '@/components/utils';
+import { parseError } from '@/utils/utils';
 import {
   getComponents,
   createComponent,

@@ -1,14 +1,17 @@
-import parseString from "@iarna/toml/parse-string";
+import parseString from '@iarna/toml/parse-string';
 
-import QuickJSManager from "@/utils/quickjs";
-import useStore from "../editor";
-import { setModal } from "./ui";
+import QuickJSManager from '@/utils/quickjs';
+import useStore from '../editor';
+import { setModal } from './ui';
 import {
   addMessage,
   getMessageById,
   updateMessage,
   getMessagesAfterLastDivider,
-} from "./message";
+} from './message';
+import { updateStory } from '@/service/story';
+import { COMPONENT_TYPE } from '@/utils/const';
+import { componentsToMap } from '@/utils/utils';
 
 const quickjs = new QuickJSManager();
 
@@ -16,19 +19,12 @@ export const executeScript = async (refresh = true) => {
   let components = null;
 
   try {
-    components = useStore.getState().components.reduce((acc, item) => {
-      try {
-        acc[item.name] = parseString(item.value);
-      } catch (e) {
-        throw new Error(`Component "${item.name}" syntax error: ${e.message}`);
-      }
-      return acc;
-    }, {});
+    components = componentsToMap(useStore.getState().components, true)
   } catch (e) {
     setModal({
-      title: "Error, when parsing components",
+      title: 'Error, when parsing components',
       description: e.message,
-      confirm: { label: "Dismiss" },
+      confirm: { label: 'Dismiss' },
     });
     return;
   }
@@ -40,13 +36,13 @@ export const executeScript = async (refresh = true) => {
   // set components
   try {
     // initial quickjs
-    const functions = useStore.getState().functions;
+    const functions = useStore.getState().components?.filter(comp => comp.type === COMPONENT_TYPE.Function) || [];
 
     await quickjs.initialize(functions);
     await quickjs.executeScript(useStore.getState().script, components);
 
     if (refresh) {
-      const messages = await quickjs.callFunction("onStart");
+      const messages = await quickjs.callFunction('onStart');
       useStore.setState(() => {
         return { messages };
       });
@@ -60,48 +56,48 @@ export const executeScript = async (refresh = true) => {
     }
   } catch (e) {
     setModal({
-      title: "Error, when interpreting script",
+      title: 'Error, when interpreting script',
       description: e.message,
-      confirm: { label: "Dismiss" },
+      confirm: { label: 'Dismiss' },
     });
   }
 };
 
 export const restart = () => {
   setModal({
-    title: "Are you sure to restart the game?",
+    title: 'Are you sure to restart the game?',
     description: "It will clear all messages, and you can't restore them.",
-    confirm: { label: "OK", action: executeScript },
-    cancel: { label: "Cancel" },
+    confirm: { label: 'OK', action: executeScript },
+    cancel: { label: 'Cancel' },
   });
 };
 
 // generate message from llm
-const GENERATE_URL = "https://dev-api.rollingsagas.com/seecreet/ai";
+const GENERATE_URL = 'https://dev-api.rollingsagas.com/seecreet/ai';
 export const generate = async () => {
   let messages = useStore.getState().messages;
   messages = getMessagesAfterLastDivider(messages);
 
   messages = messages.map((m) => {
     let { role, content } = m;
-    if (typeof content === "object") {
+    if (typeof content === 'object') {
       content = JSON.stringify(content);
     }
     return { role, content };
   });
 
-  let message = addMessage("assistant", "Generating...");
+  let message = addMessage('assistant', 'Generating...');
   try {
     const response = await fetch(GENERATE_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: messages, type: "json" }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: messages, type: 'json' }),
     });
 
-    let resText = "";
+    let resText = '';
     for await (const chunk of response.body) {
-      resText += new TextDecoder("utf8").decode(chunk);
-      updateMessage(message.id, "Generating... " + resText);
+      resText += new TextDecoder('utf8').decode(chunk);
+      updateMessage(message.id, 'Generating... ' + resText);
     }
 
     const jsonContent = JSON.parse(resText);
@@ -109,7 +105,7 @@ export const generate = async () => {
 
     // send generated message into scripting
     const newMessage = getMessageById(message.id);
-    await quickjs.callFunction("onAssistant", {
+    await quickjs.callFunction('onAssistant', {
       id: newMessage.id,
       role: newMessage.role,
       content: JSON.stringify(newMessage.content),
@@ -124,7 +120,7 @@ export const generate = async () => {
 // user iteractive actions
 export const onUserAction = async (action) => {
   try {
-    let result = await quickjs.callFunction("onAction", action);
+    let result = await quickjs.callFunction('onAction', action);
 
     // add messages
     if (result.messages) {
@@ -140,8 +136,8 @@ export const onUserAction = async (action) => {
     // handle callback action
     if (result.action) {
       switch (result.action) {
-        case "next":
-          const messages = await quickjs.callFunction("onStart");
+        case 'next':
+          const messages = await quickjs.callFunction('onStart');
           useStore.setState((state) => {
             return { messages: [...state.messages, ...messages] };
           });
@@ -154,36 +150,36 @@ export const onUserAction = async (action) => {
     }
   } catch (e) {
     setModal({
-      title: "onUserAction Error:",
+      title: 'onUserAction Error:',
       description: e.message,
-      confirm: { label: "Dismiss" },
+      confirm: { label: 'Dismiss' },
     });
   }
 };
 
 export const saveGameSession = async () => {
   try {
-    const gameSession = await quickjs.callFunction("onSave");
+    const gameSession = await quickjs.callFunction('onSave');
     useStore.setState((state) => ({
       gameSession: { ...gameSession },
     }));
   } catch (e) {
     setModal({
-      title: "onSave Error:",
+      title: 'onSave Error:',
       description: e.message,
-      confirm: { label: "Dismiss" },
+      confirm: { label: 'Dismiss' },
     });
   }
 };
 
 export const loadGameSession = async () => {
   try {
-    await quickjs.callFunction("onLoad", useStore.getState().gameSession);
+    await quickjs.callFunction('onLoad', useStore.getState().gameSession);
   } catch (e) {
     setModal({
-      title: "onLoad Error:",
+      title: 'onLoad Error:',
       description: e.message,
-      confirm: { label: "Dismiss" },
+      confirm: { label: 'Dismiss' },
     });
   }
 };
@@ -206,10 +202,15 @@ export const importTemplate = (template) => {
         confirm: {
           label: 'Yes',
           action: async () => {
-            useStore.setState(() => ({
+            const story = await updateStory(useStore.getState().storyId, {
+              script: {
+                value: result.script || '',
+              },
               components: [...result.components],
-              script: result.script,
-              functions: [...result.functions],
+            })
+            useStore.setState(() => ({
+              components: story.components,
+              script: story.script.value,
             }));
 
             await executeScript();
@@ -228,16 +229,15 @@ export const exportTemplate = () => {
   const exportObj = {
     script: useStore.getState().script,
     components: useStore.getState().components,
-    functions: useStore.getState().functions,
   };
 
   const dataStr =
-    "data:text/json;charset=utf-8," +
+    'data:text/json;charset=utf-8,' +
     encodeURIComponent(JSON.stringify(exportObj));
 
-  var dlAnchorElem = document.getElementById("downloadAnchorElem");
-  dlAnchorElem.setAttribute("href", dataStr);
-  dlAnchorElem.setAttribute("download", "rs_template.json");
-  console.log(dlAnchorElem);
+  var dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute('href', dataStr);
+  dlAnchorElem.setAttribute('download', 'rs_template.json');
   dlAnchorElem.click();
+  dlAnchorElem = null;
 };

@@ -1,11 +1,11 @@
 import { useState, useRef } from "react";
 import { Image01Icon } from "@hugeicons/react";
 import Image from "next/image";
-import { IMAGE_HOST } from "@/components/common";
+import { IMAGE_HOST } from "@/utils/const";
 import { uploadImage } from '@/service/upload';
 import Spinner from "../spinner";
 
-export default function ImageAutoUploader({ value, onChange }) {
+export default function ImageAutoUploader({ value, onChange = () => {} }) {
   const [pValue, setValue] = useState(value)
   const imageInput = useRef(null);
   const [localUrl, setLocalUrl] = useState('')
@@ -18,7 +18,7 @@ export default function ImageAutoUploader({ value, onChange }) {
       <input
         ref={imageInput}
         type="file"
-        accept="image/jpg,image/jpeg, image/png"
+        accept="image/*"
         style={{ display: "none" }}
         onChange={async (evt) => {
           evt.preventDefault();

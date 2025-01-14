@@ -1,7 +1,7 @@
 export const runtime = "edge";
 
 import prisma from "@/prisma/client";
-import { ArrayToKeyValue } from "@/components/utils";
+import { ArrayToKeyValue } from "@/utils/utils";
 import { isKnownError } from "@/app/api/common";
 
 if (typeof String.prototype.parseFunction != 'function') {

@@ -17,8 +17,8 @@ export async function getPublicStories(page = 0) {
   return res;
 }
 
-export async function getStory(sid) {
-  const res = await http.get(`/s/${sid}`);
+export async function getStory(sid, params = {}) {
+  const res = await http.get(`/s/${sid}`, { params });
   return res;
 }
 

@@ -1,8 +1,8 @@
-import dayjs from "@/components/day";
+import dayjs from "@/utils/day";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { FavouriteIcon, Comment02Icon, SentIcon } from '@hugeicons/react';
-import { getImageUrl } from "@/components/utils";
+import { getImageUrl } from "@/utils/utils";
 import { useState, useCallback } from "react";
 import { likeStory, dislikeStory } from "@/service/story";
 import { createSession } from "@/service/session";

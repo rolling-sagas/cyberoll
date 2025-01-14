@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { getImageUrlById } from "@/components/images/utils";
 
-import { ArrayToKeyValue, isNumber } from "@/components/utils";
+import { ArrayToKeyValue, isNumber } from "@/utils/utils";
 
 function parseMarkdown(content) {
   const reg = /\*\*(.+?)\*\*/g;

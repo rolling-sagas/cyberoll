@@ -14,7 +14,7 @@ import ChapterItem from './chapter-item';
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from '@hugeicons/react';
 import CreateChapterDialog from './create-chapter-dialog';
-import { parseError } from '@/components/utils';
+import { parseError } from '@/utils/utils';
 
 import {
   getChapters,

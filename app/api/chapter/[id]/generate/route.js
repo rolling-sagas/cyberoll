@@ -4,7 +4,7 @@ import { isKnownError } from "@/app/api/common";
 
 import mustache from "mustache"
 
-import { ArrayToKeyValue } from "@/components/utils";
+import { ArrayToKeyValue } from "@/utils/utils";
 
 export const runtime = "edge";
 

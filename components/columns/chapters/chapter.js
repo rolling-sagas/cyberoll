@@ -21,7 +21,7 @@ import { azure } from '@/service/ai';
 import { updateComponentsWithName } from '@/service/component'
 
 import { copyChapter, resetChapter } from '@/service/chapter';
-import { formatMessages } from '@/components/utils';
+import { formatMessages } from '@/utils/utils';
 
 const createChapterStore = (data) =>
   createStore((set, get) => ({
@@ -102,7 +102,7 @@ import {
   MenuButtonDivider,
   MenuButtonItem,
 } from '@/components/buttons/menu-button';
-import { parseError } from '@/components/utils';
+import { parseError } from '@/utils/utils';
 
 export default function Chapter({ data }) {
   const router = useRouter();

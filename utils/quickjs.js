@@ -1,149 +1,169 @@
 import Mustache from "mustache";
 import { nanoid } from "nanoid";
-
-// minimal wasm build, see:
-// https://github.com/justjake/quickjs-emscripten/blob/main/doc/quickjs-emscripten-core/README.md
-
-import variant from "@jitl/quickjs-singlefile-browser-release-sync"
-import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core"
+import variant from "@jitl/quickjs-singlefile-browser-release-sync";
+import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core";
 
 export default class QuickJSManager {
-  // Handles initialization of QuickJS runtime
-  // Sets up console.log functionality in QuickJS context
-  // Provides template rendering capabilities
-  // Executes user scripts in isolated context
   constructor() {
-    this.QuickJS = null;
-    this.vm = null;
-    this.subModules = [];
+    this.QuickJSModule = null;
+    this.runtime = null;
+    this.context = null;
     this.entryModule = null;
   }
 
-  async initialize(functions) {
+  /**
+   * Initialize the QuickJS runtime with custom functions
+   */
+  async initialize(customModules) {
+    this.disposeAll();
+
+    const QuickJSModule = await newQuickJSWASMModuleFromVariant(variant);
+    this.runtime = QuickJSModule.newRuntime();
+    this.context = this.runtime.newContext();
+
+    this.setupConsoleLogger();
+    this.setupModuleLoader(customModules);
+  }
+
+  /**
+   * Dispose all QuickJS instances
+   */
+  async disposeAll() {
     if (this.entryModule) {
       this.entryModule.dispose();
       this.entryModule = null;
     }
 
-    if (this.vm) {
-      this.vm.dispose();
+    if (this.context) {
+      this.context.dispose();
+      this.context = null;
     }
 
-    if (this.QuickJS) {
-      this.QuickJS.dispose();
+    if (this.runtime) {
+      this.runtime.dispose();
+      this.runtime = null;
     }
-
-    const module = await newQuickJSWASMModuleFromVariant(variant);
-    this.QuickJS = module.newRuntime();
-
-    this.vm = this.QuickJS.newContext();
-    this.setupConsole();
-
-    // set up functions
-    this.QuickJS.setModuleLoader((moduleName) => {
-      const func = functions.find((func) => func.name === moduleName);
-      if (!func) {
-        throw new Error(`module not found: ${moduleName}`);
-      }
-
-      const funcStr = func.value;
-      return funcStr;
-    });
   }
 
-  setupConsole() {
-    const logHandle = this.vm.newFunction("log", (...args) => {
-      const nativeArgs = args.map(this.vm.dump);
+  /**
+   * Set up console logging functionality
+   */
+  setupConsoleLogger() {
+    const console = this.context.newObject();
+    const log = this.context.newFunction("log", (...args) => {
+      const nativeArgs = args.map(this.context.dump);
       console.log("QuickJS:", ...nativeArgs);
     });
 
-    const consoleHandle = this.vm.newObject();
-    this.vm.setProp(consoleHandle, "log", logHandle);
-    this.vm.setProp(this.vm.global, "console", consoleHandle);
+    this.context.setProp(console, "log", log);
+    this.context.setProp(this.context.global, "console", console);
 
-    logHandle.dispose();
-    consoleHandle.dispose();
+    [log, console].forEach((handle) => handle.dispose());
   }
 
-  setupRender() {
-    const instance = this.vm.getProp(this.entryModule, "default");
-
-    this.vm
-      .newFunction("render", (template, value) => {
-        const nativeTemplate = this.vm.dump(template);
-        const nativeValue = this.vm.dump(value);
-        return this.vm.newString(Mustache.render(nativeTemplate, nativeValue));
-      })
-      .consume((fnHandle) => this.vm.setProp(instance, "render", fnHandle));
-
-    instance.dispose();
+  /**
+   * Set up module loader for custom functions
+   */
+  setupModuleLoader(customFunctions) {
+    this.runtime.setModuleLoader((moduleName) => {
+      const module = customFunctions.find((fn) => fn.name === moduleName);
+      if (!module) {
+        throw new Error(`Module not found: ${moduleName}`);
+      }
+      return module.value;
+    });
   }
 
-  setupUUID() {
-    const instance = this.vm.getProp(this.entryModule, "default");
+  /**
+   * Set up Mustache template rendering
+   */
+  setupTemplateRenderer() {
+    const instance = this.context.getProp(this.entryModule, "default");
+    const renderFn = this.context.newFunction("render", (template, value) => {
+      const nativeTemplate = this.context.dump(template);
+      const nativeValue = this.context.dump(value);
+      return this.context.newString(
+        Mustache.render(nativeTemplate, nativeValue),
+      );
+    });
 
-    this.vm
-      .newFunction("uuid", () => {
-        return this.vm.newString(nanoid());
-      })
-      .consume((fnHandle) => this.vm.setProp(instance, "uuid", fnHandle));
-
-    instance.dispose();
+    this.context.setProp(instance, "render", renderFn);
+    [instance, renderFn].forEach((handle) => handle.dispose());
   }
 
-  async setupComponents(components) {
-    await this.callFunction("setComponents", components);
+  /**
+   * Set up UUID generation
+   */
+  setupUUIDGenerator() {
+    const instance = this.context.getProp(this.entryModule, "default");
+    const uuidFn = this.context.newFunction("uuid", () => {
+      return this.context.newString(nanoid());
+    });
+
+    this.context.setProp(instance, "uuid", uuidFn);
+    [instance, uuidFn].forEach((handle) => handle.dispose());
   }
 
+  /**
+   * Execute scripts with components
+   */
   async executeScript(scripts, components) {
-    if (!this.vm) {
+    if (!this.context) {
       throw new Error("QuickJS runtime not initialized");
     }
 
-    if (this.entryModule) {
-      this.entryModule.dispose();
-      this.entryModule = null;
-    }
-
-    this.entryModule = this.vm.unwrapResult(
-      this.vm.evalCode(scripts, "index.js", { type: "module" }),
-    );
-
-    this.setupRender();
-    this.setupUUID();
-
-    await this.setupComponents(components);
-  }
-
-  async callFunction(funcName, args) {
     try {
-      const instance = this.vm.getProp(this.entryModule, "default");
-      const func = this.vm.getProp(instance, funcName);
-
-      let result = null;
-      if (args) {
-        var argHandle = this.vm.newString(JSON.stringify(args));
-        result = this.vm.unwrapResult(
-          this.vm.callFunction(func, instance, argHandle),
-        );
-        argHandle.dispose();
-      } else {
-        result = this.vm.unwrapResult(this.vm.callFunction(func, instance));
-      }
-
-      const resultDumped = this.vm.dump(result);
-      this.cleanupHandles(result, func, instance);
-      return resultDumped;
+      const res = this.context.evalCode(scripts, "index.js", {
+        type: "module",
+      });
+      this.entryModule = this.context.unwrapResult(res);
     } catch (e) {
-      if (e.message === "not a function") {
-        throw new Error(`Function "${funcName}" not found`);
-      }
-
+      this.entryModule = null;
       throw e;
     }
+
+    this.setupTemplateRenderer();
+    this.setupUUIDGenerator();
+    await this.setComponents(components);
   }
 
-  cleanupHandles(...handles) {
-    handles.forEach((handle) => handle.dispose());
+  /**
+   * Set components
+   */
+  async setComponents(components) {
+    return this.callFunction("setComponents", components);
+  }
+
+  /**
+   * Call a function with optional arguments
+   */
+  async callFunction(functionName, args = null) {
+    try {
+      const instance = this.context.getProp(this.entryModule, "default");
+      const targetFunction = this.context.getProp(instance, functionName);
+
+      let result;
+      if (args) {
+        const argsHandle = this.context.newString(JSON.stringify(args));
+        result = this.context.unwrapResult(
+          this.context.callFunction(targetFunction, instance, argsHandle),
+        );
+        argsHandle.dispose();
+      } else {
+        result = this.context.unwrapResult(
+          this.context.callFunction(targetFunction, instance),
+        );
+      }
+
+      const finalResult = this.context.dump(result);
+      [result, targetFunction, instance].forEach((handle) => handle.dispose());
+
+      return finalResult;
+    } catch (error) {
+      if (error.message === "not a function") {
+        throw new Error(`Function "${functionName}" not found`);
+      }
+      throw error;
+    }
   }
 }

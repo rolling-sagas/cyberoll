@@ -14,7 +14,7 @@ import StoryItem from './story-item';
 
 import { BubbleChatAddIcon, CheckmarkCircle01Icon } from '@hugeicons/react';
 import CreateStoryDialog from './create-story-dialog';
-import { parseError } from '@/components/utils';
+import { parseError } from '@/utils/utils';
 import {
   getStories,
   createStory,

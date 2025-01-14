@@ -2,7 +2,7 @@
 
 import { Checkbox, Label, Field } from "@headlessui/react";
 
-export default function ({ label, checked, onChange }) {
+export default function CheckboxView({ label, checked, onChange }) {
   return (
     <Field className="flex items-center gap-2">
       <Checkbox
