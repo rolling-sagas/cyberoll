@@ -1,7 +1,7 @@
-import Mustache from "mustache";
-import { nanoid } from "nanoid";
-import variant from "@jitl/quickjs-singlefile-browser-release-sync";
-import { newQuickJSWASMModuleFromVariant } from "quickjs-emscripten-core";
+import Mustache from 'mustache';
+import { nanoid } from 'nanoid';
+import variant from '@jitl/quickjs-singlefile-browser-release-sync';
+import { newQuickJSWASMModuleFromVariant } from 'quickjs-emscripten-core';
 
 export default class QuickJSManager {
   constructor() {
@@ -16,7 +16,6 @@ export default class QuickJSManager {
    */
   async initialize(customModules) {
     this.disposeAll();
-
     const QuickJSModule = await newQuickJSWASMModuleFromVariant(variant);
     this.runtime = QuickJSModule.newRuntime();
     this.context = this.runtime.newContext();
@@ -49,16 +48,16 @@ export default class QuickJSManager {
    * Set up console logging functionality
    */
   setupConsoleLogger() {
-    const console = this.context.newObject();
-    const log = this.context.newFunction("log", (...args) => {
+    const consoleHandle = this.context.newObject();
+    const log = this.context.newFunction('log', (...args) => {
       const nativeArgs = args.map(this.context.dump);
-      console.log("QuickJS:", ...nativeArgs);
+      console.log('QuickJS:', ...nativeArgs);
     });
 
-    this.context.setProp(console, "log", log);
-    this.context.setProp(this.context.global, "console", console);
+    this.context.setProp(consoleHandle, 'log', log);
+    this.context.setProp(this.context.global, 'console', consoleHandle);
 
-    [log, console].forEach((handle) => handle.dispose());
+    [log, consoleHandle].forEach((handle) => handle.dispose());
   }
 
   /**
@@ -78,16 +77,16 @@ export default class QuickJSManager {
    * Set up Mustache template rendering
    */
   setupTemplateRenderer() {
-    const instance = this.context.getProp(this.entryModule, "default");
-    const renderFn = this.context.newFunction("render", (template, value) => {
+    const instance = this.context.getProp(this.entryModule, 'default');
+    const renderFn = this.context.newFunction('render', (template, value) => {
       const nativeTemplate = this.context.dump(template);
       const nativeValue = this.context.dump(value);
       return this.context.newString(
-        Mustache.render(nativeTemplate, nativeValue),
+        Mustache.render(nativeTemplate, nativeValue)
       );
     });
 
-    this.context.setProp(instance, "render", renderFn);
+    this.context.setProp(instance, 'render', renderFn);
     [instance, renderFn].forEach((handle) => handle.dispose());
   }
 
@@ -95,12 +94,12 @@ export default class QuickJSManager {
    * Set up UUID generation
    */
   setupUUIDGenerator() {
-    const instance = this.context.getProp(this.entryModule, "default");
-    const uuidFn = this.context.newFunction("uuid", () => {
+    const instance = this.context.getProp(this.entryModule, 'default');
+    const uuidFn = this.context.newFunction('uuid', () => {
       return this.context.newString(nanoid());
     });
 
-    this.context.setProp(instance, "uuid", uuidFn);
+    this.context.setProp(instance, 'uuid', uuidFn);
     [instance, uuidFn].forEach((handle) => handle.dispose());
   }
 
@@ -109,12 +108,12 @@ export default class QuickJSManager {
    */
   async executeScript(scripts, components) {
     if (!this.context) {
-      throw new Error("QuickJS runtime not initialized");
+      throw new Error('QuickJS runtime not initialized');
     }
 
     try {
-      const res = this.context.evalCode(scripts, "index.js", {
-        type: "module",
+      const res = this.context.evalCode(scripts, 'index.js', {
+        type: 'module',
       });
       this.entryModule = this.context.unwrapResult(res);
     } catch (e) {
@@ -131,7 +130,7 @@ export default class QuickJSManager {
    * Set components
    */
   async setComponents(components) {
-    return this.callFunction("setComponents", components);
+    return this.callFunction('setComponents', components);
   }
 
   /**
@@ -139,19 +138,19 @@ export default class QuickJSManager {
    */
   async callFunction(functionName, args = null) {
     try {
-      const instance = this.context.getProp(this.entryModule, "default");
+      const instance = this.context.getProp(this.entryModule, 'default');
       const targetFunction = this.context.getProp(instance, functionName);
 
       let result;
       if (args) {
         const argsHandle = this.context.newString(JSON.stringify(args));
         result = this.context.unwrapResult(
-          this.context.callFunction(targetFunction, instance, argsHandle),
+          this.context.callFunction(targetFunction, instance, argsHandle)
         );
         argsHandle.dispose();
       } else {
         result = this.context.unwrapResult(
-          this.context.callFunction(targetFunction, instance),
+          this.context.callFunction(targetFunction, instance)
         );
       }
 
@@ -160,7 +159,7 @@ export default class QuickJSManager {
 
       return finalResult;
     } catch (error) {
-      if (error.message === "not a function") {
+      if (error.message === 'not a function') {
         throw new Error(`Function "${functionName}" not found`);
       }
       throw error;

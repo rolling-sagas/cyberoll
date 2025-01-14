@@ -23,7 +23,9 @@ export default function RootLayout({ children }) {
       (theme === "system" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
-      applyTheme(dark);
+      // applyTheme(dark);
+      // 暂时先强制 light ~ 后续做darkmod
+      applyTheme(light);
     } else {
       applyTheme(light);
     }

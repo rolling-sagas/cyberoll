@@ -55,6 +55,7 @@ export const executeScript = async (refresh = true) => {
       await loadGameSession();
     }
   } catch (e) {
+    console.error('[executeScript error]', e)
     setModal({
       title: 'Error, when interpreting script',
       description: e.message,
