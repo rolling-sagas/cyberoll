@@ -95,9 +95,15 @@ export const generate = async () => {
       body: JSON.stringify({ messages: messages, type: 'json' }),
     });
 
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder("utf-8");
     let resText = '';
-    for await (const chunk of response.body) {
-      resText += new TextDecoder('utf8').decode(chunk);
+    while (true) {
+      const { value, done } = await reader.read();
+  
+      if (done) break;
+  
+      resText += decoder.decode(value, { stream: true });
       updateMessage(message.id, 'Generating... ' + resText);
     }
 
