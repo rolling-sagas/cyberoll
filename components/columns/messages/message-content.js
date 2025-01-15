@@ -6,6 +6,7 @@ import InputTextView from './views/input-text-view';
 import InputSelectView from './views/input-select-view';
 import InputRollView from './views/input-roll-view';
 import ButtonView from './views/button-view';
+import ImageView from './views/image-view';
 import { onUserAction } from '@/stores/actions/game';
 
 export default function MessageContent({ content }) {
@@ -46,6 +47,8 @@ export default function MessageContent({ content }) {
                 );
               case 'input.roll':
                 return <InputRollView view={view} key={key} />;
+              case 'img':
+                return <ImageView id={view.id} key={key} name={view.name} />;
               case 'btn':
                 return (
                   <ButtonView

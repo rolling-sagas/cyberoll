@@ -50,7 +50,7 @@ function Messages() {
     <div className="message-list">
       <div className="message-container">
         <div className="flex flex-col gap-6">
-          {messages.map((message) =>
+          {messages?.map((message) =>
             message.role !== 'divider' ? (
               <div
                 className={`message ${message.role} ${playMode && 'play-mode'}`}
