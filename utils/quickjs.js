@@ -140,6 +140,10 @@ export default class QuickJSManager {
     try {
       const instance = this.context.getProp(this.entryModule, 'default');
       const targetFunction = this.context.getProp(instance, functionName);
+      if (this.context.typeof(targetFunction) !== 'function') {
+        console.error('[callFunction skiped]', `${functionName} is not a function`)
+        return
+      }
 
       let result;
       if (args) {
