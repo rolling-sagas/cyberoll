@@ -48,7 +48,7 @@ export default function MessageContent({ content }) {
               case 'input.roll':
                 return <InputRollView view={view} key={key} />;
               case 'img':
-                return <ImageView id={view.id} key={key} name={view.name} />;
+                return <ImageView url={view.url} key={key} name={view.name} />;
               case 'btn':
                 return (
                   <ButtonView
