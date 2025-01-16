@@ -59,6 +59,11 @@ export function getImageUrl(id) {
   return id ? `${IMAGE_HOST}${id}/public` : DEFAULT_STORY_IMAGE;
 }
 
+export function getImageUrlByName(name, components = []) {
+  const comp = components.find(comp => comp.type === COMPONENT_TYPE.Image && comp.name === name)
+  return getImageUrl(comp?.value)
+}
+
 export function componentsToMap(components = [], needThrowError = false) {
   let res = {};
   components.forEach((co) => {
@@ -75,7 +80,7 @@ export function componentsToMap(components = [], needThrowError = false) {
           res[name] = parseString(value);
           break;
         case COMPONENT_TYPE.Image:
-          res[name] = getImageUrl(value);
+          res[name] = name;
           break;
         case COMPONENT_TYPE.Function:
           break;

@@ -17,6 +17,7 @@ function Messages() {
   const diceBoxRef = useRef(null);
   const rolling = useStore((state) => state.rolling);
   const lastRoll = useStore((state) => state.lastRoll);
+  const components = useStore((state) => state.components)
 
   useEffect(() => {
     if (diceBoxRef.current) {
@@ -58,7 +59,7 @@ function Messages() {
               >
                 <div className={`role`}></div>
                 <div className="message-body">
-                  <MessageContent content={message.content} />
+                  <MessageContent content={message.content} components={components} />
                   <div className="action-buttons gap-4 flex">
                     <button
                       className="btn-default"

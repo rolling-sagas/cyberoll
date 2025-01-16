@@ -7,8 +7,9 @@ import InputRollView from './views/input-roll-view';
 import ButtonView from './views/button-view';
 import ImageView from './views/image-view';
 import { onUserAction } from '@/stores/actions/game';
+import { getImageUrlByName } from '@/utils/utils';
 
-export default function MessageContent({ content }) {
+export default function MessageContent({ content, components }) {
   return (
     <div className="message-content">
       {typeof content === 'object' ? (
@@ -46,7 +47,7 @@ export default function MessageContent({ content }) {
               case 'input.roll':
                 return <InputRollView view={view} key={key} />;
               case 'img':
-                return <ImageView url={view.url} key={key} name={view.name} />;
+                return <ImageView url={getImageUrlByName(view.name, components)} key={key} name={view.name} />;
               case 'btn':
                 return (
                   <ButtonView
