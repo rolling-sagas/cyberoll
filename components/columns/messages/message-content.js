@@ -1,6 +1,5 @@
 'use-client';
 
-import { nanoid } from 'nanoid';
 import MarkdownView from './views/markdown-view';
 import InputTextView from './views/input-text-view';
 import InputSelectView from './views/input-select-view';
@@ -14,8 +13,7 @@ export default function MessageContent({ content }) {
     <div className="message-content">
       {typeof content === 'object' ? (
         <div className="views">
-          {content.views?.map((view) => {
-            const key = nanoid();
+          {content.views?.map((view, key) => {
             switch (view.type) {
               case 'md':
                 return <MarkdownView view={view} key={key} id={key} />;

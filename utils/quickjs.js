@@ -77,6 +77,9 @@ export default class QuickJSManager {
    * Set up Mustache template rendering
    */
   setupTemplateRenderer() {
+    if (!this.entryModule) {
+      return
+    }
     const instance = this.context.getProp(this.entryModule, 'default');
     const renderFn = this.context.newFunction('render', (template, value) => {
       const nativeTemplate = this.context.dump(template);
@@ -94,6 +97,9 @@ export default class QuickJSManager {
    * Set up UUID generation
    */
   setupUUIDGenerator() {
+    if (!this.entryModule) {
+      return
+    }
     const instance = this.context.getProp(this.entryModule, 'default');
     const uuidFn = this.context.newFunction('uuid', () => {
       return this.context.newString(nanoid());
@@ -137,6 +143,9 @@ export default class QuickJSManager {
    * Call a function with optional arguments
    */
   async callFunction(functionName, args = null) {
+    if (!this.entryModule) {
+      return
+    }
     try {
       const instance = this.context.getProp(this.entryModule, 'default');
       const targetFunction = this.context.getProp(instance, functionName);
