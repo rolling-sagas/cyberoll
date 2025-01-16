@@ -23,19 +23,47 @@ import {
   copyStory,
 } from '@/service/story';
 
+function AlertError(message) {
+  const openAlert = useAlertStore.getState().open;
+  openAlert(
+    <Alert
+      title="Oops, something wrong!"
+      message={message}
+      confirmLabel="OK"
+    />
+  );
+}
+
+async function onDeleteClick(storyId, cb) {
+  const openAlert = useAlertStore.getState().open;
+  return openAlert(
+    <Alert
+      title="Delete story?"
+      message="If you delete this story, 
+      you won't be able to restore it."
+      onConfirm={async () => {
+        const tid = toast.loading('Deleting story...', {
+          icon: <Spinner />,
+        });
+        try {
+          await deleteStory(storyId);
+          toast.success('Story deleted', {
+            id: tid,
+            icon: <CheckmarkCircle01Icon />,
+          });
+          await cb();
+        } catch (e) {
+          AlertError("Can't delete the story: " + parseError(e));
+        } finally {
+          toast.dismiss(tid);
+        }
+      }}
+    />
+  );
+}
+
 const CreateStory = function ({ listStories }) {
   const openModal = useModalStore((state) => state.open);
-  const openAlert = useAlertStore((state) => state.open);
-
-  function AlertError(message) {
-    openAlert(
-      <Alert
-        title="Oops, something wrong!"
-        message={message}
-        confirmLabel="OK"
-      />
-    );
-  }
 
   return (
     <div className="w-full px-6 border-b">
@@ -96,18 +124,6 @@ export default function Stories() {
   }, []);
 
   const openModal = useModalStore((state) => state.open);
-
-  const openAlert = useAlertStore((state) => state.open);
-
-  function AlertError(message) {
-    openAlert(
-      <Alert
-        title="Oops, something wrong!"
-        message={message}
-        confirmLabel="OK"
-      />
-    );
-  }
 
   useEffect(() => {
     listStories();
@@ -267,32 +283,7 @@ export default function Stories() {
               />
             );
           }}
-          onDeleteClick={async () => {
-            openAlert(
-              <Alert
-                title="Delete story?"
-                message="If you delete this story, 
-                you won't be able to restore it."
-                onConfirm={async () => {
-                  const tid = toast.loading('Deleting story...', {
-                    icon: <Spinner />,
-                  });
-                  try {
-                    await deleteStory(story.id);
-                    toast.success('Story deleted', {
-                      id: tid,
-                      icon: <CheckmarkCircle01Icon />,
-                    });
-                    await listStories();
-                  } catch (e) {
-                    AlertError("Can't delete the story: " + parseError(e));
-                  } finally {
-                    toast.dismiss(tid);
-                  }
-                }}
-              />
-            );
-          }}
+          onDeleteClick={() => onDeleteClick(story.id, listStories)}
         />
       ))}
     </>
