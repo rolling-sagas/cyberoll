@@ -140,7 +140,7 @@ export default function Stories() {
         name={story.name + ' copy'}
         desc={story.description}
         image={story.image}
-        onConfirm={async (name, description) => {
+        onConfirm={async (name, description, image) => {
           const tid = toast.loading('Duplicating from the template', {
             icon: <Spinner />,
           });
@@ -148,9 +148,10 @@ export default function Stories() {
             const res = await copyStory({
               ...story,
               name,
-              description
+              description,
+              image,
             });
-            router.push('/st/' + res.id);
+            router.push('/st/' + res.id + '/edit');
             toast.success('Story duplicated', {
               id: tid,
               icon: <CheckmarkCircle01Icon />,
@@ -259,7 +260,7 @@ export default function Stories() {
                 name={story.name + ' copy'}
                 desc={story.description}
                 image={story.image}
-                onConfirm={async (name, description) => {
+                onConfirm={async (name, description, image) => {
                   const tid = toast.loading('Duplicating story...', {
                     icon: <Spinner />,
                   });
@@ -267,9 +268,10 @@ export default function Stories() {
                     const res = await copyStory({
                       ...story,
                       name,
-                      description
+                      description,
+                      image,
                     });
-                    router.push('/st/' + res.id);
+                    router.push('/st/' + res.id + '/edit');
                     toast.success('Story duplicated', {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,

@@ -12,8 +12,6 @@ export default function SessionItem({session}) {
     allMessages = allMessages.concat(ch.messages)
   });
 
-
-
   return (
     <div>
       { allMessages.map(mess => <MessageItem key={mess.id} message={mess} components={allComponents} />) }
