@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@headlessui/react';
 
 import Spinner from '../spinner';
-import PublicStoryItem from './public-story-item';
+import PublicStoryItem from './story-item';
 
 import { getPublicStories } from '@/service/story';
 
@@ -27,7 +27,7 @@ export default function Stories() {
     listStories(page);
   }, [page]);
 
-  if (stories.length === 0) {
+  if (stories.length === 0 && !loading) {
     return (
       <div className="flex flex-col w-full h-full items-center justify-center">
         <div className="text-rs-text-secondary text-[16px]">No story here.</div>

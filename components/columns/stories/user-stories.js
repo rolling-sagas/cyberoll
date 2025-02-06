@@ -108,7 +108,7 @@ const CreateStory = function ({ listStories }) {
   );
 };
 
-export default function Stories() {
+export default function UserStories() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
@@ -221,9 +221,8 @@ export default function Stories() {
         <StoryItem
           key={story.id}
           story={story}
-          showLike={false}
           onPlayStory={onPlayStory}
-          onEditClick={() => onEditStory(story)}
+          onEditClick={onEditStory}
           onUpdateClick={() => {
             openModal(
               <CreateStoryDialog

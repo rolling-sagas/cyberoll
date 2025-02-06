@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 
 import Session from "@/components/columns/sessions/session";
 import { getSession } from "@/service/session";
+import useStore from "@/stores/editor";
+import { executeScript } from '@/stores/actions/game';
 
 export default function Page({ params }) {
   const id = params.id
@@ -16,12 +18,33 @@ export default function Page({ params }) {
   const addColumn = useColumnsStore((state) => state.addColumn);
   const reset = useColumnsStore((state) => state.reset);
 
+  const resetEditor = useStore((state) => state.reset)
+
   useEffect(() => {
     async function fetchSession(id) {
-      let res = await getSession(id)
-      setSession(res)
+      const loading = useStore.getState().loading
+      if (loading) return
+      try {
+        useStore.setState(() => ({
+          loading: true,
+        }))
+        resetEditor()
+        let res = await getSession(id)
+        setSession(res)
+        useStore.setState(() => ({
+          script: res.script?.value || '',
+          components: res.components,
+          messages: res.messages,
+          storySessionId: res.id,
+          autoGenerate: true,
+        }))
+        executeScript(true)
+      } finally {
+        useStore.setState(() => ({
+          loading: false,
+        }))
+      }
     }
-
     reset()
     fetchSession(id)
   }, [id])

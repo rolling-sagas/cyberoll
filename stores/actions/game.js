@@ -88,6 +88,7 @@ export const generate = async () => {
   });
 
   let message = addMessage('assistant', 'Generating...');
+  console.log(33, message)
   try {
     const response = await fetch(GENERATE_URL, {
       method: 'POST',
@@ -109,6 +110,7 @@ export const generate = async () => {
 
     const jsonContent = JSON.parse(resText);
     updateMessage(message.id, jsonContent);
+    console.log(3332, message)
 
     // send generated message into scripting
     const newMessage = getMessageById(message.id);

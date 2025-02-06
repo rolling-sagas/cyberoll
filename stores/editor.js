@@ -21,6 +21,7 @@ const initialState = {
   messages: [],
 
   gameSession: {},
+  loading: false,
 }
 
 const useStore = create(

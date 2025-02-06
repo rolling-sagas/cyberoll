@@ -14,5 +14,5 @@ export const initStory = async (storyId) => {
     script: story.script?.value || '',
     components: story.components || [],
   }))
-  executeScript(false)
+  executeScript(true)
 }

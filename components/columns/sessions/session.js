@@ -1,20 +1,7 @@
-import ToolButton from "../chapters/tool-button";
-import { ItemMenuButton, MenuButtonItem } from "@/components/buttons/menu-button";
-import MessageItem from "../chapters/message-item";
-import { useState, useEffect } from "react";
+import MessagesView from '../messages/messages-view';
 
-export default function SessionItem({session}) {
-  const { components = [], chapters = [] } = session
-  let allComponents = [...components]
-  let allMessages = []
-  chapters.forEach(ch => {
-    allComponents = allComponents.concat(ch.components)
-    allMessages = allMessages.concat(ch.messages)
-  });
-
+export default function SessionItem({ session }) {
   return (
-    <div>
-      { allMessages.map(mess => <MessageItem key={mess.id} message={mess} components={allComponents} />) }
-    </div>
+    <MessagesView isSession={true} />
   );
 }

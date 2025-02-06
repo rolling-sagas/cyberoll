@@ -18,11 +18,22 @@ export default function Page({ params }) {
 
   useEffect(() => {
     reset()
-    useStore.getState().reset()
-    useStore.setState(() => ({
-      storyId: id,
-    }))
-    initStory(id)
+    const loading = useStore.getState().loading
+    if (loading) return
+    try {
+      useStore.setState(() => ({
+        loading: true,
+      }))
+      useStore.getState().reset()
+      useStore.setState(() => ({
+        storyId: id,
+      }))
+      initStory(id)
+    } finally {
+      useStore.setState(() => ({
+        loading: false,
+      }))
+    }
   }, [addColumn, id])
 
   return (

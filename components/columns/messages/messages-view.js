@@ -10,7 +10,7 @@ import Messages from './messages';
 import ScriptEditor from '../editor/script-editor';
 import Checkbox from './checkbox';
 
-export default function MessagesView() {
+export default function MessagesView({ isSession = false }) {
   const autoGenerate = useStore((state) => state.autoGenerate);
   const playMode = useStore((state) => state.playMode);
   const viewingMessage = useStore((state) => state.viewingMessage);
@@ -26,11 +26,13 @@ export default function MessagesView() {
               checked={autoGenerate}
               onChange={setAutoGenerate}
             />
-            <Checkbox
-              label="Play mode"
-              checked={playMode}
-              onChange={setPlayMode}
-            />
+            {
+              isSession ? null : <Checkbox
+                label="Play mode"
+                checked={playMode}
+                onChange={setPlayMode}
+              />
+            }
             <button
               className="btn-default"
               onClick={async () => await generate()}

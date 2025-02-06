@@ -39,6 +39,7 @@ export const updateMessage = (id, content) => {
 };
 
 export const getMessageById = (id) => {
+  console.log(3334, useStore.getState().messages, id)
   return useStore.getState().messages.find((m) => m.id === id);
 };
 
