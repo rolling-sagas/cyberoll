@@ -38,7 +38,7 @@ export default function Page({ params }) {
           storySessionId: res.id,
           autoGenerate: true,
         }))
-        executeScript(true)
+        executeScript(res.messages.length === 0)
       } finally {
         useStore.setState(() => ({
           loading: false,

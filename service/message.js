@@ -1,6 +1,21 @@
 // this file is used for client
 import http from '@/utils/http';
 
+export async function createMessages(seid, messages, reset = false) {
+  const res = await http.post(`/m`, {
+    seid,
+    messages,
+    reset,
+  });
+  return res;
+}
+
+
+
+
+
+
+// to be deleted bellow
 // 获取 story chapter 列表
 export async function getMessages(chid) {
   const res = await http.get(`/m`, {

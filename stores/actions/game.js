@@ -5,9 +5,11 @@ import useStore from '../editor';
 import { setModal } from './ui';
 import {
   addMessage,
-  getMessageById,
   updateMessage,
   getMessagesAfterLastDivider,
+  resetMessages,
+  syncMessage,
+  addMessages,
 } from './message';
 import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
@@ -43,9 +45,7 @@ export const executeScript = async (refresh = true) => {
 
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
-      useStore.setState(() => {
-        return { messages };
-      });
+      await resetMessages(messages)
 
       if (useStore.getState().autoGenerate) {
         await generate();
@@ -88,7 +88,6 @@ export const generate = async () => {
   });
 
   let message = addMessage('assistant', 'Generating...');
-  console.log(33, message)
   try {
     const response = await fetch(GENERATE_URL, {
       method: 'POST',
@@ -110,10 +109,10 @@ export const generate = async () => {
 
     const jsonContent = JSON.parse(resText);
     updateMessage(message.id, jsonContent);
-    console.log(3332, message)
 
     // send generated message into scripting
-    const newMessage = getMessageById(message.id);
+    const newMessage = await syncMessage(message.id)
+
     await quickjs.callFunction('onAssistant', {
       id: newMessage.id,
       role: newMessage.role,
@@ -130,13 +129,9 @@ export const generate = async () => {
 export const onUserAction = async (action) => {
   try {
     let result = await quickjs.callFunction('onAction', action);
-
     // add messages
     if (result.messages) {
-      useStore.setState((state) => ({
-        messages: [...state.messages, ...result.messages],
-      }));
-
+      await addMessages(result.messages)
       if (useStore.getState().autoGenerate) {
         await generate();
       }
@@ -147,9 +142,7 @@ export const onUserAction = async (action) => {
       switch (result.action) {
         case 'next':
           const messages = await quickjs.callFunction('onStart');
-          useStore.setState((state) => {
-            return { messages: [...state.messages, ...messages] };
-          });
+          await addMessages(messages)
 
           if (useStore.getState().autoGenerate) {
             await generate();

@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid";
 import useStore from "../editor";
 import { setModal } from "./ui";
+import { createMessages } from "@/service/message";
 
 export const startViewingMessage = (message) =>
   useStore.setState(() => ({ viewingMessage: message }));
@@ -39,7 +40,6 @@ export const updateMessage = (id, content) => {
 };
 
 export const getMessageById = (id) => {
-  console.log(3334, useStore.getState().messages, id)
   return useStore.getState().messages.find((m) => m.id === id);
 };
 
@@ -57,3 +57,36 @@ export const getMessagesAfterLastDivider = (messages) => {
 
   return [];
 };
+
+export async function addMessages(newMessages, reset = false) {
+  const state = useStore.getState()
+  const storySessionId = state.storySessionId
+  if (storySessionId) {
+    newMessages = await createMessages(storySessionId, newMessages, reset)
+  }
+  const messages = reset ? [] : state.messages
+  useStore.setState(() => {
+    return { messages: [...messages, ...newMessages] };
+  });
+  return newMessages
+}
+
+export async function resetMessages(messages) {
+  await addMessages(messages, true)
+}
+
+export async function syncMessage(msgId) {
+  let message = getMessageById(msgId)
+  const state = useStore.getState()
+  const messages = state.messages
+  const storySessionId = state.storySessionId
+  if (storySessionId) {
+    const newMessages = await createMessages(storySessionId, [message])
+    messages.pop()
+    useStore.setState(() => {
+      return { messages: [...messages, ...newMessages] };
+    });
+    return newMessages[0]
+  }
+  return message
+}
