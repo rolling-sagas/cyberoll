@@ -57,6 +57,7 @@
     "quickjs-emscripten-core": "^0.31.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-horizontal-scrolling-menu": "^8.2.0",
     "react-hot-toast": "^2.4.1",
     "react-simple-code-editor": "^0.14.1",
     "react-textarea-autosize": "^8.5.3",

@@ -39,6 +39,16 @@ input {
     display:none;
 }
 
+.no-scrollbar {
+  & .react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+  & .react-horizontal-scrolling-menu--scroll-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
 #dice-box-canvas {
   width: 80%;
   position: fixed;
