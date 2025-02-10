@@ -1,4 +1,5 @@
 'use client';
+export const runtime = 'edge';
 
 import { useState, useEffect } from 'react';
 import { getStory } from '@/service/story';
@@ -25,7 +26,7 @@ export default function Page({ params }) {
     reset();
     addColumn(
       'stories',
-      { headerCenter: <div>My Stories</div> },
+      { headerCenter: <div>{story?.name}</div> },
       <Story story={story} />
     );
   }, [addColumn, story]);

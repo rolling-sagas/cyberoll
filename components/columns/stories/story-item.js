@@ -11,6 +11,7 @@ import {
   Copy01Icon,
   Delete01Icon,
   Share01Icon,
+  PlayIcon,
 } from '@hugeicons/react';
 import { getImageUrl } from '@/utils/utils';
 import { useState, useCallback } from 'react';
@@ -23,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 
 export default function StoryItem({
   story,
@@ -31,12 +33,19 @@ export default function StoryItem({
   onUpdateClick,
   onDuplicateClick,
   onDeleteClick,
+  showPlay = false,
 }) {
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
+  const [creatingSession, setCreatingSession] = useState(false)
   const play = useCallback(async () => {
-    const seid = await createSession(story.id);
-    router.push(`/sess/${seid}`);
+    setCreatingSession(true)
+    try {
+      const seid = await createSession(story.id);
+      router.push(`/sess/${seid}`);
+    } finally {
+      setCreatingSession(false)
+    }
   }, [story]);
 
   return (
@@ -56,41 +65,41 @@ export default function StoryItem({
             </span>
           </span>
         </div>
-        {
-          onEditClick || onDuplicateClick || onDeleteClick ? <DropdownMenu>
+        {onEditClick || onDuplicateClick || onDeleteClick ? (
+          <DropdownMenu>
             <DropdownMenuTrigger>
               <MoreHorizontalIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {
-                onEditClick ? <DropdownMenuItem className="h-10" onClick={onEditClick}>
-                  <div className='flex gap-10 justify-between w-full cursor-pointer'>
+              {onEditClick ? (
+                <DropdownMenuItem className="h-10" onClick={onEditClick}>
+                  <div className="flex gap-10 justify-between w-full cursor-pointer">
                     Edit
                     <Edit01Icon size={18} />
                   </div>
-                </DropdownMenuItem> : null
-              }
-              {
-                onDuplicateClick ? <DropdownMenuItem className="h-10" onClick={onDuplicateClick}>
-                  <div className='flex gap-10 justify-between w-full cursor-pointer'>
+                </DropdownMenuItem>
+              ) : null}
+              {onDuplicateClick ? (
+                <DropdownMenuItem className="h-10" onClick={onDuplicateClick}>
+                  <div className="flex gap-10 justify-between w-full cursor-pointer">
                     Duplicate
                     <Copy01Icon size={18} />
                   </div>
-                </DropdownMenuItem> : null
-              }
-              {
-                onDeleteClick ? <DropdownMenuItem className="h-10" onClick={onDeleteClick}>
-                  <div className='flex gap-10 justify-between w-full cursor-pointer text-red-500'>
+                </DropdownMenuItem>
+              ) : null}
+              {onDeleteClick ? (
+                <DropdownMenuItem className="h-10" onClick={onDeleteClick}>
+                  <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
                     Delete
                     <Delete01Icon size={18} />
                   </div>
-                </DropdownMenuItem> : null
-              }
+                </DropdownMenuItem>
+              ) : null}
             </DropdownMenuContent>
-          </DropdownMenu> : null
-        }
+          </DropdownMenu>
+        ) : null}
       </div>
-      <div className="w-full flex flex-col cursor-pointer mb-3" onClick={play}>
+      <div className="w-full flex flex-col cursor-pointer mb-3" onClick={() => router.push(`/st/${story.id}`)}>
         <Image
           src={getImageUrl(story.image)}
           width={470}
@@ -102,46 +111,52 @@ export default function StoryItem({
         />
       </div>
       <div className="flex flex-row items-center gap-4 post-info text-[#1f2937] mb-3">
-        {showLike ? (likedByMe ? (
-          <FavouriteIcon
-            className="cursor-pointer"
-            onClick={async () => {
-              setLikedByMe(false);
-              try {
-                await dislikeStory(story.id);
-              } catch(e) {
-                console.error(e)
-                setLikedByMe(true);
-              }
-            }}
-            variant="solid"
-            color="#f44336"
-            size={20}
-          />
-        ) : (
-          <FavouriteIcon
-            className="cursor-pointer"
-            onClick={async () => {
-              setLikedByMe(true);
-              try {
-                await likeStory(story.id);
-              } catch(e) {
-                console.error(e)
+        {showLike ? (
+          likedByMe ? (
+            <FavouriteIcon
+              className="cursor-pointer"
+              onClick={async () => {
                 setLikedByMe(false);
-              }
-            }}
-            variant="stroke"
-            size={20}
-          />
-        )) : null}
-        <Link href={`/s/${story.id}`} passHref scroll={false}>
+                try {
+                  await dislikeStory(story.id);
+                } catch (e) {
+                  console.error(e);
+                  setLikedByMe(true);
+                }
+              }}
+              variant="solid"
+              color="#f44336"
+              size={20}
+            />
+          ) : (
+            <FavouriteIcon
+              className="cursor-pointer"
+              onClick={async () => {
+                setLikedByMe(true);
+                try {
+                  await likeStory(story.id);
+                } catch (e) {
+                  console.error(e);
+                  setLikedByMe(false);
+                }
+              }}
+              variant="stroke"
+              size={20}
+            />
+          )
+        ) : null}
+        <Link href={`/st/${story.id}`} passHref scroll={false}>
           <Comment02Icon size={20} />
         </Link>
         <SentIcon size={20} />
-        {
-          onUpdateClick ? <Edit02Icon onClick={onUpdateClick} className='cursor-pointer' size={20} /> : null
-        }
-        <Share01Icon className='cursor-pointer' size={20} />
+        {onUpdateClick ? (
+          <Edit02Icon
+            onClick={onUpdateClick}
+            className="cursor-pointer"
+            size={20}
+          />
+        ) : null}
+        <Share01Icon className="cursor-pointer" size={20} />
       </div>
       <div className="inline post-info">
         <span className="font-semibold text-nowrap">{story.name}</span>
@@ -149,6 +164,11 @@ export default function StoryItem({
           {story.description}
         </span>
       </div>
+      {
+        showPlay ? <Button disabled={creatingSession} onClick={play} className="w-full rounded-2xl text-background mt-2">
+          {creatingSession ? 'Creating Session...' : 'Play'} <PlayIcon type="sharp" variant="solid" />
+        </Button> : null
+      }
     </div>
   );
 }
