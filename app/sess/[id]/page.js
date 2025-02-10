@@ -10,6 +10,7 @@ import Session from "@/components/columns/sessions/session";
 import { getSession } from "@/service/session";
 import useStore from "@/stores/editor";
 import { executeScript } from '@/stores/actions/game';
+import { parseJson } from "@/utils/utils";
 
 export default function Page({ params }) {
   const id = params.id
@@ -37,6 +38,7 @@ export default function Page({ params }) {
           messages: res.messages,
           storySessionId: res.id,
           autoGenerate: true,
+          gameSession: parseJson(res.state, {})
         }))
         executeScript(res.messages.length === 0)
       } finally {

@@ -1,5 +1,6 @@
 // this file is used for client
 import http from '@/utils/http';
+import { parseJson } from '@/utils/utils';
 
 export async function createMessages(seid, messages, reset = false) {
   const res = await http.post(`/m`, {
@@ -7,6 +8,7 @@ export async function createMessages(seid, messages, reset = false) {
     messages,
     reset,
   });
+  res.forEach(m => m.content = parseJson(m.content))
   return res;
 }
 

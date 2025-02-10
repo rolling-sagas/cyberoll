@@ -152,3 +152,11 @@ export function parseMarkdown(markdownText) {
 
   return text;
 }
+
+export function parseJson(str, def) {
+  let res = def !== undefined ? def : str
+  try {
+    res = JSON.parse(str)
+  } catch(e) {}
+  return res
+}

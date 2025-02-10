@@ -14,6 +14,7 @@ import {
 import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
 import { componentsToMap } from '@/utils/utils';
+import { updateSession } from '@/service/session';
 
 const quickjs = new QuickJSManager();
 
@@ -127,8 +128,10 @@ export const generate = async () => {
 
 // user iteractive actions
 export const onUserAction = async (action) => {
+  console.log('[onUserAction result]')
   try {
     let result = await quickjs.callFunction('onAction', action);
+    console.log('[onUserAction result]', result)
     // add messages
     if (result.messages) {
       await addMessages(result.messages)
@@ -165,6 +168,14 @@ export const saveGameSession = async () => {
     useStore.setState((state) => ({
       gameSession: { ...gameSession },
     }));
+
+    const state = useStore.getState()
+    const storySessionId = state.storySessionId
+    if (storySessionId) {
+      await updateSession(storySessionId, {
+        state: gameSession,
+      })
+    }
   } catch (e) {
     setModal({
       title: 'onSave Error:',

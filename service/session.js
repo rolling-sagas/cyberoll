@@ -1,5 +1,6 @@
 // this file is used for client
 import http from '@/utils/http';
+import { parseJson } from '@/utils/utils';
 
 // 获取 story 列表
 export async function getSessions() {
@@ -9,6 +10,7 @@ export async function getSessions() {
 
 export async function getSession(seid) {
   const res = await http.get(`/se/${seid}`);
+  if (res.messages) res.messages.forEach(m => m.content = parseJson(m.content))
   return res;
 }
 

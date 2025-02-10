@@ -106,8 +106,13 @@ export default function StoryItem({
           <FavouriteIcon
             className="cursor-pointer"
             onClick={async () => {
-              await dislikeStory(story.id);
               setLikedByMe(false);
+              try {
+                await dislikeStory(story.id);
+              } catch(e) {
+                console.error(e)
+                setLikedByMe(true);
+              }
             }}
             variant="solid"
             color="#f44336"
@@ -117,8 +122,13 @@ export default function StoryItem({
           <FavouriteIcon
             className="cursor-pointer"
             onClick={async () => {
-              await likeStory(story.id);
               setLikedByMe(true);
+              try {
+                await likeStory(story.id);
+              } catch(e) {
+                console.error(e)
+                setLikedByMe(false);
+              }
             }}
             variant="stroke"
             size={20}

@@ -175,6 +175,7 @@ export default class QuickJSManager {
       if (error.message === 'not a function') {
         throw new Error(`Function "${functionName}" not found`);
       }
+      console.error('[callFunction error]', error);
       throw error;
     }
   }
