@@ -16,9 +16,6 @@ export async function getComponent(coid) {
 }
 
 export async function createComponent(data) {
-  if (data.initial === undefined) {
-    data.initial = data.value
-  }
   const res = await http.post(`/co`, data);
   return res;
 }

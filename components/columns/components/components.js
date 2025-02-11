@@ -60,7 +60,6 @@ export const createComponentStore = (id) =>
         name,
         type,
         value: value,
-        initial: value,
         chapterId: id,
       });
     },
@@ -70,9 +69,8 @@ export const createComponentStore = (id) =>
       name,
       desc,
       image,
-      isInitial
     ) => {
-      let newVal = JSON.parse(isInitial ? component.initial : component.value)
+      let newVal = JSON.parse(component.value)
       if (image) {
         const img = await uploadImage(image);
         newVal = {
@@ -84,17 +82,15 @@ export const createComponentStore = (id) =>
         newVal.desc = desc
       }
       newVal = JSON.stringify(newVal)
-      const value = isInitial ? component.value : newVal
-      const initial = isInitial ? newVal : component.initial
-      await get().updateComponent(component.id, name, component.type, value, initial)
+      const value = newVal
+      await get().updateComponent(component.id, name, component.type, value)
     },
 
-    updateComponent: async (coid, name, type, value, initial) => {
+    updateComponent: async (coid, name, type, value) => {
       await updateComponent(coid, {
         name,
         type,
         value,
-        initial,
       });
     },
     deleteComponent: async (coid) => {
@@ -129,12 +125,12 @@ function CreateComponent({ store }) {
         onClick={() =>
           openModal(
             <CreateComponentDialog
-              onConfirm={async (name, type, value, initial) => {
+              onConfirm={async (name, type, value) => {
                 const tid = toast.loading('Creating component...', {
                   icon: <Spinner />,
                 });
                 try {
-                  await newComponent(name, type, initial);
+                  await newComponent(name, type, value);
                   toast.success('Component created', {
                     id: tid,
                     icon: <CheckmarkCircle01Icon />,
@@ -249,12 +245,12 @@ export default function Components({ storeRef }) {
           onClick={() => {
             openModal(
               <CreateComponentDialog
-                onConfirm={async (name, type, value, initial) => {
+                onConfirm={async (name, type, value) => {
                   const tid = toast.loading('Creating component...', {
                     icon: <Spinner />,
                   });
                   try {
-                    await newComponent(name, type, initial);
+                    await newComponent(name, type, value);
                     toast.success('Component created', {
                       id: tid,
                       icon: <CheckmarkCircle01Icon />,
@@ -335,8 +331,7 @@ export default function Components({ storeRef }) {
                   name={component.name}
                   type={component.type}
                   value={component.value}
-                  initial={component.initial}
-                  onConfirm={async (name, type, value, initial) => {
+                  onConfirm={async (name, type, value) => {
                     const tid = toast.loading('Updating component...', {
                       icon: <Spinner />,
                     });
@@ -346,7 +341,6 @@ export default function Components({ storeRef }) {
                         name,
                         type,
                         value,
-                        initial
                       );
                       toast.success('Component updated', {
                         id: tid,
