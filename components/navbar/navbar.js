@@ -57,10 +57,10 @@ export default function NavBar() {
             variant={l1Pathname === "search" ? "solid" : "stroke"}
           />
         </NavButton>
-        <NavButton href="/" active={l1Pathname === "search"}>
+        <NavButton href="/u/_" active={l1Pathname === "u"}>
           <UserIcon
             strokeWidth="2"
-            variant={l1Pathname === "user" ? "solid" : "stroke"}
+            variant={l1Pathname === "u" ? "solid" : "stroke"}
           />
         </NavButton>
       </div>

@@ -7,11 +7,23 @@ export async function getStories() {
   return res;
 }
 
-export async function getPublicStories(page = 0) {
+export async function getPublicStories(page = 0, size = 10, authorId) {
   const res = await http.get('/s/_/public', {
     params: {
-      take: 10,
-      skip: page * 10,
+      take: size,
+      skip: page * size,
+      authorId,
+    }
+  });
+  return res;
+}
+
+export async function getLikedStories(page = 0, size = 10, likedBy) {
+  const res = await http.get('/s/_/like', {
+    params: {
+      take: size,
+      skip: page * size,
+      likedBy,
     }
   });
   return res;

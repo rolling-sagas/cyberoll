@@ -19,7 +19,7 @@ instance.interceptors.response.use(response => response.data, err => {
   if (err.status === 401) {
     goSso()
   } else {
-    const msg = err.response.data?.msg
+    const msg = err.response?.data?.msg
     if (typeof msg === 'string') {
       toast.error(msg, {
         duration: 3500,
@@ -28,7 +28,7 @@ instance.interceptors.response.use(response => response.data, err => {
       })
     }
   }
-  throw err.response.data?.msg || err.message || err;
+  throw err.response?.data?.msg || err.message || err;
 });
 
 export default instance

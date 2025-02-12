@@ -160,3 +160,25 @@ export function parseJson(str, def) {
   } catch(e) {}
   return res
 }
+
+export function formatNumber(num, toFixed = 1) {
+  const isNegative = num < 0;
+  const absNum = Math.abs(num);
+
+  const units = [
+      { value: 1E9, symbol: "b" },
+      { value: 1E6, symbol: "m" },
+      { value: 1E3, symbol: "k" }
+  ];
+
+  const unit = units.find(u => absNum >= u.value);
+  if (unit) {
+      let formattedNumber = (absNum / unit.value).toFixed(toFixed);
+      formattedNumber = parseFloat(formattedNumber).toString();
+      return (isNegative ? '-' : '') + formattedNumber + unit.symbol;
+  } else {
+      let formattedNumber = absNum.toFixed(toFixed);
+      formattedNumber = parseFloat(formattedNumber).toString();
+      return (isNegative ? '-' : '') + formattedNumber;
+  }
+}

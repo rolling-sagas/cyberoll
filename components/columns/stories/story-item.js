@@ -52,11 +52,13 @@ export default function StoryItem({
     <div className="mx-6 py-3 border-b-1 border-gray-200">
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-2 items-center">
-          <img
-            src={story.author.image}
-            className="w-8 h-8 rounded-full"
-            alt={story.author.name}
-          />
+          <Link href={`/u/${story.author.id}`}>
+            <img
+              src={story.author.image}
+              className="w-8 h-8 rounded-full"
+              alt={story.author.name}
+            />
+          </Link>
           <span className="text-xs">
             <span className="font-semibold">{story.author.name}</span>
             <span className="text-base-content/50 font-light">•</span>

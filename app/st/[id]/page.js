@@ -7,6 +7,7 @@ import PinnedColumns from '@/components/columns/pinned-columns';
 
 import { useColumnsStore } from '@/components/columns/pinned-columns';
 import Story from '@/components/columns/stories/story';
+import Back from '@/components/common/back';
 
 export default function Page({ params }) {
   const [story, setStory] = useState(null);
@@ -26,7 +27,7 @@ export default function Page({ params }) {
     reset();
     addColumn(
       'stories',
-      { headerCenter: <div>{story?.name}</div> },
+      { headerLeft: <Back />, headerCenter: <div>{story?.name}</div> },
       <Story story={story} />
     );
   }, [addColumn, story]);
