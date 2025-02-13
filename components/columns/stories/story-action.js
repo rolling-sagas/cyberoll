@@ -76,6 +76,7 @@ export function onCreateClick(cb) {
           });
           await cb();
         } catch (e) {
+          console.error(11122, e)
           return toast.error('Story create failed!', {
             id: tid,
             icon: <CheckmarkCircle01Icon />,

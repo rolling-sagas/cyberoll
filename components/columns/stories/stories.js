@@ -64,7 +64,7 @@ export default function Stories() {
 
   return (
     <>
-      <CreateStory listStories={listStories} />
+      <CreateStory cb={listStories} />
       {stories.map((story) => (
         <StoryItem
           key={story.id}
