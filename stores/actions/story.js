@@ -10,9 +10,13 @@ export const initStory = async (storyId) => {
     script: true,
     components: true,
   })
+  const {script, components = []} = story
+  delete story.script
+  delete story.components
   useStore.setState(() => ({
-    script: story.script?.value || '',
-    components: story.components || [],
+    story,
+    script: script?.value || '',
+    components: components,
   }))
   executeScript(true)
 }

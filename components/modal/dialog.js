@@ -6,9 +6,11 @@ export const Input = function({
   placeholder,
   icon,
   value,
-  onChange,
+  onChange = () => {},
   autoFocus = false,
   autoSize = false,
+  maxLength = Infinity,
+  className,
 }) {
   const inputEl = useRef(null);
 
@@ -22,11 +24,19 @@ export const Input = function({
     }
   }, [autoFocus]);
 
+  const changeHandle = (e) => {
+    let v = e.target.value
+    if (v.length > maxLength) {
+      v = v.substr(0, maxLength)
+    }
+    onChange(v)
+  }
+
   return (
     <div
-      className="grid grid-cols-[48px_auto] 
+      className={`grid grid-cols-[48px_auto] 
       grid-rows-[21px_19px_max-content_max-conent]
-      w-full"
+      w-full ${className}`}
     >
       <div className="pt-1 relative col-start-1 row-span-2">
         <div className="w-9 h-9">{icon}</div>
@@ -36,7 +46,7 @@ export const Input = function({
         <TextareaAutosize
           ref={inputEl}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={changeHandle}
           autoFocus={autoFocus}
           className="outline-none col-start-2 rows-start-1 resize-none bg-rs-background-2"
           placeholder={placeholder}
@@ -46,7 +56,7 @@ export const Input = function({
           ref={inputEl}
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={changeHandle}
           className="outline-none col-start-2 rows-start-1"
           placeholder={placeholder}
         />

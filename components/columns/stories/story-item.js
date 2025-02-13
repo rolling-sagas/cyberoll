@@ -29,7 +29,8 @@ import { Button } from '@/components/ui/button';
 export default function StoryItem({
   story,
   showLike = true,
-  onEditClick,
+  showEdit = false,
+  showComment = true,
   onUpdateClick,
   onDuplicateClick,
   onDeleteClick,
@@ -67,14 +68,14 @@ export default function StoryItem({
             </span>
           </span>
         </div>
-        {onEditClick || onDuplicateClick || onDeleteClick ? (
+        {showEdit || onDuplicateClick || onDeleteClick ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
               <MoreHorizontalIcon />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {onEditClick ? (
-                <DropdownMenuItem className="h-10" onClick={onEditClick}>
+              {showEdit ? (
+                <DropdownMenuItem className="h-10" onClick={() => router.push('/st/' + story.id + '/edit')}>
                   <div className="flex gap-10 justify-between w-full cursor-pointer">
                     Edit
                     <Edit01Icon size={18} />
@@ -147,9 +148,11 @@ export default function StoryItem({
             />
           )
         ) : null}
-        <Link href={`/st/${story.id}`} passHref scroll={false}>
-          <Comment02Icon size={20} />
-        </Link>
+        {
+          showComment ? <Link href={`/st/${story.id}`} passHref scroll={false}>
+            <Comment02Icon size={20} />
+          </Link> : null
+        }
         <SentIcon size={20} />
         {onUpdateClick ? (
           <Edit02Icon

@@ -2,6 +2,7 @@ import { devtools } from "zustand/middleware";
 import { create } from "zustand";
 
 const initialState = {
+  story: null,
   storyId: '',
   storySessionId: '',
   editingComponent: null,
