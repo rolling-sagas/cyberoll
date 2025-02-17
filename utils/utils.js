@@ -88,7 +88,7 @@ export function componentsToMap(components = [], needThrowError = false) {
           res[name] = value;
       }
     } catch (e) {
-      console.error('[parse component fail]', e);
+      console.error(`[parse component fail: componentName ${name}]`, e);
       res[name] = value;
       if (needThrowError) throw e;
     }
@@ -181,4 +181,10 @@ export function formatNumber(num, toFixed = 1) {
       formattedNumber = parseFloat(formattedNumber).toString();
       return (isNegative ? '-' : '') + formattedNumber;
   }
+}
+
+export const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.slice(1);
+
+export const isDigit = (char) => {
+    return !isNaN(parseInt(char));
 }

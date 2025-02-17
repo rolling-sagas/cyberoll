@@ -1,12 +1,13 @@
 // this file is used for client
 import http from '@/utils/http';
 import { markOpenedStripe } from './subscription';
+import { API_PAYURL } from '@/utils/const';
 
 export async function createOrGetStripeCustomer() {
   const res = await http.post(
-    `${process.env.NEXT_PUBLIC_API_BASEURL}pay/customer/stripe`
+    `${API_PAYURL}/customer/stripe`
   );
-  return res?.customer?.id;
+  return res?.id;
 }
 
 export async function createCheckoutSession(priceId) {
@@ -14,7 +15,7 @@ export async function createCheckoutSession(priceId) {
   const urlParams = new URLSearchParams(window.location.search);
   const from = urlParams.get('from');
   const { origin } = location;
-  const data = await http.post('pay/customer/stripe/checkout', {
+  const data = await http.post(`${API_PAYURL}/customer/stripe/checkout`, {
     payment_method_types: ['card'],
     line_items: [
       {
@@ -38,7 +39,7 @@ export async function createCheckoutSession(priceId) {
 export async function createCustomerPortalSession(returnUrl) {
   const cid = await createOrGetStripeCustomer();
   // 创建 Customer Portal 会话
-  const data = await http.post('pay/customer/stripe/billing', {
+  const data = await http.post(`${API_PAYURL}/customer/stripe/billing`, {
     customer: cid,
     return_url: returnUrl, // 用户管理完成后返回的 URL
   });
@@ -50,7 +51,7 @@ export async function createCustomerPortalSession(returnUrl) {
 }
 
 export async function getPricesByProductId(productId) {
-  const { data } = await http.get(`pay/customer/stripe/prices/${productId}`, {
+  const { data } = await http.get(`${API_PAYURL}/customer/stripe/prices/${productId}`, {
     params: {
       active: true, // 可选：只查询激活状态的价格
     },
@@ -62,3 +63,5 @@ export async function getPricesByProductId(productId) {
     recurring: price.recurring ? price.recurring.interval : null // 订阅周期
   }));
 }
+
+export async function updateSubscription() {}

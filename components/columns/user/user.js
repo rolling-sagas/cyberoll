@@ -9,6 +9,7 @@ import {
 } from "@hugeicons/react";
 import { toggleFollowUser, getFollowers } from "@/service/relation";
 import UserTabs from './user-tabs'
+import Link from "next/link";
 
 export default function User({ uid }) {
   const [user, setUser] = useState(null)
@@ -105,14 +106,16 @@ export default function User({ uid }) {
       {
         isSelf ? <div className="flex gap-4">
           <Button variant="outline" className="w-full">Edit profile</Button>
-          <Button variant="outline" className="w-full">
-            <CrownIcon
-              strokeWidth="2"
-              className="!text-amber-500"
-              variant="duotone"
-            />
-            My plan
-          </Button>
+          <Link href="/plan" className="w-full">
+            <Button variant="outline" className="w-full">
+              <CrownIcon
+                strokeWidth="2"
+                className="!text-amber-500"
+                variant="duotone"
+              />
+              My plan
+            </Button>
+          </Link>
         </div>: null
       }
       {

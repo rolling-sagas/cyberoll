@@ -66,7 +66,7 @@ export default function NavBar() {
       </div>
       <div className="nav mb-6">
         <PinButton />
-        <NavButton href="/">
+        <NavButton href="/plan">
           <CrownIcon
             strokeWidth="2"
             className="!text-amber-500"
