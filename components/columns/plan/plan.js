@@ -26,7 +26,7 @@ export default function Plan() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsloading(true)
+      setIsloading(true);
       try {
         const [subscription, credits] = await Promise.all([
           getCurrentSubscription(),
@@ -35,7 +35,9 @@ export default function Plan() {
         console.log('subscription', subscription);
         console.log('credits', credits);
         setCurrentSubscription(subscription);
-        setCancelModel(subscription?.isCancelAtPeriodEnd ? 'uncancel' : 'cancel');
+        setCancelModel(
+          subscription?.isCancelAtPeriodEnd ? 'uncancel' : 'cancel'
+        );
         setCredits(credits);
       } finally {
         setIsloading(false);
@@ -77,19 +79,24 @@ export default function Plan() {
 
   if (isLoading) return <Loading />;
   return (
-    <div className='mx-6 xy-4'>
+    <div className="mx-6 xy-4">
       <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
         <div className="text-base font-semibold leading-normal w-[240px]">
           Subscription
         </div>
         <div className="flex flex-1 flex-col">
-          <div className="text-base font-semibold leading-normal">{`${capitalizeFirstLetter(currentSubscription.plan)} ${(currentSubscription?.interval && (currentSubscription?.interval === 'year' ? 'Annually' : 'Monthly')) || ''}`}</div>
+          <div className="text-base font-semibold leading-normal">{`${capitalizeFirstLetter(
+            currentSubscription.plan
+          )} ${
+            (currentSubscription?.interval &&
+              (currentSubscription?.interval === 'year'
+                ? 'Annually'
+                : 'Monthly')) ||
+            ''
+          }`}</div>
         </div>
         <div className="SubscriptionDetails__actions__EqSLO">
-          <Button
-            variant="outline"
-            onClick={onChangePlan}
-          >
+          <Button variant="outline" onClick={onChangePlan}>
             Change plan
           </Button>
         </div>
@@ -136,10 +143,7 @@ export default function Plan() {
           </div>
         )}
         <div className="md:justify-end flex row gap-2">
-          <Button
-            variant="outline"
-            onClick={onChangePlan}
-          >
+          <Button variant="outline" onClick={onChangePlan}>
             Get credits
           </Button>
         </div>
@@ -161,14 +165,16 @@ export default function Plan() {
             </div>
             <div className="mt-1 text-sm font-normal">
               Billing period:{' '}
-              {currentSubscription.interval === 'year'
-                ? 'Annually'
-                : 'Monthly'}
+              {currentSubscription.interval === 'year' ? 'Annually' : 'Monthly'}
             </div>
             <div className="mt-1 md:mb-[36px] text-sm font-normal">
               {currentSubscription?.isCancelAtPeriodEnd
-                ? `Cancelling on: ${dayjs(currentSubscription.end).format('MMM DD, YYYY')}`
-                : `Renewal date: ${dayjs(currentSubscription.end).format('MMM DD, YYYY')}`}
+                ? `Cancelling on: ${dayjs(currentSubscription.end).format(
+                    'MMM DD, YYYY'
+                  )}`
+                : `Renewal date: ${dayjs(currentSubscription.end).format(
+                    'MMM DD, YYYY'
+                  )}`}
             </div>
           </div>
         )}
@@ -182,20 +188,17 @@ export default function Plan() {
         {currentSubscription.plan != PLAN.FREE && (
           <div className="md:justify-end flex row gap-2">
             {currentSubscription?.isCancelAtPeriodEnd ? (
-              <button className="btn w-[150px]" onClick={onOpenUnCancel}>
+              <Button variant="outline" onClick={onChangePlan}>
                 Uncancel plan
-              </button>
+              </Button>
             ) : (
-              <button className="btn w-[150px]" onClick={onOpenCancel}>
+              <Button variant="outline" onClick={onChangePlan}>
                 Cancel plan
-              </button>
+              </Button>
             )}
-            <button
-              className="btn w-[150px] !text-black !bg-yellow-custom active:!bg-yellow-custom-300"
-              onClick={onRecoverBill}
-            >
+            <Button variant="outline" onClick={onRecoverBill}>
               Recover Bill
-            </button>
+            </Button>
           </div>
         )}
       </div>
