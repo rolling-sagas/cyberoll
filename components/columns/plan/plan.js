@@ -18,7 +18,7 @@ export default function Plan() {
     daily: 0,
     monthly: 0,
   });
-  const [isLoading, setIsloading] = useState(true);
+  const [isLoading, setIsloading] = useState(false);
   const [cancelModel, setCancelModel] = useState('');
   const proceedingModalRef = useRef(null);
   const successModalRef = useRef(null);
@@ -26,16 +26,20 @@ export default function Plan() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [subscription, credits] = await Promise.all([
-        getCurrentSubscription(),
-        getCurrentCredits(),
-      ]);
-      setIsloading(false);
-      console.log('subscription', subscription);
-      console.log('credits', credits);
-      setCurrentSubscription(subscription);
-      setCancelModel(subscription?.isCancelAtPeriodEnd ? 'uncancel' : 'cancel');
-      setCredits(credits);
+      setIsloading(true)
+      try {
+        const [subscription, credits] = await Promise.all([
+          getCurrentSubscription(),
+          getCurrentCredits(),
+        ]);
+        console.log('subscription', subscription);
+        console.log('credits', credits);
+        setCurrentSubscription(subscription);
+        setCancelModel(subscription?.isCancelAtPeriodEnd ? 'uncancel' : 'cancel');
+        setCredits(credits);
+      } finally {
+        setIsloading(false);
+      }
     };
     fetchData();
   }, []);

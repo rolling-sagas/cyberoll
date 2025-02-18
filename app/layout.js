@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import Head from "next/head";
 import NavBar from "@/components/navbar/navbar";
 
@@ -13,9 +13,12 @@ import "./global.css";
 
 import { ToastPlaceholder } from "@/components/modal/toast-placeholder";
 import { AlertPlaceholder } from "@/components/modal/alert-placeholder";
+import SubscriptionCheck from "@/components/common/subscription-check";
+import useUserStore from "@/stores/user";
 
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
+  const userStore = useUserStore()
 
   useEffect(() => {
     if (
@@ -30,6 +33,10 @@ export default function RootLayout({ children }) {
       applyTheme(light);
     }
   }, [theme]);
+
+  useEffect(() => {
+    userStore.getUserInfo()
+  }, [])
 
   return (
     <html lang="en">
@@ -51,6 +58,9 @@ export default function RootLayout({ children }) {
         <ToastPlaceholder />
         <DialogPlaceholder />
         <AlertPlaceholder />
+        <Suspense fallback={null}>
+          <SubscriptionCheck />
+        </Suspense>
       </body>
     </html>
   );

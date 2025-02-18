@@ -23,6 +23,6 @@ export async function hasCredits() {
 
 // 更新用户额度，包括发放每日免费额度
 export async function dailyCheck() {
-  const data = await http.post(`${API_PAYURL}/subscription/daily_check`)
+  const data = await http.get(`${API_PAYURL}/subscription/daily_check`)
   return data;
 }

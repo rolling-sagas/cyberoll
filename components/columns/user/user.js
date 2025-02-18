@@ -10,6 +10,8 @@ import {
 import { toggleFollowUser, getFollowers } from "@/service/relation";
 import UserTabs from './user-tabs'
 import Link from "next/link";
+import useUserStore from "@/stores/user";
+import { getCurrentCredits } from "@/service/credits";
 
 export default function User({ uid }) {
   const [user, setUser] = useState(null)
@@ -17,8 +19,26 @@ export default function User({ uid }) {
   const [following, setFollowing] = useState(false)
   const [followers, setFollowers] = useState([])
   const [followerCount, setFollowerCount] = useState(0)
+  const currentUser = useUserStore((state) => state.userInfo)
+  const subscription = useUserStore((state) => state.subscription)
+  const [credits, setCredits] = useState(0);
 
-  const isSelf = !uid || uid === '_'
+  const isSelf = !uid || uid === '_' || uid === currentUser?.id
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const credits = await getCurrentCredits();
+      console.log('credits', credits);
+      let data = credits.daily + credits.monthly
+      if (credits.daily === 'unlimited' || credits.monthly === 'unlimited') {
+        data = 'unlimited'
+      }
+      setCredits(data);
+    };
+    if (isSelf) {
+      fetchData();
+    }
+  }, [isSelf]);
 
   const fetchUser = useCallback(async () => {
     setUserLoading(true)
@@ -71,12 +91,14 @@ export default function User({ uid }) {
           <div>
             <span className="text-foreground text-lg font-bold flex gap-1 items-center">
               {user?.name}
-              <CrownIcon
-                size={18}
-                strokeWidth="2"
-                className="!text-amber-500"
-                variant="duotone"
-              />
+              {
+                subscription?.type !== 'free' ? <CrownIcon
+                  size={18}
+                  strokeWidth="2"
+                  className="!text-amber-500"
+                  variant="duotone"
+                /> : null
+              }
             </span>
             <span>{user?.description}</span>
           </div>
@@ -101,7 +123,7 @@ export default function User({ uid }) {
           </div>
           <span className="text-gray-400 text-sm">{followerCount} followers</span>
         </div>
-        <Button className="h-6 px-2" size="sm" variant="outline">777 credits</Button>
+        <Button className="h-6 px-2" size="sm" variant="outline">{credits} credits</Button>
       </div>
       {
         isSelf ? <div className="flex gap-4">
@@ -110,7 +132,7 @@ export default function User({ uid }) {
             <Button variant="outline" className="w-full">
               <CrownIcon
                 strokeWidth="2"
-                className="!text-amber-500"
+                className={subscription?.type === 'free' ? 'text-rs-text-secondary' : '!text-amber-500'}
                 variant="duotone"
               />
               My plan
