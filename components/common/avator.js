@@ -11,6 +11,7 @@ export default function Avator({ image, name = '', size = 32, className = '' }) 
         width: `${size}px`,
         height: `${size}px`,
       }}
+      title={name}
       className={`rounded-full inline-block bg-no-repeat bg-center bg-cover cursor-pointer ${className} align-bottom`}
     />
   );

@@ -110,12 +110,7 @@ export default function User({ uid }) {
         <div className="flex items-center">
           <div className="flex">
             {followers.map((f) => (
-              <img
-                src={f?.follower.image}
-                key={f.id}
-                className="-mr-2 last:mr-1 w-6 h-6 rounded-full not()"
-                alt={f?.follower.name}
-              />
+              <Avator key={f.id} image={f?.follower.image} size={24} name={f?.follower.name} className="-mr-2 last:mr-1"/>
             ))}
           </div>
           <span className="text-gray-400 text-sm">
