@@ -27,7 +27,7 @@ export default function UserTabs({ uid }) {
       <TabsContent value="stories">
         <div className="flex gap-2 flex-wrap mb-2">
           {
-            stories.map(s => <Link key={s.id} className="w-1/4 max-w-[33%] flex-grow" href={`/st/${s.id}`}>
+            stories.map(s => <Link key={s.id} className="w-1/4 max-w-[33%] flex-grow -mb-1" href={`/st/${s.id}`}>
               <Image
                 src={getImageUrl(s.image)}
                 width={310}
@@ -35,8 +35,12 @@ export default function UserTabs({ uid }) {
                 objectFit="cover"
                 alt={s.name}
                 priority
+                className="!block"
               />
             </Link>)
+          }
+          {
+            new Array(stories.length % 3 > 0 ? 3 - stories.length % 3 : 0).fill('').map((_, i) => <span className="w-1/4 max-w-[33%] flex-grow -mb-1" key={i}> </span>)
           }
         </div>
         <PageDataStatus loading={storiesLoading} noData={storiesTotal === 0} loadMore={hasMoreStory} loadMoreHandle={() => loadmoreStories(uid)} />
@@ -54,6 +58,9 @@ export default function UserTabs({ uid }) {
                 priority
               />
             </Link>)
+          }
+          {
+            new Array(likes.length % 3 > 0 ? 3 - likes.length % 3 : 0).fill('').map((_, i) => <span className="w-1/4 max-w-[33%] flex-grow -mb-1" key={i}> </span>)
           }
         </div>
         <PageDataStatus loading={likesLoading} noData={likesTotal === 0} loadMore={hasMoreLikes} loadMoreHandle={() => loadmoreLikes(uid)} />
