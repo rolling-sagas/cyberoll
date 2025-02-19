@@ -1,17 +1,25 @@
-import { useState, useRef } from "react";
-import { Image01Icon } from "@hugeicons/react";
-import Image from "next/image";
-import { IMAGE_HOST } from "@/utils/const";
+import { useState, useRef } from 'react';
+import { Image01Icon } from '@hugeicons/react';
 import { uploadImage } from '@/service/upload';
-import Spinner from "../spinner";
+import Spinner from '../spinner';
+import { getImageUrl } from '@/utils/utils';
+import { useEffect } from 'react';
 
-export default function ImageAutoUploader({ value, onChange = () => {} }) {
-  const [pValue, setValue] = useState(value)
+export default function ImageAutoUploader({ value, onChange = () => {}, width = 480, height = 320, rounded = 'xl', variant = 'public' }) {
+  const [pValue, setValue] = useState(value);
   const imageInput = useRef(null);
-  const [localUrl, setLocalUrl] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [localUrl, setLocalUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const url = pValue ? `${IMAGE_HOST}${pValue}/public` : ''
+  const url = getImageUrl(pValue, '', variant);
+  rounded = {
+    xl: 'rounded-xl',
+    full: 'rounded-full'
+  }[rounded]
+
+  useEffect(() => {
+    setValue(value);
+  }, [value]);
 
   return (
     <div className="flex flex-col w-full">
@@ -19,48 +27,45 @@ export default function ImageAutoUploader({ value, onChange = () => {} }) {
         ref={imageInput}
         type="file"
         accept="image/*"
-        style={{ display: "none" }}
+        style={{ display: 'none' }}
         onChange={async (evt) => {
           evt.preventDefault();
 
           if (evt.target.files?.length === 0) {
-            setValue('')
-            setLocalUrl('')
-            onChange('')
-            return
-          };
+            setValue('');
+            setLocalUrl('');
+            onChange('');
+            return;
+          }
           const file = evt.target.files[0];
-          setLoading(true)
+          setLoading(true);
 
           try {
-            const {id} = await uploadImage(file)
+            const { id } = await uploadImage(file);
             onChange(id);
-            if (localUrl !== "") {
+            if (localUrl !== '') {
               URL.revokeObjectURL(localUrl);
             }
             const src = URL.createObjectURL(file);
             setLocalUrl(src);
           } catch (e) {
-            console.error(e)
+            console.error(e);
             setLocalUrl(localUrl);
           } finally {
-            setLoading(false)
+            setLoading(false);
           }
         }}
       />
 
       <div className="w-full mt-2 relative">
         {localUrl || url ? (
-          <Image
-            src={localUrl || url}
-            alt="image"
-            width={480}
-            height={320}
-            className="w-full rounded-xl cursor-pointer"
+          <div
             onClick={(evt) => {
               evt.preventDefault();
               if (!loading) imageInput.current.click();
             }}
+            style={{ backgroundImage: `url(${localUrl || url})`, paddingTop: `${height / width * 100}%` }}
+            className={`bg-no-repeat bg-center bg-cover w-full cursor-pointer ${rounded}`}
           />
         ) : (
           <button
@@ -68,7 +73,7 @@ export default function ImageAutoUploader({ value, onChange = () => {} }) {
               items-center bg-rs-background-1"
             onClick={(evt) => {
               evt.preventDefault();
-              imageInput.current.click();
+              if (!loading) imageInput.current.click();
             }}
           >
             <div className="flex flex-row items-center gap-2">
@@ -77,7 +82,9 @@ export default function ImageAutoUploader({ value, onChange = () => {} }) {
             </div>
           </button>
         )}
-        { loading ? <Spinner className="w-full absolute left-0 top-0 h-full bg-white bg-opacity-50 opacity-100"/> : null }
+        {loading ? (
+          <Spinner className="w-full absolute left-0 top-0 h-full bg-white bg-opacity-50 opacity-100" />
+        ) : null}
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import UserTabs from './user-tabs'
 import Link from "next/link";
 import useUserStore from "@/stores/user";
 import { getCurrentCredits } from "@/service/credits";
+import Avator from "@/components/common/avator";
 
 export default function User({ uid }) {
   const [user, setUser] = useState(null)
@@ -102,11 +103,7 @@ export default function User({ uid }) {
             </span>
             <span>{user?.description}</span>
           </div>
-          <img
-            src={user?.image}
-            className="w-12 h-12 rounded-full"
-            alt={user?.name}
-          />
+          <Avator image={user?.image} size={48} name={user?.name} />
         </div>
       }
       <div className="flex justify-between items-center mb-4">
@@ -127,7 +124,9 @@ export default function User({ uid }) {
       </div>
       {
         isSelf ? <div className="flex gap-4">
-          <Button variant="outline" className="w-full">Edit profile</Button>
+          <Link href="/u/_/edit" className="w-full">
+            <Button variant="outline" className="w-full">Edit profile</Button>
+          </Link>
           <Link href="/plan" className="w-full">
             <Button variant="outline" className="w-full">
               <CrownIcon

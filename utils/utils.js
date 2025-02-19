@@ -55,8 +55,9 @@ export function parseError(e) {
   }
 }
 
-export function getImageUrl(id) {
-  return id ? `${IMAGE_HOST}${id}/public` : DEFAULT_STORY_IMAGE;
+export function getImageUrl(uri = '', fallbackUrl = DEFAULT_STORY_IMAGE, variant = 'public') {
+  if (/^https?:\/\//.test(uri)) return uri;
+  return uri ? `${IMAGE_HOST}${uri}/${variant}` : fallbackUrl;
 }
 
 export function getImageUrlByName(name, components = []) {
@@ -187,4 +188,21 @@ export const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.sl
 
 export const isDigit = (char) => {
     return !isNaN(parseInt(char));
+}
+
+export function generateBase64Svg(width, height, text, fontSize = '40', bgColor = '#dddddd', textColor = '#999999') {
+  const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+    <rect width="100%" height="100%" fill="${bgColor}" />
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="${textColor}" font-size="${fontSize}" font-family="Arial">
+      ${text}
+    </text>
+  </svg>`;
+
+  const encodedSvg = encodeURIComponent(svgData)
+    .replace(/'/g, "%27")
+    .replace(/"/g, "%22");
+
+  const base64Url = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
+
+  return base64Url;
 }

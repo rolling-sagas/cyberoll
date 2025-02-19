@@ -1,5 +1,5 @@
 import dayjs from '@/utils/day';
-import Image from 'next/legacy/image';
+import Image from '../../common/custom-image'
 import Link from 'next/link';
 import {
   FavouriteIcon,
@@ -25,6 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import Avator from '@/components/common/avator';
 
 export default function StoryItem({
   story,
@@ -38,14 +39,14 @@ export default function StoryItem({
 }) {
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
-  const [creatingSession, setCreatingSession] = useState(false)
+  const [creatingSession, setCreatingSession] = useState(false);
   const play = useCallback(async () => {
-    setCreatingSession(true)
+    setCreatingSession(true);
     try {
       const seid = await createSession(story.id);
       router.push(`/sess/${seid}`);
     } finally {
-      setCreatingSession(false)
+      setCreatingSession(false);
     }
   }, [story]);
 
@@ -54,11 +55,7 @@ export default function StoryItem({
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-2 items-center">
           <Link href={`/u/${story.author.id}`}>
-            <img
-              src={story.author.image}
-              className="w-8 h-8 rounded-full"
-              alt={story.author.name}
-            />
+            <Avator image={story.author.image} size={32} name={story.author.name} />
           </Link>
           <span className="text-xs">
             <span className="font-semibold">{story.author.name}</span>
@@ -75,7 +72,10 @@ export default function StoryItem({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {showEdit ? (
-                <DropdownMenuItem className="h-10" onClick={() => router.push('/st/' + story.id + '/edit')}>
+                <DropdownMenuItem
+                  className="h-10"
+                  onClick={() => router.push('/st/' + story.id + '/edit')}
+                >
                   <div className="flex gap-10 justify-between w-full cursor-pointer">
                     Edit
                     <Edit01Icon size={18} />
@@ -102,7 +102,10 @@ export default function StoryItem({
           </DropdownMenu>
         ) : null}
       </div>
-      <div className="w-full flex flex-col cursor-pointer mb-3" onClick={() => router.push(`/st/${story.id}`)}>
+      <div
+        className="w-full flex flex-col cursor-pointer mb-3"
+        onClick={() => router.push(`/st/${story.id}`)}
+      >
         <Image
           src={getImageUrl(story.image)}
           width={470}
@@ -148,11 +151,11 @@ export default function StoryItem({
             />
           )
         ) : null}
-        {
-          showComment ? <Link href={`/st/${story.id}`} passHref scroll={false}>
+        {showComment ? (
+          <Link href={`/st/${story.id}`} passHref scroll={false}>
             <Comment02Icon size={20} />
-          </Link> : null
-        }
+          </Link>
+        ) : null}
         <SentIcon size={20} />
         {onUpdateClick ? (
           <Edit02Icon
@@ -169,11 +172,16 @@ export default function StoryItem({
           {story.description}
         </span>
       </div>
-      {
-        showPlay ? <Button disabled={creatingSession} onClick={play} className="w-full rounded-2xl text-background mt-2">
-          {creatingSession ? 'Creating Session...' : 'Play'} <PlayIcon type="sharp" variant="solid" />
-        </Button> : null
-      }
+      {showPlay ? (
+        <Button
+          disabled={creatingSession}
+          onClick={play}
+          className="w-full rounded-2xl text-background mt-2"
+        >
+          {creatingSession ? 'Creating Session...' : 'Play'}{' '}
+          <PlayIcon type="sharp" variant="solid" />
+        </Button>
+      ) : null}
     </div>
   );
 }

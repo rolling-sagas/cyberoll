@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getPublicStories, getLikedStories } from "@/service/story";
 import usePageData from "@/components/hooks/use-page-data";
 import Link from "next/link";
-import Image from "next/legacy/image";
+import Image from "../../common/custom-image";
 import { getImageUrl } from "@/utils/utils";
 import PageDataStatus from "@/components/common/page-data-status";
 
