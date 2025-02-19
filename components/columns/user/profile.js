@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/app/components/ui/button';
 import { updateUserInfo } from '@/service/user';
 import ImageAutoUploader from '../components/image-auto-uploader';
+import { Textarea } from '@/app/components/ui/textarea';
 
 export default function Profile() {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -58,7 +59,7 @@ export default function Profile() {
         }
       />
       <Label htmlFor="des">Description</Label>
-      <Input
+      <Textarea
         className="mb-6 mt-1"
         type="text"
         id="des"
