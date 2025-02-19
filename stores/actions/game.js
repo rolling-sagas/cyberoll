@@ -15,6 +15,7 @@ import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
 import { componentsToMap } from '@/utils/utils';
 import { updateSession } from '@/service/session';
+import { AI_BASE_URL } from '@/utils/const';
 
 const quickjs = new QuickJSManager();
 
@@ -74,9 +75,9 @@ export const restart = () => {
   });
 };
 
-// generate message from llm
-const GENERATE_URL = 'https://dev-api.rollingsagas.com/seecreet/ai';
+
 export const generate = async () => {
+  const GENERATE_URL = AI_BASE_URL + (localStorage.AI_PATH || 'ai');
   let messages = useStore.getState().messages;
   messages = getMessagesAfterLastDivider(messages);
 
