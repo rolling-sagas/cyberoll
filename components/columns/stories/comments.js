@@ -6,6 +6,7 @@ import { getComments } from '@/service/comment';
 import dayjs from '@/utils/day';
 import Spinner from '../spinner';
 import NoData from '@/components/common/no-data';
+import Avator from '@/components/common/avator';
 
 export default function Comments({sid}) {
   const [comments, setComments] = useState([])
@@ -36,11 +37,7 @@ export default function Comments({sid}) {
       <div ref={commentsRef} className='mx-6 flex-grow overflow-y-auto relative'>
         {
           comments.map((c) => (<div className='flex my-2 gap-2' key={c.id}>
-            <img
-              src={c.user.image}
-              className="w-6 h-6 rounded-full mt-2"
-              alt={c.user.name}
-            />
+            <Avator image={c.user.image} name={c.user.name} size={24} className='mt-2 flex-none' />
             <div>
               <div>
                 <strong className='font-semibold text-sm mr-2'>{c.user.name}</strong>

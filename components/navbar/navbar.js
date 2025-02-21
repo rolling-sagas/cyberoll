@@ -9,6 +9,7 @@ import {
   Search01Icon,
   UserIcon,
   Notebook01Icon,
+  PlusSignIcon,
 } from '@hugeicons/react';
 
 import Link from 'next/link';
@@ -21,10 +22,13 @@ import { usePathname } from 'next/navigation';
 
 import PinButton from './pin-button';
 import useUserStore from '@/stores/user';
+import { onCreateClick } from '../columns/stories/story-action';
+import { useRouter } from 'next/navigation';
 
 export default function NavBar() {
   const pathname = usePathname();
   const [l1Pathname, setL1Pathname] = useState('');
+  const router = useRouter()
 
   const subscription = useUserStore((state) => state.subscription);
 
@@ -51,6 +55,27 @@ export default function NavBar() {
             variant={l1Pathname === 'st' ? 'solid' : 'stroke'}
           />
         </NavButton>
+        <span
+          className="group w-[60px] h-[60px] 
+          flex justify-center items-center relative cursor-pointer"
+          onClick={() => onCreateClick(null, router)}
+        >
+          <div
+            className="group-hover:scale-110          
+            transition duration-200 h-6 w-6 z-[1] 
+            text-rs-text-secondary group-active:text-rs-text-primary"
+          >
+            <PlusSignIcon
+              strokeWidth="2"
+              variant="solid"
+            />
+          </div>
+          <div
+            className="absolute w-full h-full rounded-lg
+              top-0 left-0
+              scale-100 bg-rs-background-hover"
+          />
+        </span>
         <NavButton href="/">
           <Search01Icon strokeWidth={l1Pathname === 'search' ? '3' : '2'} />
         </NavButton>

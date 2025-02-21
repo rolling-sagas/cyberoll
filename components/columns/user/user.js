@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { getUserInfo } from '@/service/user';
-import UserSkeleton from '@/components/columns/user/user-skeleton';
+import UserSkeleton from '@/components/skeleton/user-skeleton';
 import { Button } from '@/app/components/ui/button';
 import { CrownIcon } from '@hugeicons/react';
 import { toggleFollowUser, getFollowers } from '@/service/relation';
@@ -103,7 +103,7 @@ export default function User({ uid }) {
             </span>
             <span className="whitespace-pre">{user?.description}</span>
           </div>
-          <Avator image={user?.image} size={48} name={user?.name} />
+          <Avator image={user?.image} size={64} name={user?.name} />
         </div>
       )}
       <div className="flex justify-between items-center mb-4">

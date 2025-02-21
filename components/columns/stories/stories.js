@@ -12,7 +12,6 @@ import { getStories } from '@/service/story';
 import {
   onDeleteClick,
   CreateStory,
-  onPlayStory,
   onUpdateClick,
   onDuplicateClick,
   onCreateClick,
@@ -36,10 +35,6 @@ export default function Stories() {
   useEffect(() => {
     listStories();
   }, []);
-
-  const onEditStory = (story) => {
-    router.push('/st/' + story.id + '/edit');
-  };
 
   if (loading) {
     return (
@@ -70,7 +65,6 @@ export default function Stories() {
           key={story.id}
           story={story}
           showLike={false}
-          onPlayStory={() => onPlayStory(story, router)}
           showEdit
           onUpdateClick={() => onUpdateClick(story, listStories)}
           onDuplicateClick={() => {

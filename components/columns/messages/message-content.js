@@ -65,7 +65,7 @@ export default function MessageContent({ content, components }) {
           })}
         </div>
       ) : (
-        <p className="plain-text">{content}</p>
+        <p>{content}</p>
       )}
     </div>
   );

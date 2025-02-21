@@ -54,11 +54,11 @@ export default function StoryItem({
     <div className="mx-6 py-3 border-b-1 border-gray-200">
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-2 items-center">
-          <Link href={`/u/${story.author.id}`}>
-            <Avator image={story.author.image} size={32} name={story.author.name} />
+          <Link href={`/u/${story.author?.id}`}>
+            <Avator image={story.author?.image} size={32} name={story.author?.name} />
           </Link>
           <span className="text-xs">
-            <span className="font-semibold">{story.author.name}</span>
+            <span className="font-semibold">{story.author?.name}</span>
             <span className="text-base-content/50 font-light">•</span>
             <span className="text-base-content/50 font-light">
               {dayjs(story.updatedAt).fromNow()}

@@ -51,9 +51,11 @@ export default function Stories() {
   return (
     <>
       {
-        sessions && sessions.length ? <div className='mx-6 my-3'><ScrollSessions items={sessions} /></div> : null
+        sessions && sessions.length ? <div className='mx-6 my-3'>
+          <ScrollSessions items={sessions} onDelete={listSessions} />
+        </div> : null
       }
-      <div className="overflow-y-auto overflow-x-hidden scrollbar-none w-full">
+      <div>
         {stories.map((story) => (
           <PublicStoryItem key={story.id} story={story} />
         ))}

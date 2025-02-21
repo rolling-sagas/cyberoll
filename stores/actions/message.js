@@ -77,6 +77,7 @@ export async function resetMessages(messages) {
 
 export async function syncMessage(msgId) {
   let message = getMessageById(msgId)
+  if (!message) return
   const state = useStore.getState()
   const messages = state.messages
   const storySessionId = state.storySessionId

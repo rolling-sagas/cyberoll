@@ -59,7 +59,7 @@ export async function onDeleteClick(storyId, cb) {
   );
 }
 
-export function onCreateClick(cb) {
+export function onCreateClick(cb, router) {
   const openModal = useModalStore.getState().open;
 
   openModal(
@@ -69,14 +69,18 @@ export function onCreateClick(cb) {
           icon: <Spinner />,
         });
         try {
-          await createStory({
+          const res = await createStory({
             name,
             description,
             image,
           });
-          await cb();
+          if (typeof cb === 'function') {
+            await cb();
+          } else {
+            router.push('/st/' + res.id);
+          }
         } catch (e) {
-          console.error(11122, e)
+          console.error(e)
           return toast.error('Story create failed!', {
             id: tid,
             icon: <CheckmarkCircle01Icon />,

@@ -109,8 +109,12 @@ export const generate = async () => {
       updateMessage(message.id, 'Generating... ' + resText);
     }
 
-    const jsonContent = JSON.parse(resText);
-    updateMessage(message.id, jsonContent);
+    try {
+      const jsonContent = JSON.parse(resText);
+      updateMessage(message.id, jsonContent);
+    } catch(e) {
+      updateMessage(message.id, resText)
+    }
 
     // send generated message into scripting
     const newMessage = await syncMessage(message.id)
