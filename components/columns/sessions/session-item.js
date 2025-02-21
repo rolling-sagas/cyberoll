@@ -34,7 +34,7 @@ export default function SessionItem({
   }
 
   return (
-    <div className="mx-6 py-3">
+    <div className="mx-6">
       <div
         className="w-full flex flex-col cursor-pointer mb-3 relative"
         onClick={() => router.push(`/sess/${session.id}`)}
@@ -49,7 +49,7 @@ export default function SessionItem({
           priority
         />
         <DropdownMenu>
-          <DropdownMenuTrigger className='absolute top-4 right-4 border-1 rounded-full bg-background/80'>
+          <DropdownMenuTrigger className='absolute top-2 right-2 border-1 rounded-full bg-background/80'>
             <MoreHorizontalIcon />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
