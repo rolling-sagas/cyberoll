@@ -77,7 +77,10 @@ export const restart = () => {
 
 
 export const generate = async () => {
-  const GENERATE_URL = AI_BASE_URL + (localStorage.AI_PATH || 'ai');
+  const aiPath = localStorage.AI_PATH || 'ai'
+  const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
+  const GENERATE_URL = AI_BASE_URL + aiPath;
+
   let messages = useStore.getState().messages;
   messages = getMessagesAfterLastDivider(messages);
 
@@ -91,10 +94,12 @@ export const generate = async () => {
 
   let message = addMessage('assistant', 'Generating...');
   try {
+    const body = { messages: messages, type: 'json' };
+    if (model) body.model = model;
     const response = await fetch(GENERATE_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: messages, type: 'json' }),
+      body: JSON.stringify(body),
     });
 
     const reader = response.body.getReader()
@@ -111,8 +116,14 @@ export const generate = async () => {
 
     try {
       const jsonContent = JSON.parse(resText);
+      console.error('[ai parsed json]:', jsonContent)
+      if (jsonContent.error) {
+        console.error('[ai error]:', jsonContent.error)
+        return updateMessage(message.id, jsonContent.error);
+      }
       updateMessage(message.id, jsonContent);
     } catch(e) {
+      console.error('[ai parse json error]:', e)
       updateMessage(message.id, resText)
     }
 
