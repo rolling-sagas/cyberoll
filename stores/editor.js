@@ -23,6 +23,7 @@ const initialState = {
 
   gameSession: {},
   loading: false,
+  generating: false,
 }
 
 const useStore = create(

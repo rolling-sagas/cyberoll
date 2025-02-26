@@ -23,7 +23,7 @@ export const executeScript = async (refresh = true) => {
   let components = null;
 
   try {
-    components = componentsToMap(useStore.getState().components, true)
+    components = componentsToMap(useStore.getState().components, true);
   } catch (e) {
     setModal({
       title: 'Error, when parsing components',
@@ -40,14 +40,18 @@ export const executeScript = async (refresh = true) => {
   // set components
   try {
     // initial quickjs
-    const functions = useStore.getState().components?.filter(comp => comp.type === COMPONENT_TYPE.Function) || [];
+    const functions =
+      useStore
+        .getState()
+        .components?.filter((comp) => comp.type === COMPONENT_TYPE.Function) ||
+      [];
 
     await quickjs.initialize(functions);
     await quickjs.executeScript(useStore.getState().script, components);
 
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
-      await resetMessages(messages)
+      await resetMessages(messages);
 
       if (useStore.getState().autoGenerate) {
         await generate();
@@ -57,7 +61,7 @@ export const executeScript = async (refresh = true) => {
       await loadGameSession();
     }
   } catch (e) {
-    console.error('[executeScript error]', e)
+    console.error('[executeScript error]', e);
     setModal({
       title: 'Error, when interpreting script',
       description: e.message,
@@ -75,25 +79,28 @@ export const restart = () => {
   });
 };
 
-
 export const generate = async () => {
-  const aiPath = localStorage.AI_PATH || 'ai'
-  const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
-  const GENERATE_URL = AI_BASE_URL + aiPath;
-
-  let messages = useStore.getState().messages;
-  messages = getMessagesAfterLastDivider(messages);
-
-  messages = messages.map((m) => {
-    let { role, content } = m;
-    if (typeof content === 'object') {
-      content = JSON.stringify(content);
-    }
-    return { role, content };
+  useStore.setState({
+    generating: true,
   });
-
-  let message = addMessage('assistant', 'Generating...');
   try {
+    const aiPath = localStorage.AI_PATH || 'ai';
+    const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
+    const GENERATE_URL = AI_BASE_URL + aiPath;
+
+    let messages = useStore.getState().messages;
+    messages = getMessagesAfterLastDivider(messages);
+
+    messages = messages.map((m) => {
+      let { role, content } = m;
+      if (typeof content === 'object') {
+        content = JSON.stringify(content);
+      }
+      return { role, content };
+    });
+
+    let message = addMessage('assistant', 'Generating...');
+
     const body = { messages: messages, type: 'json' };
     if (model) body.model = model;
     const response = await fetch(GENERATE_URL, {
@@ -102,33 +109,33 @@ export const generate = async () => {
       body: JSON.stringify(body),
     });
 
-    const reader = response.body.getReader()
-    const decoder = new TextDecoder("utf-8");
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
     let resText = '';
     while (true) {
       const { value, done } = await reader.read();
-  
+
       if (done) break;
-  
+
       resText += decoder.decode(value, { stream: true });
       updateMessage(message.id, 'Generating... ' + resText);
     }
 
     try {
       const jsonContent = JSON.parse(resText);
-      console.error('[ai parsed json]:', jsonContent)
+      console.log('[ai parsed json]:', jsonContent);
       if (jsonContent.error) {
-        console.error('[ai error]:', jsonContent.error)
+        console.error('[ai error]:', jsonContent.error);
         return updateMessage(message.id, jsonContent.error);
       }
       updateMessage(message.id, jsonContent);
-    } catch(e) {
-      console.error('[ai parse json error]:', e)
-      updateMessage(message.id, resText)
+    } catch (e) {
+      console.error('[ai parse json error]:', e);
+      updateMessage(message.id, resText);
     }
 
     // send generated message into scripting
-    const newMessage = await syncMessage(message.id)
+    const newMessage = await syncMessage(message.id);
 
     await quickjs.callFunction('onAssistant', {
       id: newMessage.id,
@@ -139,18 +146,22 @@ export const generate = async () => {
     await saveGameSession();
   } catch (error) {
     console.error(error);
+  } finally {
+    useStore.setState({
+      generating: false,
+    });
   }
 };
 
 // user iteractive actions
 export const onUserAction = async (action) => {
-  console.log('[onUserAction result]')
+  console.log('[onUserAction result]');
   try {
     let result = await quickjs.callFunction('onAction', action);
-    console.log('[onUserAction result]', result)
+    console.log('[onUserAction result]', result);
     // add messages
     if (result.messages) {
-      await addMessages(result.messages)
+      await addMessages(result.messages);
       if (useStore.getState().autoGenerate) {
         await generate();
       }
@@ -161,7 +172,7 @@ export const onUserAction = async (action) => {
       switch (result.action) {
         case 'next':
           const messages = await quickjs.callFunction('onStart');
-          await addMessages(messages)
+          await addMessages(messages);
 
           if (useStore.getState().autoGenerate) {
             await generate();
@@ -185,12 +196,12 @@ export const saveGameSession = async () => {
       gameSession: { ...gameSession },
     }));
 
-    const state = useStore.getState()
-    const storySessionId = state.storySessionId
+    const state = useStore.getState();
+    const storySessionId = state.storySessionId;
     if (storySessionId) {
       await updateSession(storySessionId, {
         state: gameSession,
-      })
+      });
     }
   } catch (e) {
     setModal({
@@ -236,7 +247,7 @@ export const importTemplate = (template) => {
                 value: result.script || '',
               },
               components: [...result.components],
-            })
+            });
             useStore.setState(() => ({
               components: story.components,
               script: story.script.value,

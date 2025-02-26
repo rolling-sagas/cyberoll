@@ -10,7 +10,8 @@ export async function getSessions() {
 
 export async function getSession(seid) {
   const res = await http.get(`/se/${seid}`);
-  if (res.messages) res.messages.forEach(m => m.content = parseJson(m.content))
+  if (res.messages)
+    res.messages.forEach((m) => (m.content = parseJson(m.content)));
   return res;
 }
 
@@ -28,5 +29,10 @@ export async function updateSession(seid, data) {
 
 export async function deleteSession(seid) {
   const res = await http.delete(`/se/${seid}`);
+  return res;
+}
+
+export async function resetSession(seid) {
+  const res = await http.post(`/se/${seid}/reset`);
   return res;
 }

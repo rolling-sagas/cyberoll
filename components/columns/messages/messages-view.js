@@ -9,11 +9,13 @@ import { generate } from '@/stores/actions/game';
 import Messages from './messages';
 import ScriptEditor from '../editor/script-editor';
 import Checkbox from './checkbox';
+import { Button } from '@/app/components/ui/button';
 
-export default function MessagesView({ isSession = false }) {
+export default function MessagesView({ isSession = false, resetHandle }) {
   const autoGenerate = useStore((state) => state.autoGenerate);
   const playMode = useStore((state) => state.playMode);
   const viewingMessage = useStore((state) => state.viewingMessage);
+  const generating = useStore((state) => state.generating);
 
   return (
     <div className="flex-auto flex flex-col gap-4 px-4 pt-2 pb-4">
@@ -26,19 +28,31 @@ export default function MessagesView({ isSession = false }) {
               checked={autoGenerate}
               onChange={setAutoGenerate}
             />
-            {
-              isSession ? null : <Checkbox
+            {isSession ? null : (
+              <Checkbox
                 label="Play mode"
                 checked={playMode}
                 onChange={setPlayMode}
               />
-            }
-            <button
-              className="btn-default"
-              onClick={async () => await generate()}
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={generating}
+              onClick={generate}
             >
               Generate
-            </button>
+            </Button>
+            {resetHandle ? (
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={generating}
+                onClick={resetHandle}
+              >
+                Restart
+              </Button>
+            ) : null}
           </>
         ) : (
           <button onClick={() => startViewingMessage(null)}>Back</button>

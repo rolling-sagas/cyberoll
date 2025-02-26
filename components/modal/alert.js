@@ -4,6 +4,7 @@ export default function Alert({
   title,
   message,
   onConfirm,
+  onCancel,
   confirmLabel = "Delete",
   cancelLabel = "Cancel",
   width = 280,
@@ -26,7 +27,7 @@ export default function Alert({
           className="flex flex-row
           w-full border-t h-[54px]"
         >
-          <CloseButton className="border-r flex-1 flex justify-center items-center">
+          <CloseButton onClick={() => onCancel ? onCancel() : null} className="border-r flex-1 flex justify-center items-center">
             {cancelLabel}
           </CloseButton>
           <CloseButton
