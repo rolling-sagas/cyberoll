@@ -11,7 +11,10 @@ export async function getSessions() {
 export async function getSession(seid) {
   const res = await http.get(`/se/${seid}`);
   if (res.messages)
-    res.messages.forEach((m) => (m.content = parseJson(m.content)));
+    res.messages.forEach((m) => {
+      m.content = parseJson(m.content);
+      m.state = parseJson(m.state);
+    });
   return res;
 }
 
@@ -32,7 +35,9 @@ export async function deleteSession(seid) {
   return res;
 }
 
-export async function resetSession(seid) {
-  const res = await http.post(`/se/${seid}/reset`);
+export async function resetSession(seid, mid) {
+  const res = await http.post(`/se/${seid}/reset`, {
+    mid,
+  });
   return res;
 }

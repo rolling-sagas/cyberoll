@@ -21,7 +21,6 @@ const initialState = {
   components: [],
   messages: [],
 
-  gameSession: {},
   loading: false,
   generating: false,
 }

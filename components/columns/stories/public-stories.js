@@ -9,23 +9,13 @@ import { getPublicStories } from '@/service/story';
 import ScrollSessions from '../sessions/scroll-sessions';
 
 import { getSessions } from '@/service/session';
+import usePageData from '@/components/hooks/use-page-data';
+import PageDataStatus from "@/components/common/page-data-status";
 
 export default function Stories() {
-  const [loading, setLoading] = useState(true);
-  const [stories, setStories] = useState([]);
-  const [page, setPage] = useState(0);
-  const [total, setTotal] = useState(100);
+  const [stories, storiesTotal, storiesLoading, _, hasMoreStory, loadmoreStories] = usePageData(getPublicStories, 10, 'stories')
+
   const [sessions, setSessions] = useState([])
-  const listStories = async (page) => {
-    setLoading(true);
-    try {
-      const data = await getPublicStories(page);
-      setStories([...stories, ...(data.stories || [])]);
-      setTotal(data.total);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const listSessions = async () => {
     const list = await getSessions()
@@ -34,19 +24,8 @@ export default function Stories() {
 
   useEffect(() => {
     listSessions()
+    loadmoreStories()
   }, [])
-
-  useEffect(() => {
-    listStories(page);
-  }, [page]);
-
-  if (stories.length === 0 && !loading) {
-    return (
-      <div className="flex flex-col w-full h-full items-center justify-center">
-        <div className="text-rs-text-secondary text-[16px]">No story here.</div>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -59,21 +38,7 @@ export default function Stories() {
         {stories.map((story) => (
           <PublicStoryItem key={story.id} story={story} />
         ))}
-        <div className="text-center">
-          {loading ? (
-            <div className="flex w-full h-20 items-center justify-center">
-              <Spinner />
-            </div>
-          ) : (
-            <Button
-              disabled={loading || page * 10 + 10 >= total}
-              onClick={() => setPage(page + 1)}
-              className="my-6"
-            >
-              {page * 10 + 10 >= total ? 'No more story' : 'Load more'}
-            </Button>
-          )}
-        </div>
+        <PageDataStatus loading={storiesLoading} noData={storiesTotal === 0} loadMore={hasMoreStory} loadMoreHandle={() => loadmoreStories()} />
       </div>
     </>
   );

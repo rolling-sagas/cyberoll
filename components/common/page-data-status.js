@@ -21,7 +21,7 @@ export default function PageDataStatus({
     comp = loadMoreComp || <Button variant="outline" onClick={loadMoreHandle} size="sm">Load more</Button>
   }
   return (
-    <div className={`w-full text-center ${className}`}>
+    <div className={`w-full text-center ${className} my-4`}>
       {comp}
     </div>
   )

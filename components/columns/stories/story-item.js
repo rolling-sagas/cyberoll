@@ -1,5 +1,5 @@
 import dayjs from '@/utils/day';
-import Image from '../../common/custom-image'
+import Image from '../../common/custom-image';
 import Link from 'next/link';
 import {
   FavouriteIcon,
@@ -55,7 +55,11 @@ export default function StoryItem({
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-2 items-center">
           <Link href={`/u/${story.author?.id}`}>
-            <Avator image={story.author?.image} size={32} name={story.author?.name} />
+            <Avator
+              image={story.author?.image}
+              size={32}
+              name={story.author?.name}
+            />
           </Link>
           <span className="text-xs">
             <span className="font-semibold">{story.author?.name}</span>
@@ -68,7 +72,7 @@ export default function StoryItem({
         {showEdit || onDuplicateClick || onDeleteClick ? (
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <MoreHorizontalIcon />
+              <MoreHorizontalIcon size={20} className="text-gray-800" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {showEdit ? (

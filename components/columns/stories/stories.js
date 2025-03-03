@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import Spinner from '../spinner';
 import BaseButton from '@/components/buttons/base-button';
 import StoryItem from './story-item';
 
@@ -16,50 +15,27 @@ import {
   onDuplicateClick,
   onCreateClick,
 } from './story-action';
+import usePageData from '@/components/hooks/use-page-data';
+import PageDataStatus from '@/components/common/page-data-status';
 
 export default function Stories() {
   const router = useRouter();
-
-  const [loading, setLoading] = useState(true);
-  const [stories, setStories] = useState([]);
-  const listStories = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await getStories();
-      setStories(data.stories || []);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [
+    stories,
+    storiesTotal,
+    storiesLoading,
+    _,
+    hasMoreStory,
+    loadmoreStories,
+  ] = usePageData(getStories, 10, 'stories');
 
   useEffect(() => {
-    listStories();
+    loadmoreStories();
   }, []);
-
-  if (loading) {
-    return (
-      <div className="flex w-full h-full items-center justify-center">
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (stories.length === 0) {
-    return (
-      <div className="flex flex-col w-full h-full items-center justify-center">
-        <div className="text-rs-text-secondary text-[16px]">No story here.</div>
-        <BaseButton
-          label="Create"
-          className="mt-2"
-          onClick={() => onCreateClick(listStories)}
-        />
-      </div>
-    );
-  }
 
   return (
     <>
-      <CreateStory cb={listStories} />
+      <CreateStory router={router} />
       {stories.map((story) => (
         <StoryItem
           key={story.id}
@@ -73,6 +49,24 @@ export default function Stories() {
           onDeleteClick={() => onDeleteClick(story.id, listStories)}
         />
       ))}
+      <PageDataStatus
+        loading={storiesLoading}
+        noData={storiesTotal === 0}
+        loadMore={hasMoreStory}
+        loadMoreHandle={() => loadmoreStories()}
+        noDataComp={
+          (
+            <div className="flex flex-col w-full h-full items-center justify-center">
+              <div className="text-rs-text-secondary text-[16px]">No story here.</div>
+              <BaseButton
+                label="Create"
+                className="mt-2"
+                onClick={() => onCreateClick(undefined, router)}
+              />
+            </div>
+          )
+        }
+      />
     </>
   );
 }

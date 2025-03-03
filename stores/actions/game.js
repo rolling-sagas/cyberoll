@@ -14,8 +14,9 @@ import {
 import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
 import { componentsToMap } from '@/utils/utils';
-import { updateSession } from '@/service/session';
 import { AI_BASE_URL } from '@/utils/const';
+import { parseJson } from '@/utils/utils';
+import { resetSession } from '@/service/session';
 
 const quickjs = new QuickJSManager();
 
@@ -121,29 +122,31 @@ export const generate = async () => {
       updateMessage(message.id, 'Generating... ' + resText);
     }
 
+    let finalContent = resText
     try {
-      const jsonContent = JSON.parse(resText);
-      console.log('[ai parsed json]:', jsonContent);
-      if (jsonContent.error) {
-        console.error('[ai error]:', jsonContent.error);
-        return updateMessage(message.id, jsonContent.error);
+      finalContent = JSON.parse(resText);
+      console.log('[ai parsed json]:', finalContent);
+      if (finalContent.error) {
+        console.error('[ai error]:', finalContent.error);
+        return updateMessage(message.id, finalContent.error);
       }
-      updateMessage(message.id, jsonContent);
+      updateMessage(message.id, finalContent);
     } catch (e) {
       console.error('[ai parse json error]:', e);
       updateMessage(message.id, resText);
     }
 
-    // send generated message into scripting
-    const newMessage = await syncMessage(message.id);
-
-    await quickjs.callFunction('onAssistant', {
-      id: newMessage.id,
-      role: newMessage.role,
-      content: JSON.stringify(newMessage.content),
+    const msg = await quickjs.callFunction('onAssistant', {
+      role: message.role,
+      content: JSON.stringify(finalContent),
     });
 
-    await saveGameSession();
+    if (msg?.state) {
+      updateMessage(message.id, undefined, msg.state);
+    }
+
+    // send generated message into scripting
+    await syncMessage(message.id);
   } catch (error) {
     console.error(error);
   } finally {
@@ -155,7 +158,7 @@ export const generate = async () => {
 
 // user iteractive actions
 export const onUserAction = async (action) => {
-  console.log('[onUserAction result]');
+  console.log('[onUserAction]');
   try {
     let result = await quickjs.callFunction('onAction', action);
     console.log('[onUserAction result]', result);
@@ -189,32 +192,34 @@ export const onUserAction = async (action) => {
   }
 };
 
-export const saveGameSession = async () => {
-  try {
-    const gameSession = await quickjs.callFunction('onSave');
-    useStore.setState((state) => ({
-      gameSession: { ...gameSession },
-    }));
+// export const saveGameSession = async () => {
+//   try {
+//     const gameSession = await quickjs.callFunction('onSave');
+//     useStore.setState((state) => ({
+//       gameSession: { ...gameSession },
+//     }));
 
-    const state = useStore.getState();
-    const storySessionId = state.storySessionId;
-    if (storySessionId) {
-      await updateSession(storySessionId, {
-        state: gameSession,
-      });
-    }
-  } catch (e) {
-    setModal({
-      title: 'onSave Error:',
-      description: e.message,
-      confirm: { label: 'Dismiss' },
-    });
-  }
-};
+//     const state = useStore.getState();
+//     const storySessionId = state.storySessionId;
+//     if (storySessionId) {
+//       await updateSession(storySessionId, {
+//         state: gameSession,
+//       });
+//     }
+//   } catch (e) {
+//     setModal({
+//       title: 'onSave Error:',
+//       description: e.message,
+//       confirm: { label: 'Dismiss' },
+//     });
+//   }
+// };
 
 export const loadGameSession = async () => {
   try {
-    await quickjs.callFunction('onLoad', useStore.getState().gameSession);
+    const messages = useStore.getState().messages
+    const state = getLastMessageState(messages);
+    await quickjs.callFunction('onLoad', state);
   } catch (e) {
     setModal({
       title: 'onLoad Error:',
@@ -280,4 +285,64 @@ export const exportTemplate = () => {
   dlAnchorElem.setAttribute('download', 'rs_template.json');
   dlAnchorElem.click();
   dlAnchorElem = null;
+};
+
+export const getLastMessageState = (messages = []) => {
+  const state = messages.findLast((m) => m.state);
+  return parseJson(state, {});
+};
+
+export const sliceMessagesTillMid = (messages = [], mid) => {
+  if (!mid) return [];
+  let res = [];
+  const index = messages.findIndex((m) => m.id === mid);
+  if (index > -1) {
+    res = messages.slice(0, index + 1);
+  }
+  return res;
+};
+
+export const isLastMessageHasTailAction = (messages = []) => {
+  const lastMessage = messages[messages.length - 1];
+  const lastViews = lastMessage?.content?.views;
+  const lastView = lastViews?.[lastViews?.length - 1];
+  const lastViewType = lastView?.type;
+  if (lastViewType === 'btn') return true;
+  if (lastViewType?.startsWith('input.')) return true;
+  return false;
+};
+
+export const restartFromMessage = async (mid) => {
+  const generating = useStore.getState().generating;
+  if (generating) return;
+  useStore.setState({
+    generating: true,
+  });
+  try {
+    const messages = useStore.getState().messages || [];
+    const newMessages = sliceMessagesTillMid(messages, mid);
+
+    useStore.setState({
+      messages: newMessages,
+    });
+
+    const storySessionId = useStore.getState().storySessionId;
+    if (storySessionId) {
+      await resetSession(storySessionId, mid);
+    }
+    await loadGameSession();
+    if (useStore.getState().autoGenerate && !isLastMessageHasTailAction(newMessages)) {
+      await generate();
+    }
+  } catch (e) {
+    setModal({
+      title: 'Restart Error:',
+      description: e.message,
+      confirm: { label: 'Dismiss' },
+    });
+  } finally {
+    useStore.setState({
+      generating: false,
+    });
+  }
 };

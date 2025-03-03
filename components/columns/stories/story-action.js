@@ -77,7 +77,7 @@ export function onCreateClick(cb, router) {
           if (typeof cb === 'function') {
             await cb();
           } else {
-            router.push('/st/' + res.id);
+            router.push(`/st/${res.id}/edit`);
           }
         } catch (e) {
           console.error(e)
@@ -95,12 +95,12 @@ export function onCreateClick(cb, router) {
   );
 }
 
-export function CreateStory ({ cb }) {
+export function CreateStory ({ cb, router }) {
   return (
     <div className="w-full px-6 border-b">
       <div
         className="flex flex-row py-4 items-center"
-        onClick={() => onCreateClick(cb)}
+        onClick={() => onCreateClick(cb, router)}
       >
         <BubbleChatAddIcon className="text-rs-text-secondary" strokeWidth={1} />
         <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">

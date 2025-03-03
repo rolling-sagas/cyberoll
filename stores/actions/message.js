@@ -1,7 +1,7 @@
-import { nanoid } from "nanoid";
-import useStore from "../editor";
-import { setModal } from "./ui";
-import { createMessages } from "@/service/message";
+import { nanoid } from 'nanoid';
+import useStore from '../editor';
+import { setModal } from './ui';
+import { createMessages } from '@/service/message';
 
 export const startViewingMessage = (message) =>
   useStore.setState(() => ({ viewingMessage: message }));
@@ -19,21 +19,22 @@ export const addMessage = (role, content) => {
   return message;
 };
 
-export const updateMessage = (id, content) => {
-  useStore.setState((state) => {
-    const index = state.messages.findIndex((m) => m.id === id);
+export const updateMessage = (id, content, state) => {
+  useStore.setState((s) => {
+    const index = s.messages.findIndex((m) => m.id === id);
     if (index === -1) {
       setModal({
-        title: "Message not found",
-        confirm: { label: "OK" },
+        title: 'Message not found',
+        confirm: { label: 'OK' },
       });
       return {};
     }
+    content = content || s.messages[index].content;
     return {
       messages: [
-        ...state.messages.slice(0, index),
-        { ...state.messages[index], content },
-        ...state.messages.slice(index + 1),
+        ...s.messages.slice(0, index),
+        { ...s.messages[index], content, state },
+        ...s.messages.slice(index + 1),
       ],
     };
   });
@@ -45,12 +46,12 @@ export const getMessageById = (id) => {
 
 export const getMessagesAfterLastDivider = (messages) => {
   if (!Array.isArray(messages)) {
-    throw new Error("Messages must be an array");
+    throw new Error('Messages must be an array');
   }
 
   // Start from the end and find the first divider
   for (let i = messages.length - 1; i >= 0; i--) {
-    if (messages[i].role === "divider") {
+    if (messages[i].role === 'divider') {
       return messages.slice(i + 1);
     }
   }
@@ -58,36 +59,36 @@ export const getMessagesAfterLastDivider = (messages) => {
   return [];
 };
 
-export async function addMessages(newMessages, reset = false) {
-  const state = useStore.getState()
-  const storySessionId = state.storySessionId
+export async function addMessages(newMessages = [], reset = false) {
+  const state = useStore.getState();
+  const storySessionId = state.storySessionId;
   if (storySessionId) {
-    newMessages = await createMessages(storySessionId, newMessages, reset)
+    newMessages = await createMessages(storySessionId, newMessages, reset);
   }
-  const messages = reset ? [] : state.messages
+  const messages = reset ? [] : state.messages;
   useStore.setState(() => {
     return { messages: [...messages, ...newMessages] };
   });
-  return newMessages
+  return newMessages;
 }
 
 export async function resetMessages(messages) {
-  await addMessages(messages, true)
+  await addMessages(messages, true);
 }
 
 export async function syncMessage(msgId) {
-  let message = getMessageById(msgId)
-  if (!message) return
-  const state = useStore.getState()
-  const messages = state.messages
-  const storySessionId = state.storySessionId
+  let message = getMessageById(msgId);
+  if (!message) return;
+  const state = useStore.getState();
+  const messages = state.messages;
+  const storySessionId = state.storySessionId;
   if (storySessionId) {
-    const newMessages = await createMessages(storySessionId, [message])
-    messages.pop()
+    const newMessages = await createMessages(storySessionId, [message]);
+    messages.pop();
     useStore.setState(() => {
       return { messages: [...messages, ...newMessages] };
     });
-    return newMessages[0]
+    return newMessages[0];
   }
-  return message
+  return message;
 }

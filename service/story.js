@@ -2,8 +2,13 @@
 import http from '@/utils/http';
 
 // 获取 story 列表
-export async function getStories() {
-  const res = await http.get('/s');
+export async function getStories(page = 0, size = 10) {
+  const res = await http.get('/s', {
+    params: {
+      take: size,
+      skip: page * size,
+    }
+  });
   return res;
 }
 

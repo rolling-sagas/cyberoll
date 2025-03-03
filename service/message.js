@@ -8,43 +8,28 @@ export async function createMessages(seid, messages, reset = false) {
     messages,
     reset,
   });
-  res.forEach(m => m.content = parseJson(m.content))
-  return res;
-}
-
-
-
-
-
-
-// to be deleted bellow
-// 获取 story chapter 列表
-export async function getMessages(chid) {
-  const res = await http.get(`/m`, {
-    params: {
-      chid,
-    }
+  res.forEach((m) => {
+    m.content = parseJson(m.content);
+    m.state = parseJson(m.state);
   });
   return res;
 }
 
-export async function getMessage(chid) {
-  const res = await http.get(`/m/${chid}`);
-  return res;
-}
-
+// to be deleted bellow
+// 获取 story chapter 列表
 export async function createMessage(chid, role, raw) {
-  let content = raw
+  let content = raw;
   if (typeof raw === 'string') {
-    content = { data: [{ type: "md", value: raw }] }
+    content = { data: [{ type: 'md', value: raw }] };
   } else {
-    content = { data: [raw] }
+    content = { data: [raw] };
   }
   const msg = {
     chapterId: chid,
     role,
-    content: role === "user" || role === "assistant" ? JSON.stringify(content) : raw
-  }
+    content:
+      role === 'user' || role === 'assistant' ? JSON.stringify(content) : raw,
+  };
 
   const res = await http.post(`/m`, msg);
   return res;
@@ -61,8 +46,8 @@ export async function updateMessage(mid, role, content) {
 export async function deleteMessage(mid, deleteBelow = false) {
   const res = await http.delete(`/m/${mid}`, {
     params: {
-      below: deleteBelow ? 'true' : ''
-    }
+      below: deleteBelow ? 'true' : '',
+    },
   });
   return res;
 }

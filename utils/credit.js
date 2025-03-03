@@ -70,11 +70,3 @@ export const PRICE_ID_PLAN = {
 //     STANDARD: 'prod_R6ywUDpD2xTlri',
 //     ADVANCED: 'prod_R6ywkJghFfwvkS',
 // }
-
-
-
-
-
-
-
-
