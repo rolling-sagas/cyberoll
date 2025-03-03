@@ -122,7 +122,7 @@ export const generate = async () => {
       updateMessage(message.id, 'Generating... ' + resText);
     }
 
-    let finalContent = resText
+    let finalContent = resText;
     try {
       finalContent = JSON.parse(resText);
       console.log('[ai parsed json]:', finalContent);
@@ -217,8 +217,9 @@ export const onUserAction = async (action) => {
 
 export const loadGameSession = async () => {
   try {
-    const messages = useStore.getState().messages
+    const messages = useStore.getState().messages;
     const state = getLastMessageState(messages);
+    console.log('loadGameSession', state);
     await quickjs.callFunction('onLoad', state);
   } catch (e) {
     setModal({
@@ -288,8 +289,8 @@ export const exportTemplate = () => {
 };
 
 export const getLastMessageState = (messages = []) => {
-  const state = messages.findLast((m) => m.state);
-  return parseJson(state, {});
+  const msg = messages.findLast((m) => m.state);
+  return msg?.state;
 };
 
 export const sliceMessagesTillMid = (messages = [], mid) => {
@@ -331,7 +332,10 @@ export const restartFromMessage = async (mid) => {
       await resetSession(storySessionId, mid);
     }
     await loadGameSession();
-    if (useStore.getState().autoGenerate && !isLastMessageHasTailAction(newMessages)) {
+    if (
+      useStore.getState().autoGenerate &&
+      !isLastMessageHasTailAction(newMessages)
+    ) {
       await generate();
     }
   } catch (e) {
