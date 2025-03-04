@@ -158,6 +158,9 @@ export const generate = async (skipCache = false) => {
 
 // user iteractive actions
 export const onUserAction = async (action) => {
+  useStore.setState({
+    doingUserAction: true
+  })
   console.log('[onUserAction]');
   try {
     let result = await quickjs.callFunction('onAction', action);
@@ -189,6 +192,10 @@ export const onUserAction = async (action) => {
       description: e.message,
       confirm: { label: 'Dismiss' },
     });
+  } finally {
+    useStore.setState({
+      doingUserAction: false
+    })
   }
 };
 

@@ -23,6 +23,7 @@ const initialState = {
 
   loading: false,
   generating: false,
+  doingUserAction: false,
 }
 
 const useStore = create(
