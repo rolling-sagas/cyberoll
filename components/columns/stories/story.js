@@ -30,7 +30,7 @@ export default function Story({ story = null, sid, showUpdate = false }) {
     <>
       {
         storyItem ? <div className="h-full flex flex-col">
-          <StoryItem showComment={false} story={storyItem} showPlay onUpdateClick={showUpdate ? () => onUpdateClick(storyItem, f) : null} />
+          <StoryItem showComment={false} story={storyItem} showPlay showAllDesc onUpdateClick={showUpdate ? () => onUpdateClick(storyItem, f) : null} />
           <Comments sid={storyItem.id} />
         </div> : null
       }

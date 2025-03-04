@@ -36,6 +36,7 @@ export default function StoryItem({
   onDuplicateClick,
   onDeleteClick,
   showPlay = false,
+  showAllDesc = false,
 }) {
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
@@ -45,7 +46,8 @@ export default function StoryItem({
     try {
       const seid = await createSession(story.id);
       router.push(`/sess/${seid}`);
-    } finally {
+    } catch(e) {
+      console.error(e)
       setCreatingSession(false);
     }
   }, [story]);
@@ -170,9 +172,9 @@ export default function StoryItem({
         ) : null}
         <Share01Icon className="cursor-pointer" size={20} />
       </div>
-      <div className="inline post-info">
+      <div className="flex flex-col">
         <span className="font-semibold text-nowrap">{story.name}</span>
-        <span className="font-light text-sm line-clamp-3">
+        <span className={`font-light text-sm ${showAllDesc ? '' : 'line-clamp-3'}`}>
           {story.description}
         </span>
       </div>

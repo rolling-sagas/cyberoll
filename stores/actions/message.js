@@ -63,7 +63,16 @@ export async function addMessages(newMessages = [], reset = false) {
   const state = useStore.getState();
   const storySessionId = state.storySessionId;
   if (storySessionId) {
-    newMessages = await createMessages(storySessionId, newMessages, reset);
+    try {
+      useStore.setState({
+        generating: true,
+      });
+      newMessages = await createMessages(storySessionId, newMessages, reset);
+    } finally {
+      useStore.setState({
+        generating: false,
+      });
+    }
   }
   const messages = reset ? [] : state.messages;
   useStore.setState(() => {
@@ -83,12 +92,21 @@ export async function syncMessage(msgId) {
   const messages = state.messages;
   const storySessionId = state.storySessionId;
   if (storySessionId) {
-    const newMessages = await createMessages(storySessionId, [message]);
-    messages.pop();
-    useStore.setState(() => {
-      return { messages: [...messages, ...newMessages] };
-    });
-    return newMessages[0];
+    try {
+      useStore.setState({
+        generating: true,
+      });
+      const newMessages = await createMessages(storySessionId, [message]);
+      messages.pop();
+      useStore.setState(() => {
+        return { messages: [...messages, ...newMessages] };
+      });
+      return newMessages[0];
+    } finally {
+      useStore.setState({
+        generating: false,
+      });
+    }
   }
   return message;
 }

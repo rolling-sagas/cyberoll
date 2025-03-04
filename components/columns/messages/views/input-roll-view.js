@@ -5,6 +5,8 @@ import { rollDice } from '@/stores/actions/dice';
 
 export default function InputRollView({ view }) {
   const rolling = useStore((state) => state.rolling);
+  const generating = useStore((state) => state.generating);
+
   return (
     <div className="input">
       <div>{view.label}</div>
@@ -13,9 +15,9 @@ export default function InputRollView({ view }) {
         onClick={() => {
           rollDice({ ...view.roll });
         }}
-        disabled={rolling > 0}
+        disabled={rolling > 0 || generating}
       >
-        {rolling > 0 ? 'Rolling' : 'Roll'}
+        {rolling > 0 || generating ? 'Rolling' : 'Roll'}
       </button>
     </div>
   );
