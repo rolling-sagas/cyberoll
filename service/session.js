@@ -35,9 +35,10 @@ export async function deleteSession(seid) {
   return res;
 }
 
-export async function resetSession(seid, mid) {
+export async function resetSession(seid, mid, exclude = false) {
   const res = await http.post(`/se/${seid}/reset`, {
     mid,
+    exclude,
   });
   return res;
 }

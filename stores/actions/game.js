@@ -80,7 +80,7 @@ export const restart = () => {
   });
 };
 
-export const generate = async () => {
+export const generate = async (skipCache = false) => {
   useStore.setState({
     generating: true,
   });
@@ -102,7 +102,7 @@ export const generate = async () => {
 
     let message = addMessage('assistant', 'Generating...');
 
-    const body = { messages: messages, type: 'json' };
+    const body = { messages: messages, type: 'json', skip_cache: skipCache };
     if (model) body.model = model;
     const response = await fetch(GENERATE_URL, {
       method: 'POST',
@@ -293,12 +293,12 @@ export const getLastMessageState = (messages = []) => {
   return msg?.state;
 };
 
-export const sliceMessagesTillMid = (messages = [], mid) => {
+export const sliceMessagesTillMid = (messages = [], mid, exclude = false) => {
   if (!mid) return [];
   let res = [];
   const index = messages.findIndex((m) => m.id === mid);
   if (index > -1) {
-    res = messages.slice(0, index + 1);
+    res = messages.slice(0, index + (exclude ? 0 : 1));
   }
   return res;
 };
@@ -313,7 +313,7 @@ export const isLastMessageHasTailAction = (messages = []) => {
   return false;
 };
 
-export const restartFromMessage = async (mid) => {
+export const restartFromMessage = async (mid, exclude = false) => {
   const generating = useStore.getState().generating;
   if (generating) return;
   useStore.setState({
@@ -321,7 +321,7 @@ export const restartFromMessage = async (mid) => {
   });
   try {
     const messages = useStore.getState().messages || [];
-    const newMessages = sliceMessagesTillMid(messages, mid);
+    const newMessages = sliceMessagesTillMid(messages, mid, exclude);
 
     useStore.setState({
       messages: newMessages,
@@ -329,14 +329,14 @@ export const restartFromMessage = async (mid) => {
 
     const storySessionId = useStore.getState().storySessionId;
     if (storySessionId) {
-      await resetSession(storySessionId, mid);
+      await resetSession(storySessionId, mid, exclude);
     }
     await loadGameSession();
     if (
       useStore.getState().autoGenerate &&
       !isLastMessageHasTailAction(newMessages)
     ) {
-      await generate();
+      await generate(exclude);
     }
   } catch (e) {
     setModal({

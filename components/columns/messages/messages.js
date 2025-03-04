@@ -43,6 +43,17 @@ function Messages() {
     })
   }
 
+  const regenerateMessageHandle = (mid) => {
+    confirm({
+      title: 'Regenerate message?',
+      message: 'The messages below will be deleted permanently.',
+      onConfirm: async () => {
+        restartFromMessage(mid, true)
+      },
+      confirmLabel: 'Continue',
+    })
+  }
+
   useEffect(() => {
     if (diceBoxRef.current) {
       const canvas = diceBoxRef.current.getElementsByTagName('canvas');
@@ -104,6 +115,16 @@ function Messages() {
                             <ArrowRightDoubleIcon variant='stroke' type='sharp' size={18} />
                           </div>
                         </DropdownMenuItem>
+                        {
+                          message.role === 'assistant' ? (
+                            <DropdownMenuItem disabled={generating} className="h-10" onClick={() => regenerateMessageHandle(message.id)}>
+                              <div className="flex gap-2 justify-between w-full cursor-pointer">
+                                Regenerate
+                                <ArrowRightDoubleIcon variant='stroke' type='sharp' size={18} />
+                              </div>
+                            </DropdownMenuItem>
+                          ) : null
+                        }
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

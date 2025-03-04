@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASEURL;
 
 // ai
-export async function azure(messages, skipCache) {
+export async function azure(messages, skipCache = false) {
   const response = await fetch(`${BASE_URL}/ai/azure`, {
     method: 'POST',
     headers: {

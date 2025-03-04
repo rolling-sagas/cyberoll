@@ -39,7 +39,7 @@ export default function MessagesView({ isSession = false, resetHandle }) {
               variant="outline"
               size="sm"
               disabled={generating}
-              onClick={generate}
+              onClick={() => generate()}
             >
               Generate
             </Button>
