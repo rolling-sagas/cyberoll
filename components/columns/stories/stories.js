@@ -27,6 +27,8 @@ export default function Stories() {
     _,
     hasMoreStory,
     loadmoreStories,
+    __,
+    reLoadStories,
   ] = usePageData(getStories, 10, 'stories');
 
   useEffect(() => {
@@ -42,11 +44,11 @@ export default function Stories() {
           story={story}
           showLike={false}
           showEdit
-          onUpdateClick={() => onUpdateClick(story, listStories)}
+          onUpdateClick={() => onUpdateClick(story, reLoadStories)}
           onDuplicateClick={() => {
             onDuplicateClick(story, router);
           }}
-          onDeleteClick={() => onDeleteClick(story.id, listStories)}
+          onDeleteClick={() => onDeleteClick(story.id, reLoadStories)}
         />
       ))}
       <PageDataStatus

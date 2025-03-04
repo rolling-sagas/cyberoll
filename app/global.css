@@ -20,35 +20,6 @@ input {
   @apply outline-none bg-rs-background-2;
 }
 
-
-::-webkit-scrollbar {
-  @apply bg-rs-background-2 w-4;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-rs-background-2;
-}
-
-/* scrollbar itself */
-::-webkit-scrollbar-thumb {
-    @apply bg-rs-background-3 border-solid border-4 
-    border-rs-background-2 rounded-[16px];
-}
-
-::-webkit-scrollbar-button {
-    display:none;
-}
-
-.no-scrollbar {
-  & .react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
-    display: none;
-  }
-  & .react-horizontal-scrolling-menu--scroll-container {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-}
-
 #dice-box-canvas {
   width: 80%;
   position: fixed;
