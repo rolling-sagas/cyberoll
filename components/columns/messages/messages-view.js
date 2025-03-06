@@ -19,45 +19,47 @@ export default function MessagesView({ isSession = false, resetHandle }) {
 
   return (
     <div className="flex-auto flex flex-col gap-4 px-4 pt-2 pb-4">
-      <div className="font-semibold">Messages</div>
-      <div className="flex flex-row gap-4">
-        {!viewingMessage ? (
-          <>
-            <Checkbox
-              label="Auto generate"
-              checked={autoGenerate}
-              onChange={setAutoGenerate}
-            />
-            {isSession ? null : (
+      {isSession ? null : <div className="font-semibold">Messages</div>}
+      {isSession ? null : (
+        <div className="flex flex-row gap-4">
+          {!viewingMessage ? (
+            <>
               <Checkbox
-                label="Play mode"
-                checked={playMode}
-                onChange={setPlayMode}
+                label="Auto generate"
+                checked={autoGenerate}
+                onChange={setAutoGenerate}
               />
-            )}
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={generating}
-              onClick={() => generate()}
-            >
-              Generate
-            </Button>
-            {resetHandle ? (
+              {isSession ? null : (
+                <Checkbox
+                  label="Play mode"
+                  checked={playMode}
+                  onChange={setPlayMode}
+                />
+              )}
               <Button
                 variant="outline"
                 size="sm"
                 disabled={generating}
-                onClick={resetHandle}
+                onClick={() => generate()}
               >
-                Restart
+                Generate
               </Button>
-            ) : null}
-          </>
-        ) : (
-          <button onClick={() => startViewingMessage(null)}>Back</button>
-        )}
-      </div>
+              {resetHandle ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={generating}
+                  onClick={resetHandle}
+                >
+                  Restart
+                </Button>
+              ) : null}
+            </>
+          ) : (
+            <button onClick={() => startViewingMessage(null)}>Back</button>
+          )}
+        </div>
+      )}
       {!viewingMessage ? (
         <Messages />
       ) : (

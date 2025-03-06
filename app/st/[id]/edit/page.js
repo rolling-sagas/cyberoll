@@ -68,7 +68,7 @@ export default function Page({ params }) {
   return (
     <PinnedColumns>
       <Column headerLeft={<Back />} headerCenter="Story">
-        <div className="px-6 py-4">
+        <div className="px-6 py-4 w-full">
           {story ? (
             <CreateStoryForm
               name={story.name}

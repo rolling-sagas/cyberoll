@@ -310,6 +310,11 @@ export const sliceMessagesTillMid = (messages = [], mid, exclude = false) => {
   return res;
 };
 
+export const getLastMessageStateFromMid = (mid, exclude = false) => {
+  const messages = useStore.getState().messages
+  return getLastMessageState(sliceMessagesTillMid(messages, mid, exclude))
+}
+
 export const isLastMessageHasTailAction = (messages = []) => {
   const lastMessage = messages[messages.length - 1];
   const lastViews = lastMessage?.content?.views;

@@ -21,8 +21,8 @@ export default function ScrollSessions({ items = {}, onDelete = () => {} }) {
             </CarouselItem>)
           }
         </CarouselContent>
-        <CarouselPrevious className="left-0 -mt-4" />
-        <CarouselNext className="right-0 -mt-4" />
+        <CarouselPrevious className="left-0 -mt-4 disabled:hidden" />
+        <CarouselNext className="right-0 -mt-4 disabled:hidden" />
       </Carousel>
     </div>
   );
