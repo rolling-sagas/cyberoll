@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import { MoreHorizontalIcon, ArrowRightDoubleIcon } from '@hugeicons/react';
+import { MESSAGE_STATUS } from '@/utils/const';
 
 function Message({ message }) {
   const confirm = useAlertStore((state) => state.confirm);
@@ -79,7 +80,11 @@ function Message({ message }) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
-                    disabled={generating}
+                    disabled={
+                      generating ||
+                      (message.status &&
+                        message.status !== MESSAGE_STATUS.error)
+                    }
                     className="h-10"
                     onClick={() => restartFromMessageHandle(message.id)}
                   >
@@ -94,7 +99,11 @@ function Message({ message }) {
                   </DropdownMenuItem>
                   {message.role === 'assistant' ? (
                     <DropdownMenuItem
-                      disabled={generating}
+                      disabled={
+                        generating ||
+                        (message.status &&
+                          message.status !== MESSAGE_STATUS.error)
+                      }
                       className="h-10"
                       onClick={() => regenerateMessageHandle(message.id)}
                     >

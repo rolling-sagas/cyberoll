@@ -22,5 +22,5 @@ export const AI_BASE_URL = 'https://dev-api.rollingsagas.com/seecreet/';
 export const MESSAGE_STATUS = {
   generating: 'generating',
   finished: 'finished',
-  generateError: 'error',
+  error: 'error',
 }

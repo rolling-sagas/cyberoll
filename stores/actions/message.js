@@ -97,6 +97,12 @@ export async function syncMessage(mid) {
     const [newMsg] = await createMessages(storySessionId, [message]);
     updateMessage(mid, {...newMsg, status: ''})
     return newMsg;
+  } else {
+    const newMsg = {
+      ...message,
+      status: '',
+    }
+    updateMessage(mid, newMsg)
+    return newMsg;
   }
-  return message;
 }

@@ -1,5 +1,3 @@
-import parseString from '@iarna/toml/parse-string';
-
 import QuickJSManager from '@/utils/quickjs';
 import useStore from '../editor';
 import { setModal } from './ui';
@@ -15,9 +13,9 @@ import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
 import { componentsToMap } from '@/utils/utils';
 import { AI_BASE_URL } from '@/utils/const';
-import { parseJson } from '@/utils/utils';
 import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
+import { parse } from 'best-effort-json-parser';
 
 const quickjs = new QuickJSManager();
 
@@ -120,16 +118,16 @@ export const generate = async (skipCache = false) => {
       if (done) break;
 
       resText += decoder.decode(value, { stream: true });
-      updateMessage(message.id, {content: 'Generating... ' + resText});
+      updateMessage(message.id, {content: parse(resText)});
     }
 
     let finalContent = resText;
     try {
-      finalContent = JSON.parse(resText);
+      finalContent = parse(resText);
       console.log('[ai parsed json]:', finalContent);
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
-        return updateMessage(message.id, {content: finalContent.error, status: MESSAGE_STATUS.generateError});
+        return updateMessage(message.id, {content: finalContent.error, status: MESSAGE_STATUS.error});
       }
       updateMessage(message.id, {content: finalContent, statue: MESSAGE_STATUS.finished});
     } catch (e) {
