@@ -18,3 +18,9 @@ export const DEFAULT_STORY_IMAGE = 'https://placehold.co/600x400?text=Image+Not+
 export const API_PAYURL = process.env.NEXT_PUBLIC_API_PAYURL
 
 export const AI_BASE_URL = 'https://dev-api.rollingsagas.com/seecreet/';
+
+export const MESSAGE_STATUS = {
+  generating: 'generating',
+  finished: 'finished',
+  generateError: 'error',
+}

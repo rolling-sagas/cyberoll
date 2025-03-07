@@ -44,11 +44,12 @@
 }
 
 .message .role {
-  @apply border border-gray-200 rounded-full font-semibold w-8 h-8 flex justify-center items-center;
+  @apply border border-gray-200 rounded-full font-semibold w-9 h-9 flex justify-center items-center;
 }
 
 .message .role::after {
   content: attr(data-chr);
+  @apply text-lg capitalize font-bold;
 }
 
 .message-body {

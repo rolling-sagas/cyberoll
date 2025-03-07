@@ -17,6 +17,7 @@ import { componentsToMap } from '@/utils/utils';
 import { AI_BASE_URL } from '@/utils/const';
 import { parseJson } from '@/utils/utils';
 import { resetSession } from '@/service/session';
+import { MESSAGE_STATUS } from '@/utils/const';
 
 const quickjs = new QuickJSManager();
 
@@ -119,7 +120,7 @@ export const generate = async (skipCache = false) => {
       if (done) break;
 
       resText += decoder.decode(value, { stream: true });
-      updateMessage(message.id, 'Generating... ' + resText);
+      updateMessage(message.id, {content: 'Generating... ' + resText});
     }
 
     let finalContent = resText;
@@ -128,12 +129,12 @@ export const generate = async (skipCache = false) => {
       console.log('[ai parsed json]:', finalContent);
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
-        return updateMessage(message.id, finalContent.error);
+        return updateMessage(message.id, {content: finalContent.error, status: MESSAGE_STATUS.generateError});
       }
-      updateMessage(message.id, finalContent);
+      updateMessage(message.id, {content: finalContent, statue: MESSAGE_STATUS.finished});
     } catch (e) {
       console.error('[ai parse json error]:', e);
-      updateMessage(message.id, resText);
+      updateMessage(message.id, {content: resText, statue: MESSAGE_STATUS.error});
     }
 
     const msg = await quickjs.callFunction('onAssistant', {
@@ -142,7 +143,7 @@ export const generate = async (skipCache = false) => {
     });
 
     if (msg?.state) {
-      updateMessage(message.id, undefined, msg.state);
+      updateMessage(message.id, msg);
     }
 
     // send generated message into scripting

@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import useStore from '../editor';
 import { setModal } from './ui';
 import { createMessages } from '@/service/message';
+import { MESSAGE_STATUS } from '@/utils/const';
 
 export const startViewingMessage = (message) =>
   useStore.setState(() => ({ viewingMessage: message }));
@@ -12,14 +13,19 @@ export const delMessage = (id) =>
   }));
 
 export const addMessage = (role, content) => {
-  const message = { id: nanoid(), role, content };
+  const message = {
+    id: nanoid(),
+    role,
+    content,
+    status: MESSAGE_STATUS.generating,
+  };
   useStore.setState((state) => ({
     messages: [...state.messages, message],
   }));
   return message;
 };
 
-export const updateMessage = (id, content, state) => {
+export const updateMessage = (id, msg = {}) => {
   useStore.setState((s) => {
     const index = s.messages.findIndex((m) => m.id === id);
     if (index === -1) {
@@ -29,11 +35,10 @@ export const updateMessage = (id, content, state) => {
       });
       return {};
     }
-    content = content || s.messages[index].content;
     return {
       messages: [
         ...s.messages.slice(0, index),
-        { ...s.messages[index], content, state },
+        { ...s.messages[index], ...msg },
         ...s.messages.slice(index + 1),
       ],
     };
@@ -62,33 +67,36 @@ export const getMessagesAfterLastDivider = (messages) => {
 export async function addMessages(newMessages = [], reset = false) {
   const state = useStore.getState();
   const storySessionId = state.storySessionId;
-  if (storySessionId) {
-    newMessages = await createMessages(storySessionId, newMessages, reset);
-  }
   const messages = reset ? [] : state.messages;
   useStore.setState(() => {
     return { messages: [...messages, ...newMessages] };
   });
+
+  if (storySessionId) {
+    const preMessages = newMessages
+    newMessages = await createMessages(storySessionId, newMessages, reset);
+    preMessages.forEach((m, i) => {
+      updateMessage(m.id, newMessages[i])
+    })
+  }
   return newMessages;
 }
 
 export async function resetMessages(messages) {
+  useStore.setState(() => {
+    return { messages: [] };
+  });
   await addMessages(messages, true);
 }
 
-export async function syncMessage(msgId) {
-  let message = getMessageById(msgId);
+export async function syncMessage(mid) {
+  let message = getMessageById(mid);
   if (!message) return;
-  const state = useStore.getState();
-  const messages = state.messages;
-  const storySessionId = state.storySessionId;
+  const storySessionId = useStore.getState().storySessionId;
   if (storySessionId) {
-    const newMessages = await createMessages(storySessionId, [message]);
-    messages.pop();
-    useStore.setState(() => {
-      return { messages: [...messages, ...newMessages] };
-    });
-    return newMessages[0];
+    const [newMsg] = await createMessages(storySessionId, [message]);
+    updateMessage(mid, {...newMsg, status: ''})
+    return newMsg;
   }
   return message;
 }

@@ -17,7 +17,7 @@ export default function InputRollView({ view }) {
         }}
         disabled={rolling > 0 || doingUserAction}
       >
-        {rolling > 0 || doingUserAction ? 'Rolling' : 'Roll'}
+        {rolling > 0 ? 'Rolling' : 'Roll'}
       </button>
     </div>
   );

@@ -1,7 +1,10 @@
 import useStore from '@/stores/editor';
 import { delMessage, startViewingMessage } from '@/stores/actions/message';
 import { setModal } from '@/stores/actions/ui';
-import { restartFromMessage, getLastMessageStateFromMid } from '@/stores/actions/game';
+import {
+  restartFromMessage,
+  getLastMessageStateFromMid,
+} from '@/stores/actions/game';
 import MessageContent from './message-content';
 import dayjs from '@/utils/day';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
@@ -53,9 +56,9 @@ function Message({ message }) {
     });
   }
 
-  const state = getLastMessageStateFromMid(message.id)
-  const name = state?.avatar?.[message.role]?.name || message.role
-  const firstLetter = name?.substr(0, 1)?.toUpperCase()
+  const state = getLastMessageStateFromMid(message.id);
+  const name = state?.avatar?.[message.role]?.name || message.role;
+  const firstLetter = name?.substr(0, 1);
 
   return (
     <>
