@@ -17,6 +17,7 @@ import {
 } from './story-action';
 import usePageData from '@/components/hooks/use-page-data';
 import PageDataStatus from '@/components/common/page-data-status';
+import debounce from 'lodash/debounce';
 
 export default function Stories() {
   const router = useRouter();
@@ -29,14 +30,21 @@ export default function Stories() {
     loadmoreStories,
     __,
     reLoadStories,
-  ] = usePageData(getStories, 10, 'stories');
+  ] = usePageData(getStories, 12, 'stories');
 
   useEffect(() => {
     loadmoreStories();
   }, []);
 
+  const scrollHandle = debounce((e) => {
+      const el = e.target;
+      if (el.scrollTop + el.offsetHeight + 200 > el.scrollHeight) {
+        loadmoreStories()
+      }
+    }, 200)
+
   return (
-    <>
+    <div className='h-full w-full overflow-y-auto' onScroll={scrollHandle}>
       <CreateStory router={router} />
       {stories.map((story) => (
         <StoryItem
@@ -69,6 +77,6 @@ export default function Stories() {
           )
         }
       />
-    </>
+    </div>
   );
 }
