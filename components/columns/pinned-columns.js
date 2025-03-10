@@ -4,12 +4,12 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 import Column from "@/components/column/column";
-import Threads from "./threads/threads";
+import Chapters from "./chapters/chapters";
 
 export const usePinStore = create(
   persist(
     (set, get) => ({
-      pinned: [{ id: "threads" }],
+      pinned: [],
 
       pin: (id, extra) => {
         if (get().pinned.find((n) => n.id === id)) return;
@@ -20,8 +20,8 @@ export const usePinStore = create(
       },
 
       unpin: (id) => {
-        // threads can't be unpinned
-        if (id === "threads") return;
+        // chapters can't be unpinned
+        if (id === "chapters") return;
 
         return set((state) => {
           return { pinned: state.pinned.filter((n) => n.id !== id) };
@@ -30,13 +30,19 @@ export const usePinStore = create(
     }),
     {
       name: "pinned", // name of the item in the storage (must be unique)
-      // storage: createJSONStorage(() => sessionStorage), // (optional) by default, 'localStorage' is used
+      // storage: createJSONStorage(() => chapterStorage), // (optional) by default, 'localStorage' is used
     },
   ),
 );
 
 export const useColumnsStore = create((set) => ({
   columns: [],
+
+  reset: () => {
+    return set(() => {
+      return { columns: [] }
+    })
+  },
 
   addColumn: (id, props, children) => {
     return set((state) => {
@@ -47,27 +53,30 @@ export const useColumnsStore = create((set) => ({
 
   setColumn: (id, children) => {
     return set((state) => {
-      if (!state.columns.find((n) => n.id === id))
+      if (!state.columns.find((n) => n.id === id)) {
         console.warn("Column not found");
+        return state
+      }
+
       return {
         columns: state.columns.map((n) =>
           n.id === id
             ? {
-                id,
-                props: {
-                  headerLeft: null,
-                  headerCenter: null,
-                  headerRight: null,
-                },
-                children,
-              }
+              id,
+              props: {
+                headerLeft: null,
+                headerCenter: null,
+                headerRight: null,
+              },
+              children,
+            }
             : n,
         ),
       };
     });
   },
 
-  setHeader: (id, headerLeft, headerCenter, headerRight) => {
+  setHeader: (id, header) => {
     return set((state) => {
       if (!state.columns.find((n) => n.id === id))
         console.warn("Column not found");
@@ -75,10 +84,10 @@ export const useColumnsStore = create((set) => ({
         columns: state.columns.map((n) =>
           n.id === id
             ? {
-                id,
-                props: { ...n.props, headerLeft, headerCenter, headerRight },
-                children: n.children,
-              }
+              id,
+              props: { ...n.props, ...header },
+              children: n.children,
+            }
             : n,
         ),
       };
@@ -94,7 +103,7 @@ export const useColumnsStore = create((set) => ({
   },
 }));
 
-export default function PinnedColumns() {
+export default function PinnedColumns({ children }) {
   const pinned = usePinStore((state) => state.pinned);
 
   const columns = useColumnsStore((state) => state.columns);
@@ -103,15 +112,8 @@ export default function PinnedColumns() {
 
   pinned.forEach((pin) => {
     switch (pin.id) {
-      case "threads":
-        addColumn("threads", { headerCenter: <div>Threads</div> }, <Threads />);
-        break;
-      case "variables":
-        addColumn(
-          "variables",
-          { headerCenter: <div>Variables</div> },
-          <div>Hello</div>,
-        );
+      case "chapters":
+        addColumn("chapters", { headerCenter: <div>Chapters</div> }, <Chapters />);
         break;
       default:
         break;
@@ -125,6 +127,7 @@ export default function PinnedColumns() {
           {col.children}
         </Column>
       ))}
+      {children}
     </>
   );
 }

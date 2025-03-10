@@ -1,43 +1,54 @@
 import TextareaAutosize from "react-textarea-autosize";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useLayoutEffect, useState } from "react";
 
-export const Input = function ({
+export const Input = function({
   name,
   placeholder,
   icon,
   value,
-  onChange,
+  onChange = () => {},
   autoFocus = false,
   autoSize = false,
-  editable = true,
+  maxLength = Infinity,
+  className,
 }) {
   const inputEl = useRef(null);
+
+  const [isRerendered, setIsRerendered] = useState(false);
+  useLayoutEffect(() => setIsRerendered(true), []);
 
   useEffect(() => {
     if (autoFocus) {
       inputEl.current.focus();
+      inputEl.current.select();
     }
   }, [autoFocus]);
 
+  const changeHandle = (e) => {
+    let v = e.target.value
+    if (v.length > maxLength) {
+      v = v.substr(0, maxLength)
+    }
+    onChange(v)
+  }
+
   return (
     <div
-      className="grid grid-cols-[48px_auto] 
+      className={`grid grid-cols-[48px_auto] 
       grid-rows-[21px_19px_max-content_max-conent]
-      w-full"
+      w-full ${className}`}
     >
       <div className="pt-1 relative col-start-1 row-span-2">
         <div className="w-9 h-9">{icon}</div>
       </div>
       <div className="font-semibold col-start-2 rows-start-1">{name}</div>
-      {autoSize ? (
+      {autoSize && isRerendered ? (
         <TextareaAutosize
           ref={inputEl}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={changeHandle}
           autoFocus={autoFocus}
-          disabled={!editable}
-          className="outline-none col-start-2 rows-start-1 
-            resize-none bg-rs-background-2"
+          className="outline-none col-start-2 rows-start-1 resize-none bg-rs-background-2"
           placeholder={placeholder}
         />
       ) : (
@@ -45,8 +56,7 @@ export const Input = function ({
           ref={inputEl}
           type="text"
           value={value}
-          disabled={!editable}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={changeHandle}
           className="outline-none col-start-2 rows-start-1"
           placeholder={placeholder}
         />
@@ -54,11 +64,10 @@ export const Input = function ({
     </div>
   );
 };
-const Dialog = function ({ title, header, body, footer, width = 460 }) {
+const Dialog = function({ title, header, body, footer, width = 460 }) {
   return (
     <div
-      className="flex flex-col 
-      "
+      className="flex flex-col transition-[height] duration-150"
     >
       <div
         className="h-[46px] flex flex-row 
@@ -70,14 +79,15 @@ const Dialog = function ({ title, header, body, footer, width = 460 }) {
         <div
           className="bg-rs-background-2 flex flex-col
           border border-rs-border rounded-2xl
-          max-w-[calc(100vw-32px)]"
+          max-w-[calc(100vw-32px)] transition-[width]
+          duration-150"
           style={{ width: `${width}px` }}
         >
           <div className="max-h-[calc(100svh-193px)] overflow-y-auto">
             <div className="pt-6 px-6">{header}</div>
             <div className="px-6 py-4 overflow-auto">{body}</div>
           </div>
-          <div className="pb-6 px-6 flex flex-row-reverse items-center w-full">
+          <div className="pb-6 px-6 pt-6 flex flex-row-reverse items-center w-full">
             {footer}
           </div>
         </div>

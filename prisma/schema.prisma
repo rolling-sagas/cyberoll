@@ -1,21 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-// Query D1 using Prisma ORM: 
-// https://developers.cloudflare.com/d1/tutorials/d1-and-prisma-orm/
-
-// pnpm wrangler d1 migrations create rsDb __YOUR_TABLE_NAME__
-
-// pnpm npx prisma migrate diff \
-//   --from-local-d1 \
-//   --to-schema-datamodel ./prisma/schema.prisma \
-//   --script \
-//   --output migrations/__YOUR_TABLE_SQL
-
-// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --local
-// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --remote
-// pnpm wrangler d1 migrations apply __YOUR_DATABASE_NAME__ --remote --preview
-// pnpm prisma generate
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["driverAdapters"]
@@ -26,83 +8,237 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model System {
-  id       Int    @id @default(autoincrement())
-  name     String @unique
-  template String
-
-  Stories Story[]
-}
-
-model Rules {
-  id       Int    @id @default(autoincrement())
-  template String
-
-  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  chapterId Int
-}
-
-model Chapter {
-  id       Int     @id @default(autoincrement())
-  name     String
-  template String
-  rules    Rules[]
-
-  Story    Story?  @relation(fields: [storyId], references: [id])
-  storyId  Int?
-}
-
-model Story {
-  id          Int     @id @default(autoincrement())
-  name        String  @unique
-  description String?
+// AUTH TABLES
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String?         @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  system   System? @relation(fields: [systemId], references: [id], onDelete: SetNull)
-  systemId Int?
+  credits Credits[]
 
-  chapters Chapter[]
+  stripeCustomer StripeCustomer?
+  appleCustomer  AppleCustomer?
+
+  subscriptionNotifications SubscriptionNotification[]
+  likes                     Like[]
+  comments                  Comment[]
+  stories                   Story[]
+  storySessions             StorySession[]
 }
 
-model Message {
-  id      Int    @id @default(autoincrement())
-  role    String
-
-  content String?
-  template String?
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  session   Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId Int
-}
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model Property {
-  id      Int    @id @default(autoincrement())
-
-  name    String
-  type    String
-  value   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-  sessionId Int
+  @@unique([provider, providerAccountId])
 }
 
 model Session {
-  id Int @id @default(autoincrement())
-
-  name        String  @unique
-  description String?
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
 
-  messages Message[]
-  properties Property[]
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([userId, credentialID])
+}
+
+// PAYMENT TABLES
+model Credits {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  type         String
+  value        Int
+  changeReason String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model StripeCustomer {
+  userId     String @unique
+  customerId String @unique // Single customer mode
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AppleCustomer {
+  userId          String @unique
+  appAccountToken String @unique @default(uuid()) // Single customer mode
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SubscriptionNotification {
+  id       String @id
+  userId   String
+  platform String
+  status   Int
+  raw      String // raw JSON string
+
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// STORY TABLES
+model Story {
+  id          String   @id @default(cuid())
+  name        String
+  cover       String?
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  keepPrivate Boolean  @default(false)
+  template    String?
+
+  chapters    Chapter[]
+  comments    Comment[]
+  occupations Occupation[]
+  likes       Like[]
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+model Chapter {
+  id          String   @id @default(cuid())
+  name        String
+  initial     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description String?
+  maxTurns    Int
+  nextChapter String
+  first       Boolean
+  previous    String?
+  cover       String?
+  rulesChunk  String?
+
+  sessions StorySession[]
+
+  storyId String
+  story   Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+}
+
+model Occupation {
+  id        String   @id @default(cuid())
+  name      String
+  stats     String?
+  skills    String?
+  items     String?
+  backstory String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cover     String?
+
+  storyId String?
+  story   Story?  @relation(fields: [storyId], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  commentBy String?
+  content   String
+  storyId   String?
+  user      User?    @relation(fields: [commentBy], references: [id], onDelete: Cascade)
+  story     Story?   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+}
+
+model StorySession {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  stats      String
+  skills     String
+  items      String?
+  name       String
+  age        Int
+  backstory  String?
+  occupation String?
+  storyName  String?
+  storyId    String
+
+  messages StoryMessage[]
+
+  playerId  String
+  player    User     @relation(fields: [playerId], references: [id])
+  chapterId String?
+  chapter   Chapter? @relation(fields: [chapterId], references: [id])
+}
+
+model Like {
+  createdAt DateTime @default(now())
+  likedBy   String
+  storyId   String
+
+  user  User  @relation(fields: [likedBy], references: [id])
+  story Story @relation(fields: [storyId], references: [id])
+
+  @@id([likedBy, storyId])
+}
+
+model StoryMessage {
+  id        Int           @id @default(autoincrement())
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  role      String
+  content   String
+  template  String?
+  entry     Boolean       @default(false)
+  chapterId String
+  hash      String?
+  sessionId String?
+  author    String?
+  session   StorySession? @relation(fields: [sessionId], references: [id])
 }

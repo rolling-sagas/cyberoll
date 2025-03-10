@@ -8,6 +8,7 @@ export const light = {
   "--rs-color-text-secondary": "153 153 153",
   "--rs-color-text-tertiary": "66 66 66",
   "--rs-color-blue": "0 149 246",
+  "--rs-color-red": "255 48 0",
   "--rs-color-content-background": "0 0 0",
   "--rs-color-primary": "239 90 211",
 };
@@ -22,5 +23,6 @@ export const dark = {
   "--rs-color-text-secondary": "119 119 119",
   "--rs-color-text-tertiary": "204 204 204",
   "--rs-color-blue": "0 149 246",
+  "--rs-color-red": "255 48 0",
   "--rs-color-primary": "239 90 211",
 };

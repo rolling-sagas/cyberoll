@@ -1,8 +1,9 @@
 import prisma from "@/prisma/client";
+import { isKnownError } from "../common";
 
 export const runtime = "edge";
 
-const LIST_LIMIT = 12;
+const LIST_LIMIT = 24;
 
 export async function GET(req) {
   const { limit, skip } = req.nextUrl.searchParams;
@@ -17,13 +18,7 @@ export async function GET(req) {
     return Response.json(res);
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error list stories",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 500 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
 
@@ -37,12 +32,7 @@ export async function POST(req) {
     return Response.json({ ok: true, id: res.id });
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error create story",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 500 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
+

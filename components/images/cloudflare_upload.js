@@ -9,8 +9,13 @@ export async function Upload(formData) {
       body: formData,
     },
   );
+
+  console.log(process.env.CLOUDFLARE_UPLOAD_TOKEN, process.env.CLOUDFLARE_ACCOUNT_ID)
+
   if (!response.ok) {
-    throw new Error("Can't upload the picutre");
+    const json = await response.json();
+    console.log(response.status, json)
+    throw new Error("Can't upload the picture");
   }
   // Your image has been uploaded
   // Do something with the response, e.g. save image ID in a database

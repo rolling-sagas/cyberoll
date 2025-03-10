@@ -1,76 +1,47 @@
 import prisma from "@/prisma/client";
+import { isKnownError } from "@/app/api/common";
 
 export const runtime = "edge";
 
+
 export async function GET(_, { params }) {
-  const id = parseInt(params.id);
-
   try {
+    const { id } = params; // story id
     const res = await prisma.story.findUnique({
-      where: { id },
-      include: { chapters: true, system: true },
+      where: { id, },
     });
-    if (!res) {
-      return Response.json(
-        {
-          message: "Story not found",
-        },
-        { status: 404 },
-      );
-    }
-
     return Response.json(res);
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error get story",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 500 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }
 
 export async function POST(req, { params }) {
-  const id = parseInt(params.id);
   try {
-    const { data, include } = await req.json();
-    const res = await prisma.story.update({
-      data: data,
-      include: include,
-      where: {
-        id: id,
-      },
-    });
-    return Response.json({ ok: true, id: res.id });
-  } catch (e) {
-    console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error update story",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 500 },
-    );
-  }
-}
+    const { id } = params;
+    const { data } = await req.json()
 
-export async function DELETE(_, { params }) {
-  const id = parseInt(params.id);
-  try {
-    await prisma.story.delete({
-      where: { id: id },
+    await prisma.story.update({
+      where: { id, },
+      data: data
     });
     return Response.json({ ok: true });
   } catch (e) {
     console.log(e.code, e.message);
-    return Response.json(
-      {
-        message: "Error delete story",
-        code: e.code ?? "UNKNOWN",
-      },
-      { status: 500 },
-    );
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
+  }
+}
+
+export async function DELETE(_, { params }) {
+  const { id } = params;
+  try {
+    await prisma.story.delete({
+      where: { id, },
+    });
+    return Response.json({ ok: true });
+  } catch (e) {
+    console.log(e.code, e.message);
+    return Response.json({ error: isKnownError(e) }, { status: 400 })
   }
 }

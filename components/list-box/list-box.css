@@ -1,0 +1,13 @@
+.lb-button {
+  @apply border rounded-xl p-2 data-[open]:bg-rs-background-hover capitalize
+  flex flex-row items-center w-full disabled:text-rs-text-secondary;
+}
+
+.lb-options {
+  @apply bg-rs-background-2 w-[var(--button-width)] border rounded-xl [--anchor-gap:4px]
+  origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0 shadow-xl;
+}
+
+.lb-option {
+  @apply w-full p-2 data-[focus]:bg-rs-background-hover capitalize flex flex-row justify-center;
+}

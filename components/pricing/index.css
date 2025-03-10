@@ -1,0 +1,47 @@
+@tailwind components;
+
+.bg-neutral-30 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(236 236 236/var(--tw-bg-opacity))
+}
+
+.bg-neutral-0 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255/var(--tw-bg-opacity))
+}
+
+.text-success-500 {
+  --tw-text-opacity: 1;
+  color: rgb(21 201 100/var(--tw-text-opacity))
+}
+
+.bg-success-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(21 201 100/var(--tw-bg-opacity))
+}
+
+.bg-opacity-\[0\.15\] {
+  --tw-bg-opacity: 0.15
+}
+
+
+.text-primary {
+  --tw-text-opacity: 1;
+  color: var(--fallback-p,oklch(var(--p)/1));
+}
+
+.play-icon-color {
+  background: #fde68a;
+}
+
+.subscription-page {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.play-color {
+  color: #fde68a;
+}
+
+.tooltip:before {
+  max-width: 10rem;
+}

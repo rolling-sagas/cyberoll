@@ -6,7 +6,11 @@
         "app/*"
       ],
       "@/components/*": [
-        "components/*"
+        "components/*",
+        "app/components/*"
+      ],
+      "@/stores/*": [
+        "stores/*"
       ],
       "@/prisma/*": [
         "prisma/*"
@@ -16,6 +20,12 @@
       ],
       "@/api/*": [
         "api/*"
+      ],
+      "@/utils/*": [
+        "utils/*"
+      ],
+      "@/service/*": [
+        "service/*"
       ]
     }
   }

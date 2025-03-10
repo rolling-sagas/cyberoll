@@ -5,7 +5,7 @@
 }
 
 .column:not(:only-child) {
-  @apply min-w-[420px] max-w-[500px];
+  @apply min-w-[420px] max-w-[640px] w-[34vw];
 }
 
 .column-header {
@@ -73,4 +73,22 @@
 .column-content {
   @apply flex flex-col border-x box-border shadow-top h-full
     overflow-y-auto overflow-x-hidden pt-2 w-full z-0 bg-rs-background-2;
+}
+
+.column {
+	@apply flex flex-col max-w-[640px] min-w-[420px] relative mr-3 last:mr-0 w-[21vw];
+}
+
+.column:only-child {
+	width: 100%;
+}
+
+.column:first-child:nth-last-child(2),
+.column:first-child:nth-last-child(2) ~ .column {
+	width: 34vw;
+}
+
+.column:first-child:nth-last-child(3),
+.column:first-child:nth-last-child(3) ~ .column {
+	width: 26vw;
 }

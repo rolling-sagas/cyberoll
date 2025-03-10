@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import Head from "next/head";
 import NavBar from "@/components/navbar/navbar";
 
@@ -10,11 +10,15 @@ import { light, dark } from "@/components/tailwind/themeColors";
 import { DialogPlaceholder } from "@/components/modal/dialog-placeholder";
 
 import "./global.css";
+
 import { ToastPlaceholder } from "@/components/modal/toast-placeholder";
 import { AlertPlaceholder } from "@/components/modal/alert-placeholder";
+import SubscriptionCheck from "@/components/common/subscription-check";
+import useUserStore from "@/stores/user";
 
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
+  const userStore = useUserStore()
 
   useEffect(() => {
     if (
@@ -22,11 +26,17 @@ export default function RootLayout({ children }) {
       (theme === "system" &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
     ) {
-      applyTheme(dark);
+      // applyTheme(dark);
+      // 暂时先强制 light ~ 后续做darkmod
+      applyTheme(light);
     } else {
       applyTheme(light);
     }
   }, [theme]);
+
+  useEffect(() => {
+    userStore.getUserInfo()
+  }, [])
 
   return (
     <html lang="en">
@@ -38,16 +48,19 @@ export default function RootLayout({ children }) {
         <div className="flex h-svh relative z-10">
           <NavBar />
           <div className="flex overflow-y-hidden overflow-x-auto px-5 w-full">
-            <div className="hidden md:flex w-[76px]" />
-            <div className="flex flex-row flex-grow h-full gap-3 justify-center">
+            <div className="block min-w-[76px]" />
+            <div className="flex flex-row flex-grow gap-3 justify-center">
               {children}
             </div>
-            <div className="hidden md:flex w-[76px]" />
+            <div className="block min-w-[76px]" />
           </div>
         </div>
         <ToastPlaceholder />
         <DialogPlaceholder />
         <AlertPlaceholder />
+        <Suspense fallback={null}>
+          <SubscriptionCheck />
+        </Suspense>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import Alert from '@/components/modal/alert';
 
 import { Dialog, DialogPanel, DialogBackdrop } from "@headlessui/react";
 
@@ -8,6 +9,21 @@ export const useAlertStore = create((set) => ({
 
   open: (content) => set({ content, isOpen: true }),
   close: () => set({ content: null, isOpen: false }),
+  confirm: ({title, message, onConfirm, onCancel, confirmLabel, cancelLabel }) => {
+    set({
+      content: (
+        <Alert
+          title={title}
+          message={message}
+          onConfirm={onConfirm}
+          onCancel={onCancel}
+          confirmLabel={confirmLabel}
+          cancelLabel={cancelLabel}
+        />
+      ),
+      isOpen: true,
+    })
+  },
 }));
 
 export function AlertPlaceholder() {
