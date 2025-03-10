@@ -13,7 +13,7 @@ import usePageData from '@/components/hooks/use-page-data';
 import PageDataStatus from "@/components/common/page-data-status";
 
 export default function Stories() {
-  const [stories, storiesTotal, storiesLoading, _, hasMoreStory, loadmoreStories] = usePageData(getPublicStories, 10, 'stories')
+  const [stories, storiesTotal, storiesLoading, _, hasMoreStory, loadmoreStories] = usePageData(getPublicStories, 12, 'stories')
 
   const [sessions, setSessions] = useState([])
 
