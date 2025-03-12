@@ -11,7 +11,6 @@ export default function Column({
   afterLeave,
   show = true,
 }) {
-  console.log(111, headerCenter);
   return (
     <Transition show={show} afterLeave={afterLeave} appear={true}>
       <div className="column">
@@ -29,11 +28,14 @@ export default function Column({
             <div>{headerLeft}</div>
             <div>
               {typeof headerCenter === 'string' ? (
-                <div className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-center" title={headerCenter}>
+                <div
+                  className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-center"
+                  title={headerCenter}
+                >
                   {headerCenter}
                 </div>
               ) : (
-                { headerCenter }
+                headerCenter
               )}
             </div>
             <div>{headerRight}</div>
