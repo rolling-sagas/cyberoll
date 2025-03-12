@@ -10,7 +10,7 @@ import UserTabs from './user-tabs';
 import Link from 'next/link';
 import useUserStore from '@/stores/user';
 import { getCurrentCredits } from '@/service/credits';
-import Avator from '@/components/common/avator';
+import Avatar from '@/components/common/avatar';
 
 export default function User({ uid }) {
   const [user, setUser] = useState(null);
@@ -103,14 +103,14 @@ export default function User({ uid }) {
             </span>
             <span className="whitespace-pre">{user?.description}</span>
           </div>
-          <Avator image={user?.image} size={64} name={user?.name} />
+          <Avatar image={user?.image} size={64} name={user?.name} />
         </div>
       )}
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <div className="flex">
             {followers.map((f) => (
-              <Avator key={f.id} image={f?.follower.image} size={24} name={f?.follower.name} className="-mr-2 last:mr-1"/>
+              <Avatar key={f.id} image={f?.follower.image} size={24} name={f?.follower.name} className="-mr-2 last:mr-1"/>
             ))}
           </div>
           <span className="text-gray-400 text-sm">

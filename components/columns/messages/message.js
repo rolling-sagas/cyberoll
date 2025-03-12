@@ -15,8 +15,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import { MoreHorizontalIcon, ArrowRightDoubleIcon } from '@hugeicons/react';
+import { MoreHorizontalIcon } from '@hugeicons/react';
 import { MESSAGE_STATUS } from '@/utils/const';
+import HoverButton from '@/components/buttons/hover-button';
+import Avatar from '@/components/common/avatar';
+import { getImageIdByName } from '@/utils/utils';
 
 function Message({ message }) {
   const confirm = useAlertStore((state) => state.confirm);
@@ -58,16 +61,17 @@ function Message({ message }) {
   }
 
   const state = getLastMessageStateFromMid(message.id);
-  const name = state?.avatar?.[message.role]?.name || message.role;
-  const firstLetter = name?.substr(0, 1);
+  const avatar = state?.avatar?.[message.role] || {};
+  const name = avatar.name || message.role;
+  const image = getImageIdByName(avatar.imageName, components);
 
   return (
     <>
       {message.role !== 'divider' ? (
         <div className={`message ${message.role} ${playMode && 'play-mode'}`}>
-          <div data-chr={firstLetter} className="role"></div>
+          <Avatar image={image} name={name} size={36} className="text-lg" />
           <div className="message-body">
-            <div className="flex justify-between -mb-2">
+            <div className="flex justify-between -mb-4">
               <span className="flex gap-2">
                 <span className="font-semibold">{name}</span>
                 <span className="text-neutral-400">
@@ -75,26 +79,26 @@ function Message({ message }) {
                 </span>
               </span>
               <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <MoreHorizontalIcon size={20} className="text-gray-800" />
+                <DropdownMenuTrigger className="outline-none">
+                  <HoverButton className="-mr-[9px]">
+                    <MoreHorizontalIcon size={20} />
+                  </HoverButton>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent
+                  align="end"
+                  className="rounded-2xl p-2 w-52"
+                >
                   <DropdownMenuItem
                     disabled={
                       generating ||
                       (message.status &&
                         message.status !== MESSAGE_STATUS.error)
                     }
-                    className="h-10"
+                    className="h-11 rounded-xl px-3 text-base"
                     onClick={() => restartFromMessageHandle(message.id)}
                   >
                     <div className="flex gap-2 justify-between w-full cursor-pointer">
                       Restart from here
-                      <ArrowRightDoubleIcon
-                        variant="stroke"
-                        type="sharp"
-                        size={18}
-                      />
                     </div>
                   </DropdownMenuItem>
                   {message.role === 'assistant' ? (
@@ -104,16 +108,11 @@ function Message({ message }) {
                         (message.status &&
                           message.status !== MESSAGE_STATUS.error)
                       }
-                      className="h-10"
+                      className="h-11 rounded-xl px-3 text-base"
                       onClick={() => regenerateMessageHandle(message.id)}
                     >
                       <div className="flex gap-2 justify-between w-full cursor-pointer">
                         Regenerate
-                        <ArrowRightDoubleIcon
-                          variant="stroke"
-                          type="sharp"
-                          size={18}
-                        />
                       </div>
                     </DropdownMenuItem>
                   ) : null}

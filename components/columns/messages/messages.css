@@ -28,7 +28,7 @@
 }
 
 .message {
-  @apply flex flex-row gap-4 items-start;
+  @apply flex flex-row gap-3 items-start;
 }
 
 .message .action-buttons button {
@@ -45,11 +45,6 @@
 
 .message .role {
   @apply border border-gray-200 rounded-full font-semibold w-9 h-9 flex justify-center items-center;
-}
-
-.message .role::after {
-  content: attr(data-chr);
-  @apply text-lg capitalize font-bold;
 }
 
 .message-body {

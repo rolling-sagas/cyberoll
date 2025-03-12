@@ -34,7 +34,7 @@ export default function Profile() {
 
   return (
     <div className="mx-6 my-4">
-      <Label>Avator</Label>
+      <Label>Avatar</Label>
       <div className='w-28 mb-4'>
         <ImageAutoUploader
           width={200}
@@ -44,7 +44,7 @@ export default function Profile() {
           onChange={(image) => {
             setEditingInfo({ ...editingInfo, image })
           }}
-          variant="avator"
+          variant="avatar"
         />
       </div>
       <Label htmlFor="name">Name</Label>

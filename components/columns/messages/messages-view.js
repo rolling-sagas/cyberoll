@@ -18,7 +18,7 @@ export default function MessagesView({ isSession = false, resetHandle }) {
   const generating = useStore((state) => state.generating);
 
   return (
-    <div className="flex-auto flex flex-col gap-4 px-4 pt-2 pb-4">
+    <div className="flex-auto flex flex-col gap-4 px-6 pt-2 pb-4">
       {isSession ? null : <div className="font-semibold">Messages</div>}
       {isSession ? null : (
         <div className="flex flex-row gap-4">

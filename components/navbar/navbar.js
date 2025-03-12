@@ -76,7 +76,7 @@ export default function NavBar() {
               scale-100 bg-rs-background-hover"
           />
         </span>
-        <NavButton href="/">
+        {/* <NavButton href="/">
           <Search01Icon strokeWidth={l1Pathname === 'search' ? '3' : '2'} />
         </NavButton>
         <NavButton href="/">
@@ -84,7 +84,7 @@ export default function NavBar() {
             strokeWidth="2"
             variant={l1Pathname === 'search' ? 'solid' : 'stroke'}
           />
-        </NavButton>
+        </NavButton> */}
         <NavButton href="/u/_" active={l1Pathname === 'u'}>
           <UserIcon
             strokeWidth="2"
@@ -93,7 +93,7 @@ export default function NavBar() {
         </NavButton>
       </div>
       <div className="nav mb-6">
-        <PinButton />
+        {/* <PinButton /> */}
         <NavButton href="/plan">
           <CrownIcon
             strokeWidth="2"

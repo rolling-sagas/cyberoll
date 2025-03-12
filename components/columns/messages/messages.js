@@ -39,8 +39,8 @@ function Messages() {
   }, [messages]);
 
   return (
-    <div className="h-full !flex-1 relative -mx-4">
-      <div ref={scrollContainer} className="message-container px-4 pb-40">
+    <div className="h-full !flex-1 relative -mx-6">
+      <div ref={scrollContainer} className="message-container px-6 pb-40">
         <div className="flex flex-col gap-6">
           {messages?.map((message) => <Message message={message} key={message.id} />)}
         </div>

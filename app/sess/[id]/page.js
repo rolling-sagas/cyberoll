@@ -11,6 +11,7 @@ import { getSession, resetSession } from "@/service/session";
 import useStore from "@/stores/editor";
 import { executeScript } from '@/stores/actions/game';
 import { useAlertStore } from "@/components/modal/alert-placeholder";
+import Back from "@/components/common/back";
 
 export default function Page({ params }) {
   const id = params.id
@@ -67,6 +68,7 @@ export default function Page({ params }) {
   useEffect(() => {
     if (!session) return
     addColumn("session", {
+      headerLeft: <Back />,
       headerCenter: session.name,
     }, <Session resetHandle={resetHandle} />);
   }, [addColumn, resetHandle])
