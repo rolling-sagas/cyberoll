@@ -1,4 +1,3 @@
-import BaseButton from "@/components/buttons/base-button";
 import { useState } from "react";
 
 import { TextIcon, Menu01Icon, Image01Icon, ViewIcon, ViewOffIcon } from "@hugeicons/react";
@@ -6,6 +5,7 @@ import { TextIcon, Menu01Icon, Image01Icon, ViewIcon, ViewOffIcon } from "@hugei
 import { Input } from "@/components/modal/dialog";
 import ImageAutoUploader from "../components/image-auto-uploader";
 import { Switch } from "@/app/components/ui/switch"
+import { Button } from "@/app/components/ui/button";
 
 export default function CreateStoryForm({ name, desc, image, keepPrivate = true, showPublicSwitch = false, onConfirm, saving = false }) {
   const [tName, setTName] = useState(name || "");
@@ -80,13 +80,13 @@ export default function CreateStoryForm({ name, desc, image, keepPrivate = true,
         }
       </>
       <div className="flex flex-row-reverse">
-        <BaseButton
-          label="Save"
+        <Button
           disabled={!canCreate || saving}
           onClick={async () => {
             onConfirm(tName, tDesc, tImage, tKeepPrivate);
           }}
-        />
+          variant="outline"
+        >Save</Button>
       </div>
     </>
   )

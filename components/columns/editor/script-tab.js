@@ -2,6 +2,7 @@ import { TabPanel } from "@headlessui/react";
 import { restart, exportTemplate, importTemplate } from '@/stores/actions/game';
 import { setScript } from "@/stores/actions/ui";
 import { js } from "js-beautify";
+import { Button } from "@/app/components/ui/button";
 
 import useStore from '@/stores/editor'
 
@@ -14,18 +15,18 @@ const ScriptTab = () => {
   return (
     <TabPanel className="h-full flex flex-col gap-4">
       <div className="flex gap-4">
-        <button className="btn-default" onClick={handleFormat}>
+        <Button className="h-7 text-xs" variant="outline" onClick={handleFormat}>
           Format
-        </button>
-        <button className="btn-default" onClick={restart}>
+        </Button>
+        <Button className="h-7 text-xs" variant="outline" onClick={restart}>
           Restart
-        </button>
-        <button className="btn-default" onClick={importTemplate}>
+        </Button>
+        <Button className="h-7 text-xs" variant="outline" onClick={importTemplate}>
           Import
-        </button>
-        <button className="btn-default" onClick={exportTemplate}>
+        </Button>
+        <Button className="h-7 text-xs" variant="outline" onClick={exportTemplate}>
           Export
-        </button>
+        </Button>
       </div>
       <ScriptEditor code={script} onChange={setScript} lang="js" />
     </TabPanel>

@@ -1,7 +1,7 @@
-import "./column.css";
+import './column.css';
 
-import PropTypes from "prop-types";
-import { Transition } from "@headlessui/react";
+import PropTypes from 'prop-types';
+import { Transition } from '@headlessui/react';
 
 export default function Column({
   children,
@@ -11,6 +11,7 @@ export default function Column({
   afterLeave,
   show = true,
 }) {
+  console.log(111, headerCenter);
   return (
     <Transition show={show} afterLeave={afterLeave} appear={true}>
       <div className="column">
@@ -26,7 +27,15 @@ export default function Column({
           </div>
           <div className="header-grid">
             <div>{headerLeft}</div>
-            <div>{headerCenter}</div>
+            <div>
+              {typeof headerCenter === 'string' ? (
+                <div className="text-ellipsis overflow-hidden whitespace-nowrap w-full text-center" title={headerCenter}>
+                  {headerCenter}
+                </div>
+              ) : (
+                { headerCenter }
+              )}
+            </div>
             <div>{headerRight}</div>
           </div>
         </div>
