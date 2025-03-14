@@ -11,7 +11,7 @@ export default function ImageView({ url, name }) {
             src={url}
             width={100}
             height={100}
-            className="w-full h-full rounded-sm"
+            className="w-full h-full rounded-xl"
             alt={name}
           /> : null
       }

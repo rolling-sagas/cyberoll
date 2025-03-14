@@ -65,9 +65,9 @@ export default function StoryItem({
               name={story.author?.name}
             />
           </Link>
-          <span className="text-base flex gap-1">
+          <span className="text-base flex gap-1.5">
             <span className="font-semibold">{story.author?.name}</span>
-            <span className="text-base-content/50 font-light">
+            <span className="text-zinc-400 font-light">
               {dayjs(story.updatedAt).fromNow()}
             </span>
           </span>
@@ -82,10 +82,10 @@ export default function StoryItem({
             <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
               {showEdit ? (
                 <DropdownMenuItem
-                  className="h-11 rounded-xl px-3 text-base"
+                  className="h-11 rounded-xl px-3 text-base font-semibold"
                   onClick={() => router.push('/st/' + story.id + '/edit')}
                 >
-                  <div className="flex gap-10 justify-between w-full cursor-pointer">
+                  <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
                     Edit
                     <Edit01Icon size={20} />
                   </div>
@@ -93,7 +93,7 @@ export default function StoryItem({
               ) : null}
               {onDuplicateClick ? (
                 <DropdownMenuItem className="h-11 rounded-xl px-3 text-base" onClick={onDuplicateClick}>
-                  <div className="flex gap-10 justify-between w-full cursor-pointer">
+                  <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
                     Duplicate
                     <Copy01Icon size={20} />
                   </div>

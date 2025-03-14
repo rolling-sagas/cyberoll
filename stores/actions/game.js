@@ -8,6 +8,9 @@ import {
   resetMessages,
   syncMessage,
   addMessages,
+  getMessageById,
+  getLastMessageState,
+  sliceMessagesTillMid,
 } from './message';
 import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
@@ -198,29 +201,6 @@ export const onUserAction = async (action) => {
   }
 };
 
-// export const saveGameSession = async () => {
-//   try {
-//     const gameSession = await quickjs.callFunction('onSave');
-//     useStore.setState((state) => ({
-//       gameSession: { ...gameSession },
-//     }));
-
-//     const state = useStore.getState();
-//     const storySessionId = state.storySessionId;
-//     if (storySessionId) {
-//       await updateSession(storySessionId, {
-//         state: gameSession,
-//       });
-//     }
-//   } catch (e) {
-//     setModal({
-//       title: 'onSave Error:',
-//       description: e.message,
-//       confirm: { label: 'Dismiss' },
-//     });
-//   }
-// };
-
 export const loadGameSession = async () => {
   try {
     const messages = useStore.getState().messages;
@@ -294,26 +274,6 @@ export const exportTemplate = () => {
   dlAnchorElem = null;
 };
 
-export const getLastMessageState = (messages = []) => {
-  const msg = messages.findLast((m) => m.state);
-  return msg?.state;
-};
-
-export const sliceMessagesTillMid = (messages = [], mid, exclude = false) => {
-  if (!mid) return [];
-  let res = [];
-  const index = messages.findIndex((m) => m.id === mid);
-  if (index > -1) {
-    res = messages.slice(0, index + (exclude ? 0 : 1));
-  }
-  return res;
-};
-
-export const getLastMessageStateFromMid = (mid, exclude = false) => {
-  const messages = useStore.getState().messages
-  return getLastMessageState(sliceMessagesTillMid(messages, mid, exclude))
-}
-
 export const isLastMessageHasTailAction = (messages = []) => {
   const lastMessage = messages[messages.length - 1];
   const lastViews = lastMessage?.content?.views;
@@ -332,14 +292,15 @@ export const restartFromMessage = async (mid, exclude = false) => {
   });
   try {
     const messages = useStore.getState().messages || [];
+    const message = getMessageById(mid)
+    const isLocalMessage = !!message.status
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
-
     useStore.setState({
       messages: newMessages,
     });
 
     const storySessionId = useStore.getState().storySessionId;
-    if (storySessionId) {
+    if (storySessionId && !isLocalMessage) {
       await resetSession(storySessionId, mid, exclude);
     }
     await loadGameSession();

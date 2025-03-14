@@ -81,6 +81,7 @@ export default function CreateStoryForm({ name, desc, image, keepPrivate = true,
       </>
       <div className="flex flex-row-reverse">
         <Button
+          className="rounded-xl"
           disabled={!canCreate || saving}
           onClick={async () => {
             onConfirm(tName, tDesc, tImage, tKeepPrivate);

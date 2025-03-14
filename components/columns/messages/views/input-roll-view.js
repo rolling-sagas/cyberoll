@@ -8,7 +8,7 @@ export default function InputRollView({ view }) {
   const doingUserAction = useStore((state) => state.doingUserAction);
 
   return (
-    <div className="input">
+    <div className="action-view input">
       <div>{view.label}</div>
       <button
         className="roll"

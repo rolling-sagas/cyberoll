@@ -31,18 +31,6 @@
   @apply flex flex-row gap-3 items-start;
 }
 
-.message .action-buttons button {
-  @apply text-gray-400 font-normal hover:text-gray-800;
-}
-
-.message.play-mode .action-buttons {
-  @apply hidden;
-}
-
-.message.system.play-mode {
-  @apply !hidden;
-}
-
 .message .role {
   @apply border border-gray-200 rounded-full font-semibold w-9 h-9 flex justify-center items-center;
 }
@@ -71,6 +59,10 @@
   @apply hidden;
 }
 
+.message:not(:last-child) .action-view {
+  @apply hidden;
+}
+
 .message:last-child .input {
   @apply flex;
 }
@@ -96,10 +88,6 @@
   @apply hover:bg-gray-200 hover:text-black;
 }
 
-.message-content .input-options {
-  @apply flex flex-col gap-2;
-}
-
 .message-content .input-options button {
   @apply w-full justify-start;
   @apply border border-gray-300 px-2 py-1 rounded mb-1 text-sm text-gray-800;
@@ -114,8 +102,8 @@
 }
 
 .message-container .divider {
-  @apply w-full border border-gray-200 flex justify-center rounded-full;
-  @apply py-1 px-2 font-semibold text-sm sticky;
+  @apply border-b-[0.5px] px-6 py-3 font-semibold text-center h-12 top-0;
+  @apply sticky z-10 bg-background whitespace-nowrap text-ellipsis w-full overflow-hidden;
 }
 
 .message-tail {

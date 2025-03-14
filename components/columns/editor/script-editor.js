@@ -8,18 +8,25 @@ import 'prismjs/components/prism-json';
 import 'prismjs/themes/prism.min.css';
 import './script-editor.css';
 
-export default function ScriptEditor({ code = '', onChange = () => {}, lang = 'js' }) {
+export default function ScriptEditor({
+  code = '',
+  onChange = () => {},
+  lang = 'js',
+  className = '',
+}) {
   return (
-    <div className="w-full overflow-auto border border-gray-200 rounded h-1 flex-1">
+    <div
+      className={`w-full overflow-auto border border-gray-200 rounded h-1 flex-1 ${className}`}
+    >
       <div className="w-full h-full">
         <Editor.default
           value={code}
           onValueChange={onChange}
           highlight={(code) =>
             highlight(code, languages[lang], lang)
-              .split("\n")
+              .split('\n')
               .map((line) => `<span class="editor-line-number">${line}</span>`)
-              .join("\n")
+              .join('\n')
           }
           padding={10}
           textareaClassName="outline-none"

@@ -45,6 +45,26 @@ export const updateMessage = (id, msg = {}) => {
   });
 };
 
+export const getLastMessageState = (messages = []) => {
+  const msg = messages.findLast((m) => m.state);
+  return msg?.state;
+};
+
+export const sliceMessagesTillMid = (messages = [], mid, exclude = false) => {
+  if (!mid) return [];
+  let res = [];
+  const index = messages.findIndex((m) => m.id === mid);
+  if (index > -1) {
+    res = messages.slice(0, index + (exclude ? 0 : 1));
+  }
+  return res;
+};
+
+export const getLastMessageStateFromMid = (mid, exclude = false) => {
+  const messages = useStore.getState().messages
+  return getLastMessageState(sliceMessagesTillMid(messages, mid, exclude))
+}
+
 export const getMessageById = (id) => {
   return useStore.getState().messages.find((m) => m.id === id);
 };

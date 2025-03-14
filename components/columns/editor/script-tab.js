@@ -15,16 +15,16 @@ const ScriptTab = () => {
   return (
     <TabPanel className="h-full flex flex-col gap-4">
       <div className="flex gap-4">
-        <Button className="h-7 text-xs" variant="outline" onClick={handleFormat}>
+        <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={handleFormat}>
           Format
         </Button>
-        <Button className="h-7 text-xs" variant="outline" onClick={restart}>
+        <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={restart}>
           Restart
         </Button>
-        <Button className="h-7 text-xs" variant="outline" onClick={importTemplate}>
+        <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={importTemplate}>
           Import
         </Button>
-        <Button className="h-7 text-xs" variant="outline" onClick={exportTemplate}>
+        <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={exportTemplate}>
           Export
         </Button>
       </div>

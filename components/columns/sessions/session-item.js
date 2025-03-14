@@ -53,7 +53,7 @@ export default function SessionItem({ session, onDelete }) {
                 del();
               }}
             >
-              <div className="flex gap-10 justify-between w-full text-red-500">
+              <div className="flex gap-10 justify-between w-full text-red-500 font-semibold">
                 Delete
                 <Delete01Icon size={18} />
               </div>
