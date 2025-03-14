@@ -3,6 +3,7 @@ import useStore from '../editor';
 import { setModal } from './ui';
 import {
   addMessage,
+  createMessage,
   updateMessage,
   getMessagesAfterLastDivider,
   resetMessages,
@@ -82,7 +83,7 @@ export const restart = () => {
   });
 };
 
-export const generate = async (skipCache = false) => {
+export const generate = async (skipCache = false, defaultMsg) => {
   useStore.setState({
     generating: true,
   });
@@ -102,7 +103,7 @@ export const generate = async (skipCache = false) => {
       return { role, content };
     });
 
-    let message = addMessage('assistant', 'Generating...');
+    let message = defaultMsg || addMessage('assistant', 'Generating...');
 
     const body = { messages: messages, type: 'json', skip_cache: skipCache };
     if (model) body.model = model;
@@ -169,10 +170,12 @@ export const onUserAction = async (action) => {
     console.log('[onUserAction result]', result);
     // add messages
     if (result.messages) {
-      await addMessages(result.messages);
-      if (useStore.getState().autoGenerate) {
-        await generate();
+      const msg = createMessage('assistant', 'Generating...');
+      const res = addMessages(result.messages, false, [msg]);
+      if (useStore.getState().autoGenerate && !result.action) {
+        await generate(false, msg);
       }
+      await res;
     }
 
     // handle callback action
@@ -180,11 +183,13 @@ export const onUserAction = async (action) => {
       switch (result.action) {
         case 'next':
           const messages = await quickjs.callFunction('onStart');
-          await addMessages(messages);
+          const msg = createMessage('assistant', 'Generating...');
+          const res = addMessages(messages, false, [msg]);
 
           if (useStore.getState().autoGenerate) {
-            await generate();
+            await generate(false, msg);
           }
+          await res;
           break;
       }
     }
