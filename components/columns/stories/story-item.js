@@ -7,7 +7,7 @@ import {
   SentIcon,
   MoreHorizontalIcon,
   Edit02Icon,
-  Edit01Icon,
+  Activity01Icon,
   Copy01Icon,
   Delete01Icon,
   Share01Icon,
@@ -31,13 +31,14 @@ import HoverButton from '@/components/buttons/hover-button';
 export default function StoryItem({
   story,
   showLike = true,
-  showEdit = false,
+  showViewActivity = false,
   showComment = true,
   onUpdateClick,
   onDuplicateClick,
   onDeleteClick,
   showPlay = false,
   showAllDesc = false,
+  coverGoEdit = false,
 }) {
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
@@ -72,7 +73,7 @@ export default function StoryItem({
             </span>
           </span>
         </div>
-        {showEdit || onDuplicateClick || onDeleteClick ? (
+        {showViewActivity || onDuplicateClick || onDeleteClick ? (
           <DropdownMenu>
             <DropdownMenuTrigger className='outline-none'>
               <HoverButton className="-mr-[9px]">
@@ -80,14 +81,14 @@ export default function StoryItem({
               </HoverButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
-              {showEdit ? (
+              {showViewActivity ? (
                 <DropdownMenuItem
                   className="h-11 rounded-xl px-3 text-base font-semibold"
-                  onClick={() => router.push('/st/' + story.id + '/edit')}
+                  onClick={() => router.push('/st/' + story.id)}
                 >
                   <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
-                    Edit
-                    <Edit01Icon size={20} />
+                    View Activity
+                    <Activity01Icon size={20} />
                   </div>
                 </DropdownMenuItem>
               ) : null}
@@ -113,7 +114,7 @@ export default function StoryItem({
       </div>
       <div
         className="w-full flex flex-col cursor-pointer mb-2"
-        onClick={() => router.push(`/st/${story.id}`)}
+        onClick={() => router.push(`/st/${story.id}${coverGoEdit ? '/edit' : ''}`)}
       >
         <Image
           src={getImageUrl(story.image)}
@@ -160,8 +161,8 @@ export default function StoryItem({
           </Link>
         ) : null}
         {onUpdateClick ? (
-          <HoverButton>
-            <Edit02Icon onClick={onUpdateClick} size={18} />
+          <HoverButton onClick={onUpdateClick}>
+            <Edit02Icon size={18} />
           </HoverButton>
         ) : null}
         <HoverButton>

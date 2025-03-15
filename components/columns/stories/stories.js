@@ -51,7 +51,8 @@ export default function Stories() {
           key={story.id}
           story={story}
           showLike={false}
-          showEdit
+          showViewActivity
+          coverGoEdit
           onUpdateClick={() => onUpdateClick(story, reLoadStories)}
           onDuplicateClick={() => {
             onDuplicateClick(story, router);

@@ -1,29 +1,12 @@
-"use client";
-
-import SessionItem from "./session-item";
-
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel"
+'use client';
+import SessionItem from './session-item';
 
 export default function ScrollSessions({ items = {}, onDelete = () => {} }) {
   return (
     <div className="w-full">
-      <Carousel>
-        <CarouselContent>
-          {
-            items.map(s => <CarouselItem key={s.id} className="basis-full">
-              <SessionItem session={s} onDelete={onDelete}/>
-            </CarouselItem>)
-          }
-        </CarouselContent>
-        <CarouselPrevious className="left-0 -mt-4 disabled:hidden" />
-        <CarouselNext className="right-0 -mt-4 disabled:hidden" />
-      </Carousel>
+      {items.map((s) => (
+        <SessionItem key={s.id} session={s} onDelete={onDelete} />
+      ))}
     </div>
   );
 }

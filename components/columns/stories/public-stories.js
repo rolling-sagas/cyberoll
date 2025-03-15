@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import PublicStoryItem from './story-item';
 
 import { getPublicStories } from '@/service/story';
-import ScrollSessions from '../sessions/scroll-sessions';
+import SessionItem from '../sessions/session-item';
 
 import { getSessions } from '@/service/session';
 import usePageData from '@/components/hooks/use-page-data';
@@ -21,11 +21,11 @@ export default function Stories() {
     loadmoreStories,
   ] = usePageData(getPublicStories, 12, 'stories');
 
-  const [sessions, setSessions] = useState([]);
+  const [session, setSession] = useState(null);
 
   const listSessions = async () => {
-    const list = await getSessions();
-    setSessions(list);
+    const list = await getSessions(0, 1);
+    setSession(list[0]);
   };
 
   useEffect(() => {
@@ -42,10 +42,8 @@ export default function Stories() {
 
   return (
     <div className="w-full h-full overflow-y-auto" onScroll={scrollHandle}>
-      {sessions && sessions.length ? (
-        <div className="mx-6 my-3">
-          <ScrollSessions items={sessions} onDelete={listSessions} />
-        </div>
+      {session ? (
+        <SessionItem key={session.id} session={session} onDelete={listSessions} />
       ) : null}
       <div>
         {stories.map((story) => (
@@ -56,6 +54,8 @@ export default function Stories() {
           noData={storiesTotal === 0}
           loadMore={hasMoreStory}
           loadMoreHandle={() => loadmoreStories()}
+          noMoreData={!hasMoreStory}
+          noMoreDataComp={<div>More stories coming soon!</div>}
         />
       </div>
     </div>

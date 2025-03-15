@@ -6,7 +6,7 @@ import { getLastMessageStateFromMid } from '@/stores/actions/message';
 import MessageContent from './message-content';
 import dayjs from '@/utils/day';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
-
+import { Button } from '@/app/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -43,15 +43,19 @@ function Message({ message, style = null }) {
     });
   };
 
-  const regenerateMessageHandle = (mid) => {
-    confirm({
-      title: 'Regenerate message?',
-      message: 'The messages below will be deleted permanently.',
-      onConfirm: async () => {
-        restartFromMessage(mid, true);
-      },
-      confirmLabel: 'Continue',
-    });
+  const regenerateMessageHandle = (mid, needConfirm = true) => {
+    if (needConfirm) {
+      confirm({
+        title: 'Regenerate message?',
+        message: 'The messages below will be deleted permanently.',
+        onConfirm: async () => {
+          restartFromMessage(mid, true);
+        },
+        confirmLabel: 'Continue',
+      });
+    } else {
+      restartFromMessage(mid, true);
+    }
   };
 
   function handleDeleteMessage(id) {
@@ -119,9 +123,7 @@ function Message({ message, style = null }) {
             </div>
             <MessageContent content={message.content} components={components} />
             <div className="action-buttons flex -ml-[9px] -mt-2">
-              {message.role === 'assistant' &&
-              message.status !== MESSAGE_STATUS.generating &&
-              message.status !== MESSAGE_STATUS.finished ? (
+              {message.role === 'assistant' && !message.status ? (
                 <HoverButton
                   onClick={() => regenerateMessageHandle(message.id)}
                   title="Regenerate"
@@ -147,6 +149,12 @@ function Message({ message, style = null }) {
                 </>
               )}
             </div>
+            {message.status === MESSAGE_STATUS.error ? (
+              <div className="flex flex-col gap-4 border-1 rounded-xl p-4 items-center">
+                <span>Oops, something went wrong, please try again later.</span>
+                <Button onClick={() => regenerateMessageHandle(message.id, false)} className="flex-none rounded-xl h-10">Regenerate</Button>
+              </div>
+            ) : null}
           </div>
         </div>
       ) : (

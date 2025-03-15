@@ -55,6 +55,7 @@ export const executeScript = async (refresh = true) => {
 
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
+      console.log('onStart messages', messages);
       await resetMessages(messages);
 
       if (useStore.getState().autoGenerate) {
@@ -87,6 +88,7 @@ export const generate = async (skipCache = false, defaultMsg) => {
   useStore.setState({
     generating: true,
   });
+  let message = defaultMsg || addMessage('assistant', 'Generating...');
   try {
     const aiPath = localStorage.AI_PATH || 'ai';
     const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
@@ -102,8 +104,6 @@ export const generate = async (skipCache = false, defaultMsg) => {
       }
       return { role, content };
     });
-
-    let message = defaultMsg || addMessage('assistant', 'Generating...');
 
     const body = { messages: messages, type: 'json', skip_cache: skipCache };
     if (model) body.model = model;
@@ -122,21 +122,30 @@ export const generate = async (skipCache = false, defaultMsg) => {
       if (done) break;
 
       resText += decoder.decode(value, { stream: true });
-      updateMessage(message.id, {content: parse(resText)});
+      updateMessage(message.id, { content: parse(resText) });
     }
 
     let finalContent = resText;
     try {
-      finalContent = parse(resText);
+      // 这里用 JSON.parse 让非正常json报错，展示报错ui
+      finalContent = JSON.parse(resText);
       console.log('[ai parsed json]:', finalContent);
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
-        return updateMessage(message.id, {content: finalContent.error, status: MESSAGE_STATUS.error});
+        return updateMessage(message.id, {
+          content: finalContent.error,
+          status: MESSAGE_STATUS.error,
+        });
       }
-      updateMessage(message.id, {content: finalContent, statue: MESSAGE_STATUS.finished});
+      updateMessage(message.id, {
+        content: finalContent,
+        status: MESSAGE_STATUS.finished,
+      });
     } catch (e) {
       console.error('[ai parse json error]:', e);
-      updateMessage(message.id, {content: resText, statue: MESSAGE_STATUS.error});
+      updateMessage(message.id, {
+        status: MESSAGE_STATUS.error,
+      });
     }
 
     const msg = await quickjs.callFunction('onAssistant', {
@@ -152,6 +161,7 @@ export const generate = async (skipCache = false, defaultMsg) => {
     await syncMessage(message.id);
   } catch (error) {
     console.error(error);
+    updateMessage(message.id, { status: MESSAGE_STATUS.error });
   } finally {
     useStore.setState({
       generating: false,
@@ -162,8 +172,8 @@ export const generate = async (skipCache = false, defaultMsg) => {
 // user iteractive actions
 export const onUserAction = async (action) => {
   useStore.setState({
-    doingUserAction: true
-  })
+    doingUserAction: true,
+  });
   console.log('[onUserAction]');
   try {
     let result = await quickjs.callFunction('onAction', action);
@@ -201,8 +211,8 @@ export const onUserAction = async (action) => {
     });
   } finally {
     useStore.setState({
-      doingUserAction: false
-    })
+      doingUserAction: false,
+    });
   }
 };
 
@@ -297,8 +307,8 @@ export const restartFromMessage = async (mid, exclude = false) => {
   });
   try {
     const messages = useStore.getState().messages || [];
-    const message = getMessageById(mid)
-    const isLocalMessage = !!message.status
+    const message = getMessageById(mid);
+    const isLocalMessage = !!message.status;
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
     useStore.setState({
       messages: newMessages,

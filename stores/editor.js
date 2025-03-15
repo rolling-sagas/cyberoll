@@ -29,8 +29,8 @@ const initialState = {
 const useStore = create(
   devtools((set) => ({
     ...initialState,
-    reset: () => {
-      set(initialState)
+    reset: (extend = {}) => {
+      set({...initialState, ...extend})
     },
   })),
 );

@@ -10,26 +10,86 @@ import {
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import { deleteSession } from '@/service/session';
+import Avatar from '@/components/common/avatar';
+import Link from 'next/link';
+import dayjs from '@/utils/day';
+import HoverButton from '@/components/buttons/hover-button';
+import { useAlertStore } from '@/components/modal/alert-placeholder';
+import toast from 'react-hot-toast/headless';
 
-export default function SessionItem({ session, onDelete }) {
+export default function SessionItem({ session, onDelete, lastPlayed = true }) {
   const router = useRouter();
   const [deletingSession, setDeletingSession] = useState(false);
+  const confirm = useAlertStore((state) => state.confirm);
 
   const del = async () => {
-    if (deletingSession) return;
-    setDeletingSession(true);
-    try {
-      await deleteSession(session.id);
-      onDelete(session.id);
-    } finally {
-      setDeletingSession(false);
-    }
+    confirm({
+      title: 'Delete played story？',
+      message:
+        "If you delete this played story, you won't be able to restore it.",
+      onConfirm: async () => {
+        if (deletingSession) return;
+        setDeletingSession(true);
+        try {
+          await deleteSession(session.id);
+          toast.success('Delete Success!');
+          onDelete(session.id);
+        } finally {
+          setDeletingSession(false);
+        }
+      },
+      confirmLabel: 'Confirm',
+    });
   };
 
   return (
-    <div className="mx-6">
+    <div className="border-b-1 border-gray-200 py-4 mx-6">
+      <div className="flex gap-2 items-center mb-3 justify-between">
+        <div className="flex gap-3 items-center">
+          <Link href={`/sess/${session.id}`}>
+            <Avatar
+              image={session.avatar?.imageId}
+              size={36}
+              name={session.avatar?.name}
+            />
+          </Link>
+          <span className="flex flex-col">
+            <span className="font-semibold text-lg/5">
+              {session.avatar?.name}
+              {lastPlayed ? (
+                <span className="text-zinc-400 font-light ml-1.5 text-sm">
+                  {dayjs(session.updatedAt).fromNow()}
+                </span>
+              ) : null}
+            </span>
+            <span className="text-zinc-400 font-light text-sm">
+              {lastPlayed
+                ? 'Your last played story'
+                : `Last played: ${dayjs(session.updatedAt).fromNow()}`}
+            </span>
+          </span>
+        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="outline-none">
+            <HoverButton className="-mr-[9px]">
+              <MoreHorizontalIcon size={20} />
+            </HoverButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
+            <DropdownMenuItem
+              className="h-11 rounded-xl px-3 text-base"
+              onClick={del}
+            >
+              <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
+                Delete
+                <Delete01Icon size={20} />
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div
-        className="w-full flex flex-col cursor-pointer mb-3 relative"
+        className="w-full flex flex-col cursor-pointer mb-2"
         onClick={() => router.push(`/sess/${session.id}`)}
       >
         <Image
@@ -41,25 +101,6 @@ export default function SessionItem({ session, onDelete }) {
           alt={session.name}
           priority
         />
-        <DropdownMenu>
-          <DropdownMenuTrigger className="absolute top-2 right-2 border-1 rounded-full bg-background/80">
-            <MoreHorizontalIcon />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem
-              className="h-10 cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                del();
-              }}
-            >
-              <div className="flex gap-10 justify-between w-full text-red-500 font-semibold">
-                Delete
-                <Delete01Icon size={18} />
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
       </div>
       <div className="inline post-info">
         <span className="font-semibold text-nowrap">{session.name}</span>

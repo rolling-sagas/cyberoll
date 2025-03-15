@@ -9,7 +9,7 @@ export default function HoverButton({ children, count = 0, onClick = () => {}, c
       asChild
       variant="ghost"
       onClick={onClick}
-      className={`group flex justify-center items-center relative hover:bg-transparent min-w-9 hover-button ${count ? 'px-3 -mx-[3px]' : 'px-[9px]'} ${className}`}
+      className={`group cursor-pointer flex justify-center items-center relative hover:bg-transparent min-w-9 hover-button ${count ? 'px-3 -mx-[3px]' : 'px-[9px]'} ${className}`}
     >
       <div>
         <div
