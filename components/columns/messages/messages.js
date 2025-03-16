@@ -4,6 +4,8 @@ import { onUserAction } from '@/stores/actions/game';
 import { setDiceBox, clearRoll } from '@/stores/actions/dice';
 import Message from './message';
 import { MESSAGE_STATUS } from '@/utils/const';
+import CircleIconButton from '@/components/buttons/circle-icon-button';
+import { ArrowDown01Icon } from '@hugeicons/react';
 
 import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 
@@ -16,11 +18,13 @@ function Messages() {
   const rolling = useStore((state) => state.rolling);
   const lastRoll = useStore((state) => state.lastRoll);
   const playMode = useStore((state) => state.playMode);
-  const bottomRef = useRef(null)
+  const bottomRef = useRef(null);
+  const [showGoBottom, setShowGoBottom] = useState(false);
 
-  const renderMessages = useMemo(() => playMode
-    ? messages.filter((m) => m.role !== 'system')
-    : messages, [messages, playMode]);
+  const renderMessages = useMemo(
+    () => (playMode ? messages.filter((m) => m.role !== 'system') : messages),
+    [messages, playMode]
+  );
 
   const [dividers, setDividers] = useState([]);
   const [minHeight, setMinHeight] = useState(0);
@@ -59,7 +63,15 @@ function Messages() {
         }
       }
     });
-  }, [dividers]);
+    const container = scrollContainer.current
+    if (container) {
+      if (container.scrollTop + container.offsetHeight + 300 < container.scrollHeight ) {
+        setShowGoBottom(true);
+      } else {
+        setShowGoBottom(false);
+      }
+    }
+  }, [scrollContainer, dividers]);
 
   useEffect(() => {
     const container = scrollContainer.current;
@@ -78,7 +90,9 @@ function Messages() {
         minHeight -= dividers[dividers.length - 1]?.offsetHeight || 0;
       }
       const messageEles = document.querySelectorAll('.message-item');
-      if (messageEles[messageEles.length - 2] !== dividers[dividers.length - 1]) {
+      if (
+        messageEles[messageEles.length - 2] !== dividers[dividers.length - 1]
+      ) {
         minHeight -= messageEles[messageEles.length - 2]?.offsetHeight || 0;
       }
       setMinHeight(minHeight);
@@ -100,8 +114,8 @@ function Messages() {
   }, [renderMessages]);
 
   useEffect(() => {
-    scrollToBottom()
-  }, [bottomRef])
+    setTimeout(scrollToBottom, 0);
+  }, [bottomRef]);
 
   return (
     <div className="h-full !flex-1 relative -mx-6">
@@ -111,13 +125,17 @@ function Messages() {
             <Message
               message={message}
               key={message.id}
-              style={i === renderMessages?.length - 1 && message.role !== 'divider' ? { minHeight } : null}
+              style={
+                i === renderMessages?.length - 1 && message.role !== 'divider'
+                  ? { minHeight }
+                  : null
+              }
             />
           ))}
         </div>
-        {
-          renderMessages?.length ? <div ref={bottomRef} className='hidden'></div> : null
-        }
+        {renderMessages?.length ? (
+          <div ref={bottomRef} className="hidden"></div>
+        ) : null}
       </div>
       <div
         ref={diceBoxRef}
@@ -136,6 +154,11 @@ function Messages() {
           </div>
         )}
       </div>
+      <CircleIconButton
+        onClick={scrollToBottom}
+        className={`absolute bottom-2 left-1/2 h-7 w-7 -ml-3.5 z-2 ${showGoBottom ? '' : 'hidden'}`}
+        icon={<ArrowDown01Icon size={20} />}
+      />
     </div>
   );
 }
