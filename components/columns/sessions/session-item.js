@@ -32,7 +32,7 @@ export default function SessionItem({ session, onDelete, lastPlayed = true }) {
         setDeletingSession(true);
         try {
           await deleteSession(session.id);
-          toast.success('Delete Success!');
+          toast.success('Deleted');
           onDelete(session.id);
         } finally {
           setDeletingSession(false);

@@ -1,6 +1,8 @@
 import useStore from '../editor';
 import { COMPONENT_TYPE } from '@/utils/const';
 import { createComponent, updateComponent as updateComponentReq, deleteComponent as deleteComponentReq } from '@/service/component';
+import toast from 'react-hot-toast/headless';
+
 export const updateComponent = async () => {
   useStore.setState({
     isEditing: true,
@@ -47,6 +49,7 @@ export const delComponent = async (id) => {
     useStore.setState((state) => ({
       components: state.components.filter((c) => c.id !== id),
     }));
+    toast.success('Deleted');
   } finally {
     useStore.setState({
       isEditing: false,
