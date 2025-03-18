@@ -7,6 +7,7 @@ import MessageContent from './message-content';
 import dayjs from '@/utils/day';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
 import { Button } from '@/app/components/ui/button';
+import Link from 'next/link';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -153,6 +154,12 @@ function Message({ message, style = null }) {
               <div className="flex flex-col gap-4 border-1 rounded-xl p-4 items-center">
                 <span>Oops, something went wrong, please try again later.</span>
                 <Button onClick={() => regenerateMessageHandle(message.id, false)} className="flex-none rounded-xl h-10">Regenerate</Button>
+              </div>
+            ) : null}
+            {message.status === MESSAGE_STATUS.outOfCredits ? (
+              <div className="flex flex-col gap-4 border-1 rounded-xl p-4 items-center">
+                <span>Oops, you're running out of credits.</span>
+                <Link href="/plan"><Button className="flex-none rounded-xl h-10">Upgrade Plan</Button></Link>
               </div>
             ) : null}
           </div>

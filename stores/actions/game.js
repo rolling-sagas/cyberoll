@@ -135,8 +135,12 @@ export const generate = async (skipCache = false, defaultMsg) => {
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
         return updateMessage(message.id, {
-          content: finalContent.error,
-          status: MESSAGE_STATUS.error,
+          content:
+            finalContent.code !== 1001 ? finalContent.error : 'Generate error!',
+          status:
+            finalContent.code !== 1001
+              ? MESSAGE_STATUS.error
+              : MESSAGE_STATUS.outOfCredits,
         });
       }
       updateMessage(message.id, {
