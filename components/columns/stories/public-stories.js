@@ -10,6 +10,7 @@ import { getSessions } from '@/service/session';
 import usePageData from '@/components/hooks/use-page-data';
 import PageDataStatus from '@/components/common/page-data-status';
 import debounce from 'lodash/debounce';
+import StoryListSkeleton from '@/components/skeleton/story-list-skeleton';
 
 export default function Stories() {
   const [
@@ -24,7 +25,7 @@ export default function Stories() {
   const [session, setSession] = useState(null);
 
   const listSessions = async () => {
-    const list = await getSessions(0, 1);
+    const {sessions: list} = await getSessions(0, 1);
     setSession(list[0]);
   };
 
@@ -43,7 +44,7 @@ export default function Stories() {
   return (
     <div className="w-full h-full overflow-y-auto" onScroll={scrollHandle}>
       {session ? (
-        <SessionItem key={session.id} session={session} onDelete={listSessions} />
+        <SessionItem key={session.id} session={session} onDelete={listSessions} lastPlayed />
       ) : null}
       <div>
         {stories.map((story) => (
@@ -56,6 +57,7 @@ export default function Stories() {
           loadMoreHandle={() => loadmoreStories()}
           noMoreData={!hasMoreStory}
           noMoreDataComp={<div>More stories coming soon!</div>}
+          loadingComp={<StoryListSkeleton />}
         />
       </div>
     </div>

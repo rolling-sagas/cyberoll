@@ -17,7 +17,7 @@ import HoverButton from '@/components/buttons/hover-button';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
 import toast from 'react-hot-toast/headless';
 
-export default function SessionItem({ session, onDelete, lastPlayed = true }) {
+export default function SessionItem({ session, onDelete, lastPlayed = false }) {
   const router = useRouter();
   const [deletingSession, setDeletingSession] = useState(false);
   const confirm = useAlertStore((state) => state.confirm);

@@ -20,7 +20,7 @@ export default function PageDataStatus({
   } else if (noData) {
     comp = noDataComp || <NoData />
   } else if (noMoreData) {
-    comp = noMoreDataComp || <NoData />
+    comp = noMoreDataComp || null
   } else if (loadMore) {
     comp = loadMoreComp || <Button variant="outline" onClick={loadMoreHandle} size="sm">Load more</Button>
   }

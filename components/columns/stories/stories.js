@@ -18,6 +18,7 @@ import {
 import usePageData from '@/components/hooks/use-page-data';
 import PageDataStatus from '@/components/common/page-data-status';
 import debounce from 'lodash/debounce';
+import StoryListSkeleton from '@/components/skeleton/story-list-skeleton';
 
 export default function Stories() {
   const router = useRouter();
@@ -77,6 +78,7 @@ export default function Stories() {
             </div>
           )
         }
+        loadingComp={<StoryListSkeleton />}
       />
     </div>
   );
