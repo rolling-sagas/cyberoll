@@ -5,3 +5,9 @@ export function goSso() {
   '/auth/signin?callbackUrl=' +
   encodeURIComponent(window.location.origin + '/auth/sso');
 }
+
+export function goLogout() {
+  location.href = SSO_HOST + 
+  '/auth/signout?callbackUrl=' +
+  encodeURIComponent(window.location.origin);
+}
