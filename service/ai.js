@@ -8,6 +8,7 @@ export async function azure(messages, skipCache = false) {
     method: 'POST',
     headers: {
       'Session-Token': Cookies.get('session-token'),
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       messages,
@@ -19,5 +20,5 @@ export async function azure(messages, skipCache = false) {
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
-  return await response.json();
+  return response;
 }

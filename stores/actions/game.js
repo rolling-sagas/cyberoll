@@ -20,6 +20,7 @@ import { AI_BASE_URL } from '@/utils/const';
 import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { parse } from 'best-effort-json-parser';
+import { azure } from '@/service/ai';
 
 const quickjs = new QuickJSManager();
 
@@ -90,9 +91,9 @@ export const generate = async (skipCache = false, defaultMsg) => {
   });
   let message = defaultMsg || addMessage('assistant', 'Generating...');
   try {
-    const aiPath = localStorage.AI_PATH || 'ai';
-    const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
-    const GENERATE_URL = AI_BASE_URL + aiPath;
+    // const aiPath = localStorage.AI_PATH || 'ai';
+    // const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
+    // const GENERATE_URL = AI_BASE_URL + aiPath;
 
     let messages = useStore.getState().messages;
     messages = getMessagesAfterLastDivider(messages);
@@ -105,13 +106,14 @@ export const generate = async (skipCache = false, defaultMsg) => {
       return { role, content };
     });
 
-    const body = { messages: messages, type: 'json', skip_cache: skipCache };
-    if (model) body.model = model;
-    const response = await fetch(GENERATE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    // const body = { messages: messages, type: 'json', skip_cache: skipCache };
+    // if (model) body.model = model;
+    // const response = await fetch(GENERATE_URL, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(body),
+    // });
+    const response = await azure(messages, skipCache);
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');

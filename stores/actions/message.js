@@ -32,7 +32,6 @@ export const addMessage = (role, content) => {
 
 export const updateMessage = (id, msg = {}) => {
   useStore.setState((s) => {
-    console.log(111, msg)
     const index = s.messages.findIndex((m) => m.id === id);
     if (index === -1) {
       setModal({
