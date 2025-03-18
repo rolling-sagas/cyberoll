@@ -14,7 +14,7 @@ export default function Page({params}) {
 
   useEffect(() => {
     reset()
-    addColumn("userHome", { headerLeft: <Back />, headerCenter: <div>User Home</div> }, <User key={params.id} uid={params.id} />);
+    addColumn("userHome", { headerLeft: <Back />, headerCenter: <div>Profile</div> }, <User key={params.id} uid={params.id} />);
   }, [addColumn, params.id])
 
   return <PinnedColumns />;

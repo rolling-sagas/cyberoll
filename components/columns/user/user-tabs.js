@@ -1,33 +1,55 @@
 'use-client';
 
-import { useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { getPublicStories, getLikedStories } from "@/service/story";
-import usePageData from "@/components/hooks/use-page-data";
-import Link from "next/link";
-import Image from "../../common/custom-image";
-import { getImageUrl } from "@/utils/utils";
-import PageDataStatus from "@/components/common/page-data-status";
+import { useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getPublicStories, getLikedStories } from '@/service/story';
+import usePageData from '@/components/hooks/use-page-data';
+import Link from 'next/link';
+import Image from '../../common/custom-image';
+import { getImageUrl } from '@/utils/utils';
+import PageDataStatus from '@/components/common/page-data-status';
 
 export default function UserTabs({ uid }) {
-  const [stories, storiesTotal, storiesLoading, _, hasMoreStory, loadmoreStories] = usePageData(getPublicStories, 9, 'stories')
-  const [likes, likesTotal, likesLoading, __, hasMoreLikes, loadmoreLikes] = usePageData(getLikedStories, 9, 'stories')
+  const [
+    stories,
+    storiesTotal,
+    storiesLoading,
+    _,
+    hasMoreStory,
+    loadmoreStories,
+  ] = usePageData(getPublicStories, 9, 'stories');
+  const [likes, likesTotal, likesLoading, __, hasMoreLikes, loadmoreLikes] =
+    usePageData(getLikedStories, 9, 'stories');
 
   useEffect(() => {
-    loadmoreStories(uid)
-    loadmoreLikes(uid)
-  }, [uid])
+    loadmoreStories(uid);
+    loadmoreLikes(uid);
+  }, [uid]);
 
   return (
     <Tabs defaultValue="stories" className="w-full">
       <TabsList className="w-full bg-transparent border-b-1 rounded-none pb-0 gap-4">
-        <TabsTrigger className="w-full border-b-1 data-[state=active]:border-foreground rounded-none !shadow-none mb-[-3px]" value="stories">Stories</TabsTrigger>
-        <TabsTrigger className="w-full border-b-1 data-[state=active]:border-foreground rounded-none !shadow-none mb-[-3px]" value="likes">Likes</TabsTrigger>
+        <TabsTrigger
+          className="w-full border-b-1 data-[state=active]:border-foreground rounded-none !shadow-none mb-[-3px]"
+          value="stories"
+        >
+          Stories
+        </TabsTrigger>
+        <TabsTrigger
+          className="w-full border-b-1 data-[state=active]:border-foreground rounded-none !shadow-none mb-[-3px]"
+          value="likes"
+        >
+          Likes
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="stories">
         <div className="flex gap-2 flex-wrap mb-2">
-          {
-            stories.map(s => <Link key={s.id} className="w-1/4 max-w-[33%] flex-grow -mb-1" href={`/st/${s.id}`}>
+          {stories.map((s) => (
+            <Link
+              key={s.id}
+              className="w-1/4 max-w-[33%] flex-grow -mb-1"
+              href={`/st/${s.id}`}
+            >
               <Image
                 src={getImageUrl(s.image)}
                 width={310}
@@ -37,18 +59,32 @@ export default function UserTabs({ uid }) {
                 priority
                 className="!block"
               />
-            </Link>)
-          }
-          {
-            new Array(stories.length % 3 > 0 ? 3 - stories.length % 3 : 0).fill('').map((_, i) => <span className="w-1/4 max-w-[33%] flex-grow -mb-1" key={i}> </span>)
-          }
+            </Link>
+          ))}
+          {new Array(stories.length % 3 > 0 ? 3 - (stories.length % 3) : 0)
+            .fill('')
+            .map((_, i) => (
+              <span className="w-1/4 max-w-[33%] flex-grow -mb-1" key={i}>
+                {' '}
+              </span>
+            ))}
         </div>
-        <PageDataStatus loading={storiesLoading} noData={storiesTotal === 0} loadMore={hasMoreStory} loadMoreHandle={() => loadmoreStories(uid)} />
+        <PageDataStatus
+          loading={storiesLoading}
+          noData={storiesTotal === 0}
+          loadMore={hasMoreStory}
+          loadMoreHandle={() => loadmoreStories(uid)}
+          noDataComp={<>No story created yet.</>}
+        />
       </TabsContent>
       <TabsContent value="likes">
-      <div className="flex gap-2 flex-wrap mb-2">
-          {
-            likes.map(l => <Link key={l.story.id} className="w-1/4 max-w-[33%] flex-grow" href={`/st/${l.story.id}`}>
+        <div className="flex gap-2 flex-wrap mb-2">
+          {likes.map((l) => (
+            <Link
+              key={l.story.id}
+              className="w-1/4 max-w-[33%] flex-grow"
+              href={`/st/${l.story.id}`}
+            >
               <Image
                 src={getImageUrl(l.story.image)}
                 width={310}
@@ -57,13 +93,23 @@ export default function UserTabs({ uid }) {
                 alt={l.story.name}
                 priority
               />
-            </Link>)
-          }
-          {
-            new Array(likes.length % 3 > 0 ? 3 - likes.length % 3 : 0).fill('').map((_, i) => <span className="w-1/4 max-w-[33%] flex-grow -mb-1" key={i}> </span>)
-          }
+            </Link>
+          ))}
+          {new Array(likes.length % 3 > 0 ? 3 - (likes.length % 3) : 0)
+            .fill('')
+            .map((_, i) => (
+              <span className="w-1/4 max-w-[33%] flex-grow -mb-1" key={i}>
+                {' '}
+              </span>
+            ))}
         </div>
-        <PageDataStatus loading={likesLoading} noData={likesTotal === 0} loadMore={hasMoreLikes} loadMoreHandle={() => loadmoreLikes(uid)} />
+        <PageDataStatus
+          loading={likesLoading}
+          noData={likesTotal === 0}
+          loadMore={hasMoreLikes}
+          loadMoreHandle={() => loadmoreLikes(uid)}
+          noDataComp={<>No likes yet.</>}
+        />
       </TabsContent>
     </Tabs>
   );

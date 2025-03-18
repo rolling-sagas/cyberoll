@@ -81,7 +81,7 @@ export default function Plan() {
   return (
     <div className="mx-6 xy-4">
       <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
-        <div className="text-base font-semibold leading-normal w-[240px]">
+        <div className="text-base font-semibold leading-normal w-44">
           Subscription
         </div>
         <div className="flex flex-1 flex-col">
@@ -102,7 +102,7 @@ export default function Plan() {
         </div>
       </div>
       <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
-        <div className="text-base font-semibold leading-normal w-[240px]">
+        <div className="text-base font-semibold leading-normal w-44">
           Credits
         </div>
         {currentSubscription.plan === PLAN.STANDARD && (
@@ -127,11 +127,12 @@ export default function Plan() {
             </div>
           </div>
         )}
-        {currentSubscription.plan === PLAN.FREE && (
+        {currentSubscription.plan !== PLAN.FREE && (
           <div className="flex flex-1 flex-col">
             <div className="text-base font-semibold leading-normal">
-              <strong>{credits.daily} </strong>
-              daily login credits{' '}
+              '{credits.daily}' 
+              daily login credits
+              <div className='font-light'>Daily credits reset at 00:00 UTC.</div>
             </div>
           </div>
         )}
@@ -149,7 +150,7 @@ export default function Plan() {
         </div>
       </div>
       <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
-        <div className="text-base font-semibold leading-normal w-[240px]">
+        <div className="text-base font-semibold leading-normal w-44">
           Billing & Payment
         </div>
         {currentSubscription.plan != PLAN.FREE && (
@@ -181,7 +182,7 @@ export default function Plan() {
         {currentSubscription.plan === PLAN.FREE && (
           <div className="flex flex-1 flex-col">
             <div className="text-base font-semibold leading-normal">
-              No Plan
+              None
             </div>
           </div>
         )}

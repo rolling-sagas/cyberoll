@@ -24,7 +24,7 @@ export default function CreateStoryDialog({ name, desc, image, keepPrivate = tru
     <Dialog
       title={title ? title : (name ? "Edit story" : "New story")}
       header={<Input
-        name="name"
+        name="Name"
         autoFocus={true}
         value={tName}
         onChange={setTName}
@@ -36,7 +36,7 @@ export default function CreateStoryDialog({ name, desc, image, keepPrivate = tru
         <>
           <Input
             key="1"
-            name="description"
+            name="Description"
             value={tDesc}
             onChange={setTDesc}
             icon={<Menu01Icon className="text-rs-text-secondary" size={24} />}
@@ -56,7 +56,7 @@ export default function CreateStoryDialog({ name, desc, image, keepPrivate = tru
                 <Image01Icon className="text-rs-text-secondary" size={24} />
               </div>
             </div>
-            <div className="font-semibold col-start-2 rows-start-1">image</div>
+            <div className="font-semibold col-start-2 rows-start-1">Image</div>
             <ImageAutoUploader
               value={tImage}
               onChange={(image) => {

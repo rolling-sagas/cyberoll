@@ -18,7 +18,7 @@ export default function CreateStoryForm({ name, desc, image, keepPrivate = true,
   return (
     <>
       <Input
-        name="name"
+        name="Name"
         autoFocus={true}
         value={tName}
         onChange={setTName}
@@ -29,7 +29,7 @@ export default function CreateStoryForm({ name, desc, image, keepPrivate = true,
       />
       <Input
         key="1"
-        name="description"
+        name="Description"
         value={tDesc}
         onChange={setTDesc}
         icon={<Menu01Icon className="text-rs-text-secondary" size={24} />}
@@ -49,7 +49,7 @@ export default function CreateStoryForm({ name, desc, image, keepPrivate = true,
             <Image01Icon className="text-rs-text-secondary" size={24} />
           </div>
         </div>
-        <div className="font-semibold col-start-2 rows-start-1">image</div>
+        <div className="font-semibold col-start-2 rows-start-1">Image</div>
         <ImageAutoUploader
           value={tImage}
           onChange={(image) => {

@@ -44,7 +44,7 @@ export default function Profile() {
           onChange={(image) => {
             setEditingInfo({ ...editingInfo, image })
           }}
-          variant="avatar"
+          variant="avator"
         />
       </div>
       <Label htmlFor="name">Name</Label>
@@ -71,7 +71,7 @@ export default function Profile() {
       />
       <div className="flex gap-4 justify-end w-full">
         <Button variant="outline" onClick={() => setEditingInfo(userInfo)}>
-          Cancle
+          Cancel
         </Button>
         <Button disabled={disabled} onClick={update}>Save</Button>
       </div>

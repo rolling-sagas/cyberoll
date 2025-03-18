@@ -53,7 +53,7 @@ export default function Comments({sid}) {
           loading ? <Spinner className="absolute top-20"/> : null
         }
         {
-          comments.length === 0 && !loading ? <NoData text="No Comments Now!"/> : null
+          comments.length === 0 && !loading ? <NoData text="Write a comment"/> : null
         }
       </div>
       <AddComment sid={sid} onAdd={fetchComments}/>
