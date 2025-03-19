@@ -149,7 +149,7 @@ export const generate = async (skipCache = false, defaultMsg) => {
       });
     } catch (e) {
       console.error('[ai parse json error]:', e);
-      updateMessage(message.id, {
+      return updateMessage(message.id, {
         status: MESSAGE_STATUS.error,
       });
     }

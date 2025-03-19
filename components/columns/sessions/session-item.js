@@ -54,7 +54,7 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
             />
           </Link>
           <span className="flex flex-col">
-            <span className="font-semibold text-lg/5">
+            <span className="font-semibold text-base/5">
               {session.avatar?.name}
               {lastPlayed ? (
                 <span className="text-zinc-400 font-light ml-1.5 text-sm">
@@ -69,24 +69,26 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
             </span>
           </span>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="outline-none">
-            <HoverButton className="-mr-[9px]">
-              <MoreHorizontalIcon size={20} />
-            </HoverButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
-            <DropdownMenuItem
-              className="h-11 rounded-xl px-3 text-base"
-              onClick={del}
-            >
-              <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
-                Delete
-                <Delete01Icon size={20} />
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {lastPlayed ? null : (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="outline-none">
+              <HoverButton className="-mr-[9px]">
+                <MoreHorizontalIcon size={20} />
+              </HoverButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
+              <DropdownMenuItem
+                className="h-11 rounded-xl px-3 text-base"
+                onClick={del}
+              >
+                <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
+                  Delete
+                  <Delete01Icon size={20} />
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
       <div
         className="w-full flex flex-col cursor-pointer mb-2"
