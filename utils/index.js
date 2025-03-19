@@ -1,4 +1,5 @@
 import { SSO_HOST } from './const'
+import Cookies from 'js-cookie';
 
 export function goSso() {
   location.href = SSO_HOST + 
@@ -7,7 +8,6 @@ export function goSso() {
 }
 
 export function goLogout() {
-  location.href = SSO_HOST + 
-  '/auth/signout?callbackUrl=' +
-  encodeURIComponent(window.location.origin);
+  Cookies.remove('session-token');
+  goSso()
 }

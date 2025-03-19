@@ -31,7 +31,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import { goLogout } from '@/utils/index';
+import { onLoginOut } from './login-out-action';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -123,10 +123,10 @@ export default function NavBar() {
           >
             <DropdownMenuItem
               className="h-11 rounded-xl px-3 text-base font-semibold"
-              onClick={goLogout}
+              onClick={onLoginOut}
             >
               <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
-                Signout
+                Sign out
               </div>
             </DropdownMenuItem>
           </DropdownMenuContent>
