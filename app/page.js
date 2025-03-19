@@ -32,7 +32,7 @@ export default function Page() {
                 {cur}
                 <CircleIconButton
                   className="h-6 w-6"
-                  icon={<ArrowDown01Icon size={18} />}
+                  icon={<ArrowDown01Icon type="sharp" size={18} />}
                 />
               </div>
             </DropdownMenuTrigger>

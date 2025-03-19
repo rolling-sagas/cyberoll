@@ -11,7 +11,7 @@ export default function ListBox({ list, value, onChange, disabled = false }) {
         <span className="flex-1">
           {(list.find(item => item.value === value)).label}
         </span>
-        <ArrowDown01Icon size={20} />
+        <ArrowDown01Icon type="sharp" size={20} />
       </ListboxButton>
       <ListboxOptions anchor="bottom" transition className="z-20 lb-options">
         {list.filter(t => t.value !== value).map((t) => (

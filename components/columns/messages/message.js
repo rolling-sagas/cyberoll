@@ -17,7 +17,7 @@ import {
 import {
   MoreHorizontalIcon,
   Delete02Icon,
-  Recycle03Icon,
+  Rotate01Icon,
   CodeIcon,
 } from '@hugeicons/react';
 import { MESSAGE_STATUS } from '@/utils/const';
@@ -130,7 +130,7 @@ function Message({ message, style = null }) {
                   title="Regenerate"
                   className="action-view"
                 >
-                  <Recycle03Icon size={20} />
+                  <Rotate01Icon type="sharp" size={20} />
                 </HoverButton>
               ) : null}
               {playMode ? null : (
@@ -153,13 +153,22 @@ function Message({ message, style = null }) {
             {message.status === MESSAGE_STATUS.error ? (
               <div className="flex flex-col gap-4 border-1 rounded-xl p-4 items-center">
                 <span>Oops, something went wrong, please try again later.</span>
-                <Button onClick={() => regenerateMessageHandle(message.id, false)} className="flex-none rounded-xl h-10">Regenerate</Button>
+                <Button
+                  onClick={() => regenerateMessageHandle(message.id, false)}
+                  className="flex-none rounded-xl h-10"
+                >
+                  Regenerate
+                </Button>
               </div>
             ) : null}
             {message.status === MESSAGE_STATUS.outOfCredits ? (
               <div className="flex flex-col gap-4 border-1 rounded-xl p-4 items-center">
                 <span>Oops, you ran out of credits.</span>
-                <Link href="/plan"><Button className="flex-none rounded-xl h-10">Upgrade Plan</Button></Link>
+                <Link href="/plan">
+                  <Button className="flex-none rounded-xl h-10">
+                    Upgrade Plan
+                  </Button>
+                </Link>
               </div>
             ) : null}
           </div>

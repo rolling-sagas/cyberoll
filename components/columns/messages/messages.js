@@ -157,7 +157,7 @@ function Messages() {
       <CircleIconButton
         onClick={scrollToBottom}
         className={`absolute bottom-2 left-1/2 h-7 w-7 -ml-3.5 z-2 ${showGoBottom ? '' : 'hidden'}`}
-        icon={<ArrowDown01Icon size={20} />}
+        icon={<ArrowDown01Icon type="sharp" size={20} />}
       />
     </div>
   );
