@@ -158,7 +158,7 @@ function Message({ message, style = null }) {
             ) : null}
             {message.status === MESSAGE_STATUS.outOfCredits ? (
               <div className="flex flex-col gap-4 border-1 rounded-xl p-4 items-center">
-                <span>Oops, you're running out of credits.</span>
+                <span>Oops, you ran out of credits.</span>
                 <Link href="/plan"><Button className="flex-none rounded-xl h-10">Upgrade Plan</Button></Link>
               </div>
             ) : null}
