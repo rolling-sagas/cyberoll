@@ -55,7 +55,7 @@ const ScriptTab = () => {
               title="Scripting"
               onSave={(v) => setScript(v)}
               titleReadOnly
-            />
+            />, false
           )
         }
         code={script}

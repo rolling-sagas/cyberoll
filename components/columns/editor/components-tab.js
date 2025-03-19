@@ -14,7 +14,6 @@ import useStore from "@/stores/editor";
 import ComponentForm from "./component-form";
 import { COMPONENT_TYPE } from '@/utils/const';
 import { Button } from "@/app/components/ui/button";
-import EditorModal from "@/components/editors/editor-modal";
 
 const ComponentsTab = ({ isFuncTab = false }) => {
   const editingComponent = useStore((state) => state.editingComponent);
