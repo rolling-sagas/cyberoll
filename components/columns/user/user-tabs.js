@@ -1,6 +1,6 @@
 'use-client';
 
-import { useEffect } from 'react';
+import { useState,useEffect, useCallback } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { getPublicStories, getLikedStories } from '@/service/story';
 import usePageData from '@/components/hooks/use-page-data';
@@ -8,8 +8,12 @@ import Link from 'next/link';
 import Image from '../../common/custom-image';
 import { getImageUrl } from '@/utils/utils';
 import PageDataStatus from '@/components/common/page-data-status';
+import { Button } from '@/app/components/ui/button';
+import { onCreateClick } from '../stories/story-action';
+import { createSession } from '@/service/session';
+import { useRouter } from 'next/navigation';
 
-export default function UserTabs({ uid }) {
+export default function UserTabs({ uid, isSelf = false }) {
   const [
     stories,
     storiesTotal,
@@ -18,8 +22,21 @@ export default function UserTabs({ uid }) {
     hasMoreStory,
     loadmoreStories,
   ] = usePageData(getPublicStories, 9, 'stories');
-  const [likes, likesTotal, likesLoading, __, hasMoreLikes, loadmoreLikes] =
+  const router = useRouter();
+  const [likes, likesTotal, likesLoading, __, hasMoreLikes, loadmoreLikes, ___, ____, pageData] =
     usePageData(getLikedStories, 9, 'stories');
+  const [creatingSession, setCreatingSession] = useState(false)
+
+  const play = useCallback(async () => {
+      setCreatingSession(true);
+      try {
+        const seid = await createSession(pageData.randomSid);
+        router.push(`/sess/${seid}`);
+      } catch (e) {
+        console.error(e);
+        setCreatingSession(false);
+      }
+    }, [pageData]);
 
   useEffect(() => {
     loadmoreStories(uid);
@@ -74,7 +91,21 @@ export default function UserTabs({ uid }) {
           noData={storiesTotal === 0}
           loadMore={hasMoreStory}
           loadMoreHandle={() => loadmoreStories(uid)}
-          noDataComp={<>No story created yet.</>}
+          noDataComp={
+            isSelf ? (
+              <div className="py-10 text-center">
+                <Button
+                  className="rounded-xl"
+                  variant="outline"
+                  onClick={onCreateClick}
+                >
+                  Create your first story
+                </Button>
+              </div>
+            ) : (
+              <>No story created yet.</>
+            )
+          }
         />
       </TabsContent>
       <TabsContent value="likes">
@@ -108,7 +139,22 @@ export default function UserTabs({ uid }) {
           noData={likesTotal === 0}
           loadMore={hasMoreLikes}
           loadMoreHandle={() => loadmoreLikes(uid)}
-          noDataComp={<>No likes yet.</>}
+          noDataComp={
+            isSelf && pageData?.randomSid ? (
+              <div className="py-10 text-center">
+                <Button
+                  className="rounded-xl"
+                  variant="outline"
+                  onClick={play}
+                  disabled={creatingSession}
+                >
+                  {creatingSession ? 'Starting...' : 'Quick start'}
+                </Button>
+              </div>
+            ) : (
+              <>No likes yet.</>
+            )
+          }
         />
       </TabsContent>
     </Tabs>

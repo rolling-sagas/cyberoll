@@ -153,7 +153,7 @@ export default function User({ uid }) {
           <Button onClick={toggleFollow}>Follow</Button>
         )
       ) : null}
-      <UserTabs uid={uid} />
+      <UserTabs uid={uid} isSelf={isSelf} />
     </div>
   );
 }
