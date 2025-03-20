@@ -29,7 +29,7 @@ export default function User({ uid }) {
       const credits = await getCurrentCredits();
       console.log('credits', credits);
       let data = credits.daily + credits.monthly;
-      if (credits.daily === 'unlimited' || credits.monthly === 'unlimited') {
+      if (credits.unlimited) {
         data = 'unlimited';
       }
       setCredits(data);
