@@ -49,16 +49,16 @@ const ComponentsTab = ({ isFuncTab = false }) => {
       <div className="flex gap-4">
         {!editingComponent ? (
           <>
-            <Button className="h-7 text-xs" variant="outline" onClick={handleNewComponent}>New</Button>
-            <Button className="h-7 text-xs" variant="outline" onClick={restart}>Restart</Button>
+            <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={handleNewComponent}>New</Button>
+            <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={restart}>Restart</Button>
           </>
         ) : (
           <>
             {
-              editingComponent?.type === COMPONENT_TYPE.Function ? <Button className="h-7 text-xs" variant="outline" onClick={handleFormat}>Format</Button> : null
+              editingComponent?.type === COMPONENT_TYPE.Function ? <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={handleFormat}>Format</Button> : null
             }
-            <Button className="h-7 text-xs" variant="outline" onClick={handleCancelComponent}>Cancel</Button>
-            <Button className="h-7 text-xs" disabled={!editingComponent.name} variant="outline" onClick={handleSaveComponent}>Save</Button>
+            <Button className="h-7 text-xs rounded-xl" variant="outline" onClick={handleCancelComponent}>Cancel</Button>
+            <Button className="h-7 text-xs rounded-xl" disabled={!editingComponent.name} variant="outline" onClick={handleSaveComponent}>Save</Button>
           </>
         )}
       </div>

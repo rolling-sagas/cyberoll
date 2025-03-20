@@ -6,7 +6,7 @@ import { getComments } from '@/service/comment';
 import dayjs from '@/utils/day';
 import Spinner from '../spinner';
 import NoData from '@/components/common/no-data';
-import Avator from '@/components/common/avator';
+import Avatar from '@/components/common/avatar';
 
 export default function Comments({sid}) {
   const [comments, setComments] = useState([])
@@ -37,7 +37,7 @@ export default function Comments({sid}) {
       <div ref={commentsRef} className='mx-6 flex-grow overflow-y-auto relative'>
         {
           comments.map((c) => (<div className='flex my-2 gap-2' key={c.id}>
-            <Avator image={c.user.image} name={c.user.name} size={24} className='mt-2 flex-none' />
+            <Avatar image={c.user.image} name={c.user.name} size={24} className='mt-2 flex-none' />
             <div>
               <div>
                 <strong className='font-semibold text-sm mr-2'>{c.user.name}</strong>
@@ -53,7 +53,7 @@ export default function Comments({sid}) {
           loading ? <Spinner className="absolute top-20"/> : null
         }
         {
-          comments.length === 0 && !loading ? <NoData text="No Comments Now!"/> : null
+          comments.length === 0 && !loading ? <NoData text="Write a comment"/> : null
         }
       </div>
       <AddComment sid={sid} onAdd={fetchComments}/>

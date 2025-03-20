@@ -7,7 +7,7 @@ import {
   SentIcon,
   MoreHorizontalIcon,
   Edit02Icon,
-  Edit01Icon,
+  Activity01Icon,
   Copy01Icon,
   Delete01Icon,
   Share01Icon,
@@ -25,82 +25,86 @@ import {
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import Avator from '@/components/common/avator';
+import Avatar from '@/components/common/avatar';
+import HoverButton from '@/components/buttons/hover-button';
 
 export default function StoryItem({
   story,
   showLike = true,
-  showEdit = false,
+  showViewActivity = false,
   showComment = true,
   onUpdateClick,
   onDuplicateClick,
   onDeleteClick,
   showPlay = false,
   showAllDesc = false,
+  coverGoEdit = false,
 }) {
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
   const [creatingSession, setCreatingSession] = useState(false);
+  const [likeCount, setLikeCount] = useState(story._count?.likes || 0);
   const play = useCallback(async () => {
     setCreatingSession(true);
     try {
       const seid = await createSession(story.id);
       router.push(`/sess/${seid}`);
-    } catch(e) {
-      console.error(e)
+    } catch (e) {
+      console.error(e);
       setCreatingSession(false);
     }
   }, [story]);
 
   return (
-    <div className="mx-6 py-3 border-b-1 border-gray-200">
+    <div className="mx-6 py-4 border-b-1 border-gray-200">
       <div className="flex gap-2 items-center mb-3 justify-between">
-        <div className="flex gap-2 items-center">
+        <div className="flex gap-3 items-center">
           <Link href={`/u/${story.author?.id}`}>
-            <Avator
+            <Avatar
               image={story.author?.image}
-              size={32}
+              size={36}
               name={story.author?.name}
             />
           </Link>
-          <span className="text-xs">
+          <span className="text-base flex gap-1.5">
             <span className="font-semibold">{story.author?.name}</span>
-            <span className="text-base-content/50 font-light">•</span>
-            <span className="text-base-content/50 font-light">
+            <span className="text-zinc-400 font-light">
               {dayjs(story.updatedAt).fromNow()}
             </span>
           </span>
         </div>
-        {showEdit || onDuplicateClick || onDeleteClick ? (
+        {showViewActivity || onDuplicateClick || onDeleteClick ? (
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <MoreHorizontalIcon size={20} className="text-gray-800" />
+            <DropdownMenuTrigger className='outline-none'>
+              <HoverButton className="-mr-[9px]">
+                <MoreHorizontalIcon size={20} />
+              </HoverButton>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {showEdit ? (
+            <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
+              {showViewActivity ? (
                 <DropdownMenuItem
-                  className="h-10"
-                  onClick={() => router.push('/st/' + story.id + '/edit')}
+                  className="h-11 rounded-xl px-3 text-base font-semibold"
+                  onClick={() => router.push('/st/' + story.id)}
                 >
-                  <div className="flex gap-10 justify-between w-full cursor-pointer">
-                    Edit
-                    <Edit01Icon size={18} />
+                  <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
+                    View Activity
+                    <Activity01Icon size={20} />
                   </div>
                 </DropdownMenuItem>
               ) : null}
               {onDuplicateClick ? (
-                <DropdownMenuItem className="h-10" onClick={onDuplicateClick}>
-                  <div className="flex gap-10 justify-between w-full cursor-pointer">
+                <DropdownMenuItem className="h-11 rounded-xl px-3 text-base" onClick={onDuplicateClick}>
+                  <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
                     Duplicate
-                    <Copy01Icon size={18} />
+                    <Copy01Icon size={20} />
                   </div>
                 </DropdownMenuItem>
               ) : null}
               {onDeleteClick ? (
-                <DropdownMenuItem className="h-10" onClick={onDeleteClick}>
+                <DropdownMenuItem className="h-11 rounded-xl px-3 text-base" onClick={onDeleteClick}>
                   <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
                     Delete
-                    <Delete01Icon size={18} />
+                    <Delete01Icon size={20} />
                   </div>
                 </DropdownMenuItem>
               ) : null}
@@ -109,8 +113,8 @@ export default function StoryItem({
         ) : null}
       </div>
       <div
-        className="w-full flex flex-col cursor-pointer mb-3"
-        onClick={() => router.push(`/st/${story.id}`)}
+        className="w-full flex flex-col cursor-pointer mb-2"
+        onClick={() => router.push(`/st/${story.id}${coverGoEdit ? '/edit' : ''}`)}
       >
         <Image
           src={getImageUrl(story.image)}
@@ -122,59 +126,54 @@ export default function StoryItem({
           priority
         />
       </div>
-      <div className="flex flex-row items-center gap-4 post-info text-[#1f2937] mb-3">
+      <div className="flex flex-row items-center post-info gap-2 text-[#1f2937] mb-2 -ml-[10px]">
         {showLike ? (
-          likedByMe ? (
-            <FavouriteIcon
-              className="cursor-pointer"
-              onClick={async () => {
-                setLikedByMe(false);
-                try {
+          <HoverButton
+            count={likeCount}
+            onClick={async () => {
+              setLikedByMe(!likedByMe);
+              setLikeCount(likedByMe ? likeCount - 1 : likeCount + 1);
+              try {
+                if (likedByMe) {
                   await dislikeStory(story.id);
-                } catch (e) {
-                  console.error(e);
-                  setLikedByMe(true);
-                }
-              }}
-              variant="solid"
-              color="#f44336"
-              size={20}
-            />
-          ) : (
-            <FavouriteIcon
-              className="cursor-pointer"
-              onClick={async () => {
-                setLikedByMe(true);
-                try {
+                } else {
                   await likeStory(story.id);
-                } catch (e) {
-                  console.error(e);
-                  setLikedByMe(false);
                 }
-              }}
-              variant="stroke"
-              size={20}
+              } catch (e) {
+                console.error(e);
+                setLikedByMe(likedByMe);
+                setLikeCount(likeCount);
+              }
+            }}
+          >
+            <FavouriteIcon
+              variant={likedByMe ? 'solid' : 'stroke'}
+              color={likedByMe ? '#f44336' : 'currentColor'}
+              size={18}
             />
-          )
+          </HoverButton>
         ) : null}
         {showComment ? (
           <Link href={`/st/${story.id}`} passHref scroll={false}>
-            <Comment02Icon size={20} />
+            <HoverButton count={story._count?.comments}>
+              <Comment02Icon size={18} />
+            </HoverButton>
           </Link>
         ) : null}
-        <SentIcon size={20} />
         {onUpdateClick ? (
-          <Edit02Icon
-            onClick={onUpdateClick}
-            className="cursor-pointer"
-            size={20}
-          />
+          <HoverButton onClick={onUpdateClick}>
+            <Edit02Icon size={18} />
+          </HoverButton>
         ) : null}
-        <Share01Icon className="cursor-pointer" size={20} />
+        <HoverButton>
+          <Share01Icon size={18} />
+        </HoverButton>
       </div>
       <div className="flex flex-col">
-        <span className="font-semibold text-nowrap">{story.name}</span>
-        <span className={`font-light text-sm ${showAllDesc ? '' : 'line-clamp-3'}`}>
+        <span className="font-semibold text-nowrap text-base">{story.name}</span>
+        <span
+          className={`font-light text-sm ${showAllDesc ? '' : 'line-clamp-3'}`}
+        >
           {story.description}
         </span>
       </div>

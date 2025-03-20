@@ -3,8 +3,13 @@ import http from '@/utils/http';
 import { parseJson } from '@/utils/utils';
 
 // 获取 story 列表
-export async function getSessions() {
-  const res = await http.get('/se');
+export async function getSessions(page = 0, size = 10) {
+  const res = await http.get('/se', {
+    params: {
+      take: size,
+      skip: page * size,
+    }
+  });
   return res;
 }
 

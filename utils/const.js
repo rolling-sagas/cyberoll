@@ -23,4 +23,5 @@ export const MESSAGE_STATUS = {
   generating: 'generating',
   finished: 'finished',
   error: 'error',
+  outOfCredits: 'outOfCredits',
 }

@@ -104,7 +104,7 @@ export function CreateStory ({ cb, router }) {
       >
         <BubbleChatAddIcon className="text-rs-text-secondary" strokeWidth={1} />
         <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
-          Start a story
+          New story
         </div>
         <BaseButton label="Create" />
       </div>

@@ -1,17 +1,13 @@
-import {
-  ArrowLeft01Icon,
-} from '@hugeicons/react';
+import { ArrowLeft02Icon } from '@hugeicons/react';
 import { useRouter } from 'next/navigation';
+import CircleIconButton from '../buttons/circle-icon-button';
 
-export default function Back({text = 'Back', className = ''}) {
-  const router = useRouter()
+export default function Back({ icon }) {
+  const router = useRouter();
   return (
-    <div
-      className={`${className} flex cursor-pointer items-center text-sm text-gray-600`}
+    <CircleIconButton
       onClick={router.back}
-    >
-      <ArrowLeft01Icon type='sharp' size={22} />
-      {text}
-    </div>
+      icon={<ArrowLeft02Icon size={14} className="text-foreground" variant="solid" type="sharp" />}
+    ></CircleIconButton>
   );
 }

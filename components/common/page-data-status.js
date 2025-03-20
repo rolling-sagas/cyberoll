@@ -7,16 +7,20 @@ export default function PageDataStatus({
   loadingComp,
   noData = false,
   noDataComp,
+  noMoreData = false,
+  noMoreDataComp,
   loadMore = false,
   loadMoreComp,
   loadMoreHandle = () => {},
-  className,
+  className = '',
 }) {
   let comp = null
   if (loading) {
     comp = loadingComp || <Spinner />
   } else if (noData) {
     comp = noDataComp || <NoData />
+  } else if (noMoreData) {
+    comp = noMoreDataComp || null
   } else if (loadMore) {
     comp = loadMoreComp || <Button variant="outline" onClick={loadMoreHandle} size="sm">Load more</Button>
   }

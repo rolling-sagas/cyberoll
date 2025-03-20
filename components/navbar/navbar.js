@@ -16,6 +16,7 @@ import Link from 'next/link';
 
 import './navbar.css';
 import NavButton from './nav-button';
+import HoverButton from './hover-button';
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
@@ -24,6 +25,13 @@ import PinButton from './pin-button';
 import useUserStore from '@/stores/user';
 import { onCreateClick } from '../columns/stories/story-action';
 import { useRouter } from 'next/navigation';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/app/components/ui/dropdown-menu';
+import { onLoginOut } from './login-out-action';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -76,7 +84,7 @@ export default function NavBar() {
               scale-100 bg-rs-background-hover"
           />
         </span>
-        <NavButton href="/">
+        {/* <NavButton href="/">
           <Search01Icon strokeWidth={l1Pathname === 'search' ? '3' : '2'} />
         </NavButton>
         <NavButton href="/">
@@ -84,7 +92,7 @@ export default function NavBar() {
             strokeWidth="2"
             variant={l1Pathname === 'search' ? 'solid' : 'stroke'}
           />
-        </NavButton>
+        </NavButton> */}
         <NavButton href="/u/_" active={l1Pathname === 'u'}>
           <UserIcon
             strokeWidth="2"
@@ -93,7 +101,7 @@ export default function NavBar() {
         </NavButton>
       </div>
       <div className="nav mb-6">
-        <PinButton />
+        {/* <PinButton /> */}
         <NavButton href="/plan">
           <CrownIcon
             strokeWidth="2"
@@ -101,9 +109,28 @@ export default function NavBar() {
             variant="duotone"
           />
         </NavButton>
-        <NavButton href="/">
-          <Menu08Icon strokeWidth="2" />
-        </NavButton>
+        <DropdownMenu>
+          <DropdownMenuTrigger className="outline-none">
+            <HoverButton>
+              <Menu08Icon strokeWidth="2" />
+            </HoverButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="center"
+            side="right"
+            sideOffset={0}
+            className="rounded-2xl p-2 w-36"
+          >
+            <DropdownMenuItem
+              className="h-11 rounded-xl px-3 text-base font-semibold"
+              onClick={onLoginOut}
+            >
+              <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+                Sign out
+              </div>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );

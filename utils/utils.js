@@ -55,14 +55,27 @@ export function parseError(e) {
   }
 }
 
-export function getImageUrl(uri = '', fallbackUrl = DEFAULT_STORY_IMAGE, variant = 'public') {
+export function getImageUrl(
+  uri = '',
+  fallbackUrl = DEFAULT_STORY_IMAGE,
+  variant = 'public'
+) {
   if (/^https?:\/\//.test(uri)) return uri;
   return uri ? `${IMAGE_HOST}${uri}/${variant}` : fallbackUrl;
 }
 
 export function getImageUrlByName(name, components = []) {
-  const comp = components.find(comp => comp.type === COMPONENT_TYPE.Image && comp.name === name)
-  return getImageUrl(comp?.value)
+  const comp = components.find(
+    (comp) => comp.type === COMPONENT_TYPE.Image && comp.name === name
+  );
+  return comp ? getImageUrl(comp?.value) : undefined;
+}
+
+export function getImageIdByName(name, components = []) {
+  const comp = components.find(
+    (comp) => comp.type === COMPONENT_TYPE.Image && comp.name === name
+  );
+  return comp ? comp?.value : undefined;
 }
 
 export function componentsToMap(components = [], needThrowError = false) {
@@ -155,11 +168,11 @@ export function parseMarkdown(markdownText) {
 }
 
 export function parseJson(str, def) {
-  let res = def !== undefined ? def : str
+  let res = def !== undefined ? def : str;
   try {
-    res = JSON.parse(str)
-  } catch(e) {}
-  return res
+    res = JSON.parse(str);
+  } catch (e) {}
+  return res;
 }
 
 export function formatNumber(num, toFixed = 1) {
@@ -167,30 +180,38 @@ export function formatNumber(num, toFixed = 1) {
   const absNum = Math.abs(num);
 
   const units = [
-      { value: 1E9, symbol: "b" },
-      { value: 1E6, symbol: "m" },
-      { value: 1E3, symbol: "k" }
+    { value: 1e9, symbol: 'b' },
+    { value: 1e6, symbol: 'm' },
+    { value: 1e3, symbol: 'k' },
   ];
 
-  const unit = units.find(u => absNum >= u.value);
+  const unit = units.find((u) => absNum >= u.value);
   if (unit) {
-      let formattedNumber = (absNum / unit.value).toFixed(toFixed);
-      formattedNumber = parseFloat(formattedNumber).toString();
-      return (isNegative ? '-' : '') + formattedNumber + unit.symbol;
+    let formattedNumber = (absNum / unit.value).toFixed(toFixed);
+    formattedNumber = parseFloat(formattedNumber).toString();
+    return (isNegative ? '-' : '') + formattedNumber + unit.symbol;
   } else {
-      let formattedNumber = absNum.toFixed(toFixed);
-      formattedNumber = parseFloat(formattedNumber).toString();
-      return (isNegative ? '-' : '') + formattedNumber;
+    let formattedNumber = absNum.toFixed(toFixed);
+    formattedNumber = parseFloat(formattedNumber).toString();
+    return (isNegative ? '-' : '') + formattedNumber;
   }
 }
 
-export const capitalizeFirstLetter = str => str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalizeFirstLetter = (str) =>
+  str.charAt(0).toUpperCase() + str.slice(1);
 
 export const isDigit = (char) => {
-    return !isNaN(parseInt(char));
-}
+  return !isNaN(parseInt(char));
+};
 
-export function generateBase64Svg(width, height, text, fontSize = '40', bgColor = '#dddddd', textColor = '#999999') {
+export function generateBase64Svg(
+  width,
+  height,
+  text,
+  fontSize = '40',
+  bgColor = '#dddddd',
+  textColor = '#999999'
+) {
   const svgData = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
     <rect width="100%" height="100%" fill="${bgColor}" />
     <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="${textColor}" font-size="${fontSize}" font-family="Arial">
@@ -199,8 +220,8 @@ export function generateBase64Svg(width, height, text, fontSize = '40', bgColor 
   </svg>`;
 
   const encodedSvg = encodeURIComponent(svgData)
-    .replace(/'/g, "%27")
-    .replace(/"/g, "%22");
+    .replace(/'/g, '%27')
+    .replace(/"/g, '%22');
 
   const base64Url = `data:image/svg+xml;charset=utf-8,${encodedSvg}`;
 

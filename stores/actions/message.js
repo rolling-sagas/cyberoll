@@ -12,13 +12,18 @@ export const delMessage = (id) =>
     messages: state.messages.filter((m) => m.id !== id),
   }));
 
-export const addMessage = (role, content) => {
+export const createMessage = (role, content, status = MESSAGE_STATUS.generating) => {
   const message = {
     id: nanoid(),
     role,
     content,
     status: MESSAGE_STATUS.generating,
   };
+  return message
+}
+
+export const addMessage = (role, content) => {
+  const message = createMessage(role, content);
   useStore.setState((state) => ({
     messages: [...state.messages, message],
   }));
@@ -45,6 +50,26 @@ export const updateMessage = (id, msg = {}) => {
   });
 };
 
+export const getLastMessageState = (messages = []) => {
+  const msg = messages.findLast((m) => m.state);
+  return msg?.state;
+};
+
+export const sliceMessagesTillMid = (messages = [], mid, exclude = false) => {
+  if (!mid) return [];
+  let res = [];
+  const index = messages.findIndex((m) => m.id === mid);
+  if (index > -1) {
+    res = messages.slice(0, index + (exclude ? 0 : 1));
+  }
+  return res;
+};
+
+export const getLastMessageStateFromMid = (mid, exclude = false) => {
+  const messages = useStore.getState().messages
+  return getLastMessageState(sliceMessagesTillMid(messages, mid, exclude))
+}
+
 export const getMessageById = (id) => {
   return useStore.getState().messages.find((m) => m.id === id);
 };
@@ -64,12 +89,12 @@ export const getMessagesAfterLastDivider = (messages) => {
   return [];
 };
 
-export async function addMessages(newMessages = [], reset = false) {
+export async function addMessages(newMessages = [], reset = false, localMessages = []) {
   const state = useStore.getState();
   const storySessionId = state.storySessionId;
   const messages = reset ? [] : state.messages;
   useStore.setState(() => {
-    return { messages: [...messages, ...newMessages] };
+    return { messages: [...messages, ...newMessages, ...localMessages] };
   });
 
   if (storySessionId) {

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 import Cookies from 'js-cookie';
 import { goSso } from '.';
 import toast from 'react-hot-toast/headless';
@@ -14,21 +14,24 @@ instance.interceptors.request.use(function (config) {
   return config;
 });
 
-instance.interceptors.response.use(response => response.data, err => {
-  console.error('[axios error interceptor]', err, err.message, err.status)
-  if (err.status === 401) {
-    goSso()
-  } else {
-    const msg = err.response?.data?.msg
-    if (typeof msg === 'string') {
-      toast.error(msg, {
-        duration: 3500,
-        icon: (<InformationCircleIcon color='red' />),
-        position: 'top-right'
-      })
+instance.interceptors.response.use(
+  (response) => response.data,
+  (err) => {
+    console.error('[axios error interceptor]', err, err.message, err.status);
+    if (err.status === 401) {
+      goSso();
+    } else {
+      const msg = err.response?.data?.msg;
+      if (typeof msg === 'string') {
+        toast.error(msg, {
+          duration: 3500,
+          icon: <InformationCircleIcon color="red" />,
+          position: 'top-right',
+        });
+      }
     }
+    throw err.response?.data?.msg || err.message || err;
   }
-  throw err.response?.data?.msg || err.message || err;
-});
+);
 
-export default instance
+export default instance;

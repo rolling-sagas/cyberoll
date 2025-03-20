@@ -1,5 +1,6 @@
 import DiceBox from '@3d-dice/dice-box';
 import useStore from '../editor';
+import toast from 'react-hot-toast/headless';
 
 let diceBox = null;
 
@@ -13,6 +14,7 @@ export const setDiceBox = async (container) => {
         rolling: 2,
         lastRoll: { ...state.lastRoll, value: res[0].value },
       }));
+      toast.success('Click To Continue');
     },
   });
 

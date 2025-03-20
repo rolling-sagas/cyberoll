@@ -3,11 +3,15 @@ import useStore from '../editor';
 import { setModal } from './ui';
 import {
   addMessage,
+  createMessage,
   updateMessage,
   getMessagesAfterLastDivider,
   resetMessages,
   syncMessage,
   addMessages,
+  getMessageById,
+  getLastMessageState,
+  sliceMessagesTillMid,
 } from './message';
 import { updateStory } from '@/service/story';
 import { COMPONENT_TYPE } from '@/utils/const';
@@ -16,6 +20,7 @@ import { AI_BASE_URL } from '@/utils/const';
 import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { parse } from 'best-effort-json-parser';
+import { azure } from '@/service/ai';
 
 const quickjs = new QuickJSManager();
 
@@ -51,6 +56,7 @@ export const executeScript = async (refresh = true) => {
 
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
+      console.log('onStart messages', messages);
       await resetMessages(messages);
 
       if (useStore.getState().autoGenerate) {
@@ -79,14 +85,15 @@ export const restart = () => {
   });
 };
 
-export const generate = async (skipCache = false) => {
+export const generate = async (skipCache = false, defaultMsg) => {
   useStore.setState({
     generating: true,
   });
+  let message = defaultMsg || addMessage('assistant', 'Generating...');
   try {
-    const aiPath = localStorage.AI_PATH || 'ai';
-    const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
-    const GENERATE_URL = AI_BASE_URL + aiPath;
+    // const aiPath = localStorage.AI_PATH || 'ai';
+    // const model = aiPath === 'ali' ? localStorage.AI_MODEL : undefined;
+    // const GENERATE_URL = AI_BASE_URL + aiPath;
 
     let messages = useStore.getState().messages;
     messages = getMessagesAfterLastDivider(messages);
@@ -99,15 +106,14 @@ export const generate = async (skipCache = false) => {
       return { role, content };
     });
 
-    let message = addMessage('assistant', 'Generating...');
-
-    const body = { messages: messages, type: 'json', skip_cache: skipCache };
-    if (model) body.model = model;
-    const response = await fetch(GENERATE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
+    // const body = { messages: messages, type: 'json', skip_cache: skipCache };
+    // if (model) body.model = model;
+    // const response = await fetch(GENERATE_URL, {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify(body),
+    // });
+    const response = await azure(messages, skipCache);
 
     const reader = response.body.getReader();
     const decoder = new TextDecoder('utf-8');
@@ -118,21 +124,34 @@ export const generate = async (skipCache = false) => {
       if (done) break;
 
       resText += decoder.decode(value, { stream: true });
-      updateMessage(message.id, {content: parse(resText)});
+      updateMessage(message.id, { content: parse(resText) });
     }
 
     let finalContent = resText;
     try {
-      finalContent = parse(resText);
+      // 这里用 JSON.parse 让非正常json报错，展示报错ui
+      finalContent = JSON.parse(resText);
       console.log('[ai parsed json]:', finalContent);
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
-        return updateMessage(message.id, {content: finalContent.error, status: MESSAGE_STATUS.error});
+        return updateMessage(message.id, {
+          content:
+            finalContent.code !== 1001 ? finalContent.error : 'Generate error!',
+          status:
+            finalContent.code !== 1001
+              ? MESSAGE_STATUS.error
+              : MESSAGE_STATUS.outOfCredits,
+        });
       }
-      updateMessage(message.id, {content: finalContent, statue: MESSAGE_STATUS.finished});
+      updateMessage(message.id, {
+        content: finalContent,
+        status: MESSAGE_STATUS.finished,
+      });
     } catch (e) {
       console.error('[ai parse json error]:', e);
-      updateMessage(message.id, {content: resText, statue: MESSAGE_STATUS.error});
+      return updateMessage(message.id, {
+        status: MESSAGE_STATUS.error,
+      });
     }
 
     const msg = await quickjs.callFunction('onAssistant', {
@@ -148,6 +167,7 @@ export const generate = async (skipCache = false) => {
     await syncMessage(message.id);
   } catch (error) {
     console.error(error);
+    updateMessage(message.id, { status: MESSAGE_STATUS.error });
   } finally {
     useStore.setState({
       generating: false,
@@ -158,18 +178,20 @@ export const generate = async (skipCache = false) => {
 // user iteractive actions
 export const onUserAction = async (action) => {
   useStore.setState({
-    doingUserAction: true
-  })
+    doingUserAction: true,
+  });
   console.log('[onUserAction]');
   try {
     let result = await quickjs.callFunction('onAction', action);
     console.log('[onUserAction result]', result);
     // add messages
     if (result.messages) {
-      await addMessages(result.messages);
-      if (useStore.getState().autoGenerate) {
-        await generate();
+      const msg = createMessage('assistant', 'Generating...');
+      const res = addMessages(result.messages, false, [msg]);
+      if (useStore.getState().autoGenerate && !result.action) {
+        await generate(false, msg);
       }
+      await res;
     }
 
     // handle callback action
@@ -177,11 +199,13 @@ export const onUserAction = async (action) => {
       switch (result.action) {
         case 'next':
           const messages = await quickjs.callFunction('onStart');
-          await addMessages(messages);
+          const msg = createMessage('assistant', 'Generating...');
+          const res = addMessages(messages, false, [msg]);
 
           if (useStore.getState().autoGenerate) {
-            await generate();
+            await generate(false, msg);
           }
+          await res;
           break;
       }
     }
@@ -193,33 +217,10 @@ export const onUserAction = async (action) => {
     });
   } finally {
     useStore.setState({
-      doingUserAction: false
-    })
+      doingUserAction: false,
+    });
   }
 };
-
-// export const saveGameSession = async () => {
-//   try {
-//     const gameSession = await quickjs.callFunction('onSave');
-//     useStore.setState((state) => ({
-//       gameSession: { ...gameSession },
-//     }));
-
-//     const state = useStore.getState();
-//     const storySessionId = state.storySessionId;
-//     if (storySessionId) {
-//       await updateSession(storySessionId, {
-//         state: gameSession,
-//       });
-//     }
-//   } catch (e) {
-//     setModal({
-//       title: 'onSave Error:',
-//       description: e.message,
-//       confirm: { label: 'Dismiss' },
-//     });
-//   }
-// };
 
 export const loadGameSession = async () => {
   try {
@@ -294,26 +295,6 @@ export const exportTemplate = () => {
   dlAnchorElem = null;
 };
 
-export const getLastMessageState = (messages = []) => {
-  const msg = messages.findLast((m) => m.state);
-  return msg?.state;
-};
-
-export const sliceMessagesTillMid = (messages = [], mid, exclude = false) => {
-  if (!mid) return [];
-  let res = [];
-  const index = messages.findIndex((m) => m.id === mid);
-  if (index > -1) {
-    res = messages.slice(0, index + (exclude ? 0 : 1));
-  }
-  return res;
-};
-
-export const getLastMessageStateFromMid = (mid, exclude = false) => {
-  const messages = useStore.getState().messages
-  return getLastMessageState(sliceMessagesTillMid(messages, mid, exclude))
-}
-
 export const isLastMessageHasTailAction = (messages = []) => {
   const lastMessage = messages[messages.length - 1];
   const lastViews = lastMessage?.content?.views;
@@ -332,14 +313,15 @@ export const restartFromMessage = async (mid, exclude = false) => {
   });
   try {
     const messages = useStore.getState().messages || [];
+    const message = getMessageById(mid);
+    const isLocalMessage = !!message.status;
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
-
     useStore.setState({
       messages: newMessages,
     });
 
     const storySessionId = useStore.getState().storySessionId;
-    if (storySessionId) {
+    if (storySessionId && !isLocalMessage) {
       await resetSession(storySessionId, mid, exclude);
     }
     await loadGameSession();

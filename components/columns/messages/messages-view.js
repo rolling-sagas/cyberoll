@@ -18,10 +18,10 @@ export default function MessagesView({ isSession = false, resetHandle }) {
   const generating = useStore((state) => state.generating);
 
   return (
-    <div className="flex-auto flex flex-col gap-4 px-4 pt-2 pb-4">
-      {isSession ? null : <div className="font-semibold">Messages</div>}
+    <div className="flex-auto flex flex-col px-6 pb-4">
+      {isSession ? null : <div className="font-semibold py-4">Messages</div>}
       {isSession ? null : (
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-4 border-b-[0.5px] pb-4 px-6 -mx-6">
           {!viewingMessage ? (
             <>
               <Checkbox
@@ -41,6 +41,7 @@ export default function MessagesView({ isSession = false, resetHandle }) {
                 size="sm"
                 disabled={generating}
                 onClick={() => generate()}
+                className="rounded-xl"
               >
                 Generate
               </Button>

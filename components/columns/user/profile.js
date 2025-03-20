@@ -34,7 +34,7 @@ export default function Profile() {
 
   return (
     <div className="mx-6 my-4">
-      <Label>Avator</Label>
+      <Label>Avatar</Label>
       <div className='w-28 mb-4'>
         <ImageAutoUploader
           width={200}
@@ -71,7 +71,7 @@ export default function Profile() {
       />
       <div className="flex gap-4 justify-end w-full">
         <Button variant="outline" onClick={() => setEditingInfo(userInfo)}>
-          Cancle
+          Cancel
         </Button>
         <Button disabled={disabled} onClick={update}>Save</Button>
       </div>
