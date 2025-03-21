@@ -9,7 +9,7 @@ export default function InputRollView({ view }) {
   const doingUserAction = useStore((state) => state.doingUserAction);
 
   return (
-    <div className="action-view input py-4 px-6 gp-4">
+    <div className="action-view input !py-4 !px-6 gp-4">
       <div>{view.label}</div>
       <Button
         className="rounded-xl"

@@ -127,7 +127,7 @@ export default function Plan() {
             </div>
           </div>
         )}
-        {currentSubscription.plan !== PLAN.FREE && (
+        {currentSubscription.plan === PLAN.FREE && (
           <div className="flex flex-1 flex-col">
             <div className="text-base font-semibold leading-normal">
               {`'${credits.daily}'`} 
