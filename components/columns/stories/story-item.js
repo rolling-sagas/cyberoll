@@ -12,6 +12,8 @@ import {
   Delete01Icon,
   Share01Icon,
   PlayIcon,
+  ViewOffIcon,
+  ViewIcon,
 } from '@hugeicons/react';
 import { getImageUrl } from '@/utils/utils';
 import { useState, useCallback } from 'react';
@@ -39,6 +41,7 @@ export default function StoryItem({
   showPlay = false,
   showAllDesc = false,
   coverGoEdit = false,
+  showPrivateStatus = false,
 }) {
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
@@ -56,7 +59,7 @@ export default function StoryItem({
   }, [story]);
 
   return (
-    <div className="mx-6 py-4 border-b-1 border-gray-200">
+    <div className="px-6 py-4 border-b-1 border-gray-200 last:border-none">
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-3 items-center">
           <Link href={`/u/${story.author?.id}`}>
@@ -75,7 +78,7 @@ export default function StoryItem({
         </div>
         {showViewActivity || onDuplicateClick || onDeleteClick ? (
           <DropdownMenu>
-            <DropdownMenuTrigger className='outline-none'>
+            <DropdownMenuTrigger className="outline-none">
               <HoverButton className="-mr-[9px]">
                 <MoreHorizontalIcon size={20} />
               </HoverButton>
@@ -93,7 +96,10 @@ export default function StoryItem({
                 </DropdownMenuItem>
               ) : null}
               {onDuplicateClick ? (
-                <DropdownMenuItem className="h-11 rounded-xl px-3 text-base" onClick={onDuplicateClick}>
+                <DropdownMenuItem
+                  className="h-11 rounded-xl px-3 text-base"
+                  onClick={onDuplicateClick}
+                >
                   <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
                     Duplicate
                     <Copy01Icon size={20} />
@@ -101,7 +107,10 @@ export default function StoryItem({
                 </DropdownMenuItem>
               ) : null}
               {onDeleteClick ? (
-                <DropdownMenuItem className="h-11 rounded-xl px-3 text-base" onClick={onDeleteClick}>
+                <DropdownMenuItem
+                  className="h-11 rounded-xl px-3 text-base"
+                  onClick={onDeleteClick}
+                >
                   <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
                     Delete
                     <Delete01Icon size={20} />
@@ -114,7 +123,9 @@ export default function StoryItem({
       </div>
       <div
         className="w-full flex flex-col cursor-pointer mb-2"
-        onClick={() => router.push(`/st/${story.id}${coverGoEdit ? '/edit' : ''}`)}
+        onClick={() =>
+          router.push(`/st/${story.id}${coverGoEdit ? '/edit' : ''}`)
+        }
       >
         <Image
           src={getImageUrl(story.image)}
@@ -170,7 +181,19 @@ export default function StoryItem({
         </HoverButton>
       </div>
       <div className="flex flex-col">
-        <span className="font-semibold text-nowrap text-base">{story.name}</span>
+        <span className="font-semibold text-nowrap text-base w-full overflow-hidden text-ellipsis">
+          {showPrivateStatus ? (
+            story.keepPrivate ? (
+              <ViewOffIcon
+                className="inline-block mr-1 align-top"
+                size="22"
+              />
+            ) : (
+              <ViewIcon className="inline-block mr-1 align-top" size="22" />
+            )
+          ) : null}
+          {story.name}
+        </span>
         <span
           className={`font-light text-sm ${showAllDesc ? '' : 'line-clamp-3'}`}
         >

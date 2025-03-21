@@ -130,8 +130,7 @@ export default function Plan() {
         {currentSubscription.plan === PLAN.FREE && (
           <div className="flex flex-1 flex-col">
             <div className="text-base font-semibold leading-normal">
-              {`'${credits.daily}'`} 
-              daily login credits
+              {`${credits.daily} `}daily login credits
               <div className='font-light'>Daily credits reset at 00:00 UTC.</div>
             </div>
           </div>

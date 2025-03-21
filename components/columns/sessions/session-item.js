@@ -43,7 +43,7 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
   };
 
   return (
-    <div className="border-b-1 border-gray-200 py-4 mx-6">
+    <div className="border-b-1 border-gray-200 py-4 px-6 last:border-none">
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-3 items-center">
           <Link href={`/sess/${session.id}`}>
