@@ -29,8 +29,8 @@ export default function Stories() {
 
   const [session, setSession] = useState(null);
   const [sid, setSid] = useState('');
-  const userInfo = useUserStore(state => state.userInfo)
-  const router = useRouter()
+  const userInfo = useUserStore((state) => state.userInfo);
+  const router = useRouter();
 
   const listSessions = async () => {
     const { sessions: list, randomSid } = await getSessions(0, 1);
@@ -77,11 +77,7 @@ export default function Stories() {
       {!session && sid ? (
         <div className="w-full px-6 border-b">
           <div className="flex flex-row py-4 items-center" onClick={play}>
-            <Avatar
-              image={userInfo?.image}
-              size={36}
-              name={userInfo?.name}
-            />
+            <Avatar image={userInfo?.image} size={36} name={userInfo?.name} />
             <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
               Looking for anything fun?
             </div>
@@ -102,7 +98,11 @@ export default function Stories() {
           loadMore={hasMoreStory}
           loadMoreHandle={() => loadmoreStories()}
           noMoreData={!hasMoreStory}
-          noMoreDataComp={<div>More stories coming soon!</div>}
+          noMoreDataComp={
+            <div className="text-rs-text-secondary">
+              More stories coming soon!
+            </div>
+          }
           loadingComp={<StoryListSkeleton />}
         />
       </div>

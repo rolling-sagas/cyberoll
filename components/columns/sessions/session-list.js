@@ -50,37 +50,37 @@ export default function SessionList() {
         {sessions.map((s) => (
           <SessionItem key={s.id} session={s} onDelete={reset} />
         ))}
-        <PageDataStatus
-          loading={loading}
-          noData={total === 0}
-          loadMore={hasMore}
-          loadMoreHandle={() => loadMore()}
-          noMoreData={!hasMore}
-          loadingComp={<StoryListSkeleton />}
-          noDataComp={
-            pageData?.randomSid ? (
-              <div className="w-full px-6 border-b -mt-4">
-                <div className="flex flex-row py-4 items-center" onClick={play}>
-                  <Avatar
-                    image={userInfo?.image}
-                    size={36}
-                    name={userInfo?.name}
-                  />
-                  <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
-                    Looking for anything fun?
-                  </div>
-                  <BaseButton
-                    disabled={creatingSession}
-                    label={creatingSession ? 'Starting...' : 'Quick Start'}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div>No data now!</div>
-            )
-          }
-        />
       </div>
+      <PageDataStatus
+        loading={loading}
+        noData={total === 0}
+        loadMore={hasMore}
+        loadMoreHandle={() => loadMore()}
+        noMoreData={!hasMore}
+        loadingComp={<StoryListSkeleton />}
+        noDataComp={
+          pageData?.randomSid ? (
+            <div className="w-full px-6 border-b -mt-4">
+              <div className="flex flex-row py-4 items-center" onClick={play}>
+                <Avatar
+                  image={userInfo?.image}
+                  size={36}
+                  name={userInfo?.name}
+                />
+                <div className="mx-2 pl-1 flex-1 text-rs-text-secondary cursor-text">
+                  Looking for anything fun?
+                </div>
+                <BaseButton
+                  disabled={creatingSession}
+                  label={creatingSession ? 'Starting...' : 'Quick Start'}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>No data now!</div>
+          )
+        }
+      />
     </div>
   );
 }

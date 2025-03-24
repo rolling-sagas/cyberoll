@@ -38,45 +38,48 @@ export default function Stories() {
   }, []);
 
   const scrollHandle = debounce((e) => {
-      const el = e.target;
-      if (el.scrollTop + el.offsetHeight + 200 > el.scrollHeight) {
-        loadmoreStories()
-      }
-    }, 200)
+    const el = e.target;
+    if (el.scrollTop + el.offsetHeight + 200 > el.scrollHeight) {
+      loadmoreStories();
+    }
+  }, 200);
 
   return (
-    <div className='h-full w-full overflow-y-auto' onScroll={scrollHandle}>
+    <div className="h-full w-full overflow-y-auto" onScroll={scrollHandle}>
       <CreateStory router={router} />
-      {stories.map((story) => (
-        <StoryItem
-          key={story.id}
-          story={story}
-          showLike={false}
-          showViewActivity
-          coverGoEdit
-          onUpdateClick={() => onUpdateClick(story, reLoadStories)}
-          onDuplicateClick={() => {
-            onDuplicateClick(story, router);
-          }}
-          onDeleteClick={() => onDeleteClick(story.id, reLoadStories)}
-        />
-      ))}
+      <div>
+        {stories.map((story) => (
+          <StoryItem
+            key={story.id}
+            story={story}
+            showLike={false}
+            showViewActivity
+            coverGoEdit
+            onUpdateClick={() => onUpdateClick(story, reLoadStories)}
+            onDuplicateClick={() => {
+              onDuplicateClick(story, router);
+            }}
+            onDeleteClick={() => onDeleteClick(story.id, reLoadStories)}
+            showPrivateStatus
+          />
+        ))}
+      </div>
       <PageDataStatus
         loading={storiesLoading}
         noData={storiesTotal === 0}
         loadMore={hasMoreStory}
         loadMoreHandle={() => loadmoreStories()}
         noDataComp={
-          (
-            <div className="flex flex-col w-full h-full items-center justify-center">
-              <div className="text-rs-text-secondary text-[16px]">No story here.</div>
-              <BaseButton
-                label="Create"
-                className="mt-2"
-                onClick={() => onCreateClick(undefined, router)}
-              />
+          <div className="flex flex-col w-full h-full items-center justify-center">
+            <div className="text-rs-text-secondary text-[16px]">
+              No story here.
             </div>
-          )
+            <BaseButton
+              label="Create"
+              className="mt-2"
+              onClick={() => onCreateClick(undefined, router)}
+            />
+          </div>
         }
         loadingComp={<StoryListSkeleton />}
       />

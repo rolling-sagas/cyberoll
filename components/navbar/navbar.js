@@ -36,7 +36,7 @@ import { onLoginOut } from './login-out-action';
 export default function NavBar() {
   const pathname = usePathname();
   const [l1Pathname, setL1Pathname] = useState('');
-  const router = useRouter()
+  const router = useRouter();
 
   const subscription = useUserStore((state) => state.subscription);
 
@@ -73,10 +73,7 @@ export default function NavBar() {
             transition duration-200 h-6 w-6 z-[1] 
             text-rs-text-secondary group-active:text-rs-text-primary"
           >
-            <PlusSignIcon
-              strokeWidth="2"
-              variant="solid"
-            />
+            <PlusSignIcon strokeWidth="2" variant="solid" />
           </div>
           <div
             className="absolute w-full h-full rounded-lg
@@ -102,7 +99,7 @@ export default function NavBar() {
       </div>
       <div className="nav mb-6">
         {/* <PinButton /> */}
-        <NavButton href="/plan">
+        <NavButton href={subscription?.type === 'free' ? '/pricing' : '/plan'}>
           <CrownIcon
             strokeWidth="2"
             className={subscription?.type === 'free' ? '' : '!text-amber-500'}
