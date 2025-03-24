@@ -204,7 +204,7 @@ export default function StoryItem({
         <Button
           disabled={creatingSession}
           onClick={play}
-          className="w-full rounded-2xl text-background mt-2"
+          className="w-full rounded-xl text-background mt-2"
         >
           {creatingSession ? 'Creating Session...' : 'Play'}{' '}
           <PlayIcon type="sharp" variant="solid" />

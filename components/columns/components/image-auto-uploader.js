@@ -5,7 +5,14 @@ import Spinner from '../spinner';
 import { getImageUrl } from '@/utils/utils';
 import { useEffect } from 'react';
 
-export default function ImageAutoUploader({ value, onChange = () => {}, width = 480, height = 320, rounded = 'xl', variant = 'public' }) {
+export default function ImageAutoUploader({
+  value,
+  onChange = () => {},
+  width = 480,
+  height = 320,
+  rounded = 'xl',
+  variant = 'public',
+}) {
   const [pValue, setValue] = useState(value);
   const imageInput = useRef(null);
   const [localUrl, setLocalUrl] = useState('');
@@ -14,8 +21,8 @@ export default function ImageAutoUploader({ value, onChange = () => {}, width = 
   const url = getImageUrl(pValue, '', variant);
   rounded = {
     xl: 'rounded-xl',
-    full: 'rounded-full'
-  }[rounded]
+    full: 'rounded-full',
+  }[rounded];
 
   useEffect(() => {
     setValue(value);
@@ -47,12 +54,26 @@ export default function ImageAutoUploader({ value, onChange = () => {}, width = 
               URL.revokeObjectURL(localUrl);
             }
             const src = URL.createObjectURL(file);
+
+            // var reader = new FileReader();
+            // reader.onload = function(e) {
+            //   var img = new Image();
+            //   img.onload = function() {
+            //     // 当图片加载完毕后执行
+            //     console.log('Width:', img.width, 'Height:', img.height);
+            //     // 这里可以执行其他操作，比如显示图片或使用宽高信息
+            //   };
+            //   img.src = e.target.result; // 设置图片源为读取的DataURL
+            // };
+            // reader.readAsDataURL(file);
+
             setLocalUrl(src);
           } catch (e) {
             console.error(e);
             setLocalUrl(localUrl);
           } finally {
             setLoading(false);
+            evt.target.value = null;
           }
         }}
       />
@@ -64,7 +85,10 @@ export default function ImageAutoUploader({ value, onChange = () => {}, width = 
               evt.preventDefault();
               if (!loading) imageInput.current.click();
             }}
-            style={{ backgroundImage: `url(${localUrl || url})`, paddingTop: `${height / width * 100}%` }}
+            style={{
+              backgroundImage: `url(${localUrl || url})`,
+              paddingTop: `${(height / width) * 100}%`,
+            }}
             className={`bg-no-repeat bg-center bg-cover w-full cursor-pointer ${rounded}`}
           />
         ) : (
