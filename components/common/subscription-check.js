@@ -1,7 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { hasOpenedStripe, isSubscriptionChanged } from '@/service/subscription';
+import { willChangeSubscription, isSubscriptionChanged } from '@/service/subscription';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +20,7 @@ export default function SubscriptionCheck() {
 
   useEffect(() => {
     const check = async () => {
-      if (hasOpenedStripe()) {
+      if (willChangeSubscription()) {
         const success = searchParams.get('success');
         if (success) {
           const changed = await isSubscriptionChanged();

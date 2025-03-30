@@ -1,6 +1,6 @@
 // this file is used for client
 import http from '@/utils/http';
-import { markOpenedStripe } from './subscription';
+import { markChangeSubscription } from './subscription';
 import { API_PAYURL } from '@/utils/const';
 
 export async function createOrGetStripeCustomer() {
@@ -31,7 +31,7 @@ export async function createCheckoutSession(priceId) {
     customer,
   });
   if (data.url) {
-    markOpenedStripe();
+    markChangeSubscription();
     location.href = data.url;
   }
 }
@@ -45,7 +45,7 @@ export async function createCustomerPortalSession(returnUrl) {
   });
 
   if (data.url) {
-    markOpenedStripe();
+    markChangeSubscription();
     return data.url;
   }
 }

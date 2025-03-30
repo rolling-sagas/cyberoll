@@ -21,6 +21,8 @@ SITE_URL = "https://cyberoll.pages.dev"
 CLOUDFLARE_ACCOUNT_HASH = "8VoaBhaig6kffmvxoWxkaw"
 NPM_CONFIG_USERCONFIG = ".npmrc.pages"
 LLM = "AZURE"
+# Monthly Standard Plan, Monthly Advanced Plan, Annual Standard Plan, Annual Advanced Plan
+NEXT_PUBLIC_PAYPAL_PLANS = "P-04Y33010S00596318M7TXPBI P-25B60957SV848673MM7TXPJY P-93F29851HH304935WM7TXONQ P-5KM33486M1478624BM7TXOYI"
 
 [[d1_databases]]
 binding = "rsDb"

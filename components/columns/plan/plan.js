@@ -5,10 +5,11 @@ import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import { getCurrentSubscription, getCurrentCredits } from '@/service/credits';
 import Loading from '../spinner';
-import { markOpenedStripe } from '@/service/subscription';
+import { markChangeSubscription } from '@/service/subscription';
 import { createCustomerPortalSession } from '@/service/stripe';
 import dayjs from '@/utils/day';
 import { Button } from '@/app/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function Plan() {
   const [currentSubscription, setCurrentSubscription] = useState({
@@ -23,6 +24,7 @@ export default function Plan() {
   const proceedingModalRef = useRef(null);
   const successModalRef = useRef(null);
   const refundRef = useRef(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,16 +53,17 @@ export default function Plan() {
   };
 
   const onChangePlan = async () => {
+    if (currentSubscription.plan === PLAN.FREE || currentSubscription.platform === 'paypal') {
+      return router.push('/pricing');
+    }
     if (typeof window !== 'undefined') {
       const url = window.location.href;
       const currentPlan = currentSubscription.plan;
       const customerUrl = await createCustomerPortalSession(url);
       console.log('onChangePlan', currentPlan, customerUrl);
-      if (customerUrl && currentPlan != PLAN.FREE) {
-        markOpenedStripe();
+      if (customerUrl) {
+        markChangeSubscription();
         window.location.href = customerUrl;
-      } else {
-        window.location.href = '/pricing';
       }
     }
   };
@@ -185,7 +188,7 @@ export default function Plan() {
             </div>
           </div>
         )}
-        {currentSubscription.plan != PLAN.FREE && (
+        {currentSubscription.plan != PLAN.FREE && currentSubscription.platform !== 'paypal' && (
           <div className="md:justify-end flex row gap-2">
             {currentSubscription?.isCancelAtPeriodEnd ? (
               <Button variant="outline" onClick={onChangePlan}>
@@ -196,9 +199,9 @@ export default function Plan() {
                 Cancel plan
               </Button>
             )}
-            <Button variant="outline" onClick={onRecoverBill}>
+            {/* <Button variant="outline" onClick={onRecoverBill}>
               Recover Bill
-            </Button>
+            </Button> */}
           </div>
         )}
       </div>
