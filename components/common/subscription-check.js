@@ -17,6 +17,7 @@ export default function SubscriptionCheck() {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false)
   const dailyCheck = useUserStore(state => state.dailyCheck)
+  const userInfo = useUserStore(state => state.userInfo)
 
   useEffect(() => {
     const check = async () => {
@@ -32,8 +33,8 @@ export default function SubscriptionCheck() {
       }
       dailyCheck()
     };
-    check();
-  }, []);
+    if (userInfo) check();
+  }, [userInfo]);
 
   return (
     <Dialog open={open} onOpenChange={open => setOpen(open)}>

@@ -18,6 +18,7 @@ import { PAYPAL_PLANS } from '@/utils/const';
 
 import { Tabs, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
 import PaypalButton from './paypal-button';
+import useUserStore from '@/stores/user';
 
 const subscriptionList = {
   free: {
@@ -325,18 +326,20 @@ const AdvancedItem = (activeTab, subscriptionConf, subscription, paypal) => (
 export default function PriceSubscription({ subscription }) {
   const { activeTab, setActiveTab } = useToggleStore();
   const [paypal, setPaypal] = useState(null);
+  const userInfo = useUserStore(state => state.userInfo);
+  const [paypalLoaded, setPaypalLoaded] = useState(false)
 
   useEffect(() => {
-    if (window.paypal) {
+    if (window.paypal && userInfo) {
       setPaypal(paypal);
     }
-  }, []);
+  }, [userInfo, paypalLoaded]);
 
   return (
     <div className="flex w-full flex-col">
       <Script
         onLoad={() => {
-          setPaypal(window.paypal);
+          setPaypalLoaded(true);
         }}
         src="https://www.paypal.com/sdk/js?client-id=AagDFfkVuL3_R8sls5sM22RN2XLASBmKPQa7id-lv5P_B-4DZQNZpLlEWU9S38ALR7VP3ltSegpA1hFG&vault=true&intent=subscription&components=buttons"
       />

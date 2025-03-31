@@ -5,12 +5,14 @@ import { useEffect, useState } from 'react';
 import PriceSubscription from '@/components/pricing/price-subscription-paypal';
 import { PLAN } from '@/utils/credit';
 import { getCurrentSubscription } from '@/service/credits';
+import useUserStore from '@/stores/user';
 
 export default function Page() {
   const [currentSubscription, setCurrentSubscription] = useState({
     plan: PLAN.FREE,
   });
   const [isLoading, setIsloading] = useState(true);
+  const userInfo = useUserStore((state) => state.userInfo)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,8 +25,8 @@ export default function Page() {
         setIsloading(false);
       }
     };
-    fetchData();
-  }, []);
+    if (userInfo) fetchData();
+  }, [userInfo]);
 
   return (
     <div className="w-full h-full py-4 2xl:py-10">

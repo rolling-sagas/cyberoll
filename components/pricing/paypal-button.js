@@ -6,6 +6,7 @@ import { savePaypalSubscription } from '@/service/paypal';
 import { useEffect, useCallback, useState, useRef } from 'react';
 import { changePaypalSubscription } from '@/service/paypal';
 import { markChangeSubscription } from '@/service/subscription';
+import { goSso } from '@/utils/index';
 
 export default function PaypalButton({
   paypal,
@@ -16,6 +17,7 @@ export default function PaypalButton({
 }) {
   const [inited, setInited] = useState(false);
   const elRef = useRef(null);
+  const userInfo = useUserStore((state) => state.userInfo);
 
   const init = useCallback(() => {
     if (inited || !elRef.current || !paypal || isChangePlan) return;
@@ -51,12 +53,13 @@ export default function PaypalButton({
   }, [elRef, paypal, planId, isChangePlan]);
 
   const changePlan = useCallback(async () => {
+    if (!userInfo) return goSso();
     if (!isChangePlan) return;
     console.log('changePlan', planId);
     const res = await changePaypalSubscription(planId);
     markChangeSubscription();
     location.href = res.approveLink;
-  }, [isChangePlan, planId]);
+  }, [isChangePlan, planId, userInfo]);
 
   useEffect(() => {
     init();
@@ -70,7 +73,7 @@ export default function PaypalButton({
         </div>
         <div
           className={`${
-            isChangePlan ? '' : 'pointer-events-none'
+            isChangePlan || !userInfo ? '' : 'pointer-events-none'
           } z-1 absolute left-0 top-0 w-full`}
           onClick={changePlan}
         >
