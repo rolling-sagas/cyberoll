@@ -73,7 +73,7 @@
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "vercel": "39.1.1",
-    "wrangler": "^4.6.0",
+    "wrangler": "^3.114.3",
     "zustand": "^4.5.4"
   },
   "devDependencies": {
