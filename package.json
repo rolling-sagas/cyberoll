@@ -77,7 +77,7 @@
     "zustand": "^4.5.4"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.7",
+    "@cloudflare/next-on-pages": "^1.13.11",
     "@next/bundle-analyzer": "^14.2.5",
     "@prisma/adapter-d1": "^5.18.0",
     "@prisma/client": "^5.18.0",
