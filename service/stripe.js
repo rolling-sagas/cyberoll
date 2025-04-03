@@ -64,4 +64,6 @@ export async function getPricesByProductId(productId) {
   }));
 }
 
-export async function updateSubscription() {}
+export async function updateSubscription() {
+  
+}

@@ -4,6 +4,7 @@ import { uploadImage } from '@/service/upload';
 import Spinner from '../spinner';
 import { getImageUrl } from '@/utils/utils';
 import { useEffect } from 'react';
+import { parseJson } from '@/utils/utils';
 
 export default function ImageAutoUploader({
   value,
@@ -12,13 +13,15 @@ export default function ImageAutoUploader({
   height = 320,
   rounded = 'xl',
   variant = 'public',
+  returnSize = false,
 }) {
-  const [pValue, setValue] = useState(value);
+  const [pValue, setValue] = useState(parseJson(value, value));
   const imageInput = useRef(null);
   const [localUrl, setLocalUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [size, setSize] = useState({width, height});
 
-  const url = getImageUrl(pValue, '', variant);
+  const url = getImageUrl(pValue?.id || pValue, '', variant);
   rounded = {
     xl: 'rounded-xl',
     full: 'rounded-full',
@@ -49,25 +52,32 @@ export default function ImageAutoUploader({
 
           try {
             const { id } = await uploadImage(file);
-            onChange(id);
+            if (!returnSize) onChange(id);
             if (localUrl !== '') {
               URL.revokeObjectURL(localUrl);
             }
             const src = URL.createObjectURL(file);
-
-            // var reader = new FileReader();
-            // reader.onload = function(e) {
-            //   var img = new Image();
-            //   img.onload = function() {
-            //     // 当图片加载完毕后执行
-            //     console.log('Width:', img.width, 'Height:', img.height);
-            //     // 这里可以执行其他操作，比如显示图片或使用宽高信息
-            //   };
-            //   img.src = e.target.result; // 设置图片源为读取的DataURL
-            // };
-            // reader.readAsDataURL(file);
-
             setLocalUrl(src);
+
+            if (returnSize) {
+              await new Promise((resolve) => {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                  var img = new Image();
+                  img.onload = function() {
+                    onChange(JSON.stringify({
+                      id,
+                      width: img.width,
+                      height: img.height,
+                    }))
+                    setSize({width: img.width, height: img.height})
+                    resolve();
+                  };
+                  img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+              })
+            }
           } catch (e) {
             console.error(e);
             setLocalUrl(localUrl);
@@ -87,7 +97,7 @@ export default function ImageAutoUploader({
             }}
             style={{
               backgroundImage: `url(${localUrl || url})`,
-              paddingTop: `${(height / width) * 100}%`,
+              paddingTop: `${(size.height / size.width) * 100}%`,
             }}
             className={`bg-no-repeat bg-center bg-cover w-full cursor-pointer ${rounded}`}
           />

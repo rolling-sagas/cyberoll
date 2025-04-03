@@ -14,7 +14,7 @@ import ToolButton from "../chapters/tool-button";
 import TypeIcon from "./type-icon";
 
 import Image from "next/image";
-import { getImageUrlById } from "@/components/images/utils";
+import { getImageUrl } from "@/utils/utils";
 import { useState } from "react";
 
 export default function ComponentItem({
@@ -63,7 +63,7 @@ export default function ComponentItem({
         {component.type === "img" ? (
           <div>
             <Image
-              src={getImageUrlById(JSON.parse(component.value).id)}
+              src={getImageUrl(JSON.parse(component.value).id)}
               width={720}
               height={360}
               className="w-full h-full rounded-xl"

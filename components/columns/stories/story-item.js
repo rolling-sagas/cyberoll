@@ -166,7 +166,7 @@ export default function StoryItem({
         />
         {story.storySessions?.length ? (
           <div className="absolute top-4 right-0 px-2 bg-gray-300 rounded-l-md text-base">
-            Recent Played
+            Recently Played
           </div>
         ) : null}
       </div>

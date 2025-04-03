@@ -15,6 +15,8 @@ import dayjs from '@/utils/day';
 import { Button } from '@/app/components/ui/button';
 import './index.css';
 import { InformationCircleIcon } from '@hugeicons/react';
+import { createCustomerPortalSession } from '@/service/stripe';
+import { markChangeSubscription } from '@/service/subscription';
 import {
   Tooltip,
   TooltipContent,
@@ -328,7 +330,17 @@ export default function PriceSubscription({ subscription }) {
   }, []);
 
   const onChange = async () => {
-    changeCommit.current.showModal();
+    // changeCommit.current.showModal();
+    if (typeof window !== 'undefined') {
+      const url = window.location.href;
+      const currentPlan = subscription.plan;
+      const customerUrl = await createCustomerPortalSession(url);
+      console.log('onChangePlan', currentPlan, customerUrl);
+      if (customerUrl) {
+        markChangeSubscription();
+        window.location.href = customerUrl;
+      }
+    }
   };
 
   const onConfirmChange = async () => {

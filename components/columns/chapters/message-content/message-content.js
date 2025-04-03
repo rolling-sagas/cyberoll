@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { getImageUrlById } from "@/components/images/utils";
+import { getImageUrl } from "@/utils/utils";
 
 import { ArrayToKeyValue, isNumber } from "@/utils/utils";
 
@@ -75,7 +75,7 @@ export default function MessageContent({ content, components, onCall }) {
           const obj = JSON.parse(comp.value)
           return (
             <li key={key}>
-              <Image src={getImageUrlById(obj.id)}
+              <Image src={getImageUrl(obj.id)}
                 width={720}
                 height={360}
                 className="w-full h-full rounded-xl"
