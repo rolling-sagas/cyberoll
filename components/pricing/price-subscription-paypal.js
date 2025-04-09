@@ -134,6 +134,7 @@ const StandardItem = (activeTab, subscriptionConf, subscription, paypal) => (
         </Button>
       ) : subscription.plan === PLAN.STANDARD ? (
         <PaypalButton
+          key={PAYPAL_PLANS[activeTab].stardard}
           paypal={paypal}
           planId={PAYPAL_PLANS[activeTab].stardard}
           className="mt-6 !h-14 flex-none"
@@ -145,6 +146,7 @@ const StandardItem = (activeTab, subscriptionConf, subscription, paypal) => (
         </PaypalButton>
       ) : (
         <PaypalButton
+          key={PAYPAL_PLANS[activeTab].stardard}
           paypal={paypal}
           planId={PAYPAL_PLANS[activeTab].stardard}
           className="mt-6 !h-14 flex-none"
@@ -256,6 +258,7 @@ const AdvancedItem = (activeTab, subscriptionConf, subscription, paypal) => (
           </Button>
         ) : subscription.plan === PLAN.ADVANCED ? (
           <PaypalButton
+            key={PAYPAL_PLANS[activeTab].advanced}
             paypal={paypal}
             planId={PAYPAL_PLANS[activeTab].advanced}
             className="mt-6 !h-14 flex-none"
@@ -267,6 +270,7 @@ const AdvancedItem = (activeTab, subscriptionConf, subscription, paypal) => (
           </PaypalButton>
         ) : (
           <PaypalButton
+            key={PAYPAL_PLANS[activeTab].advanced}
             paypal={paypal}
             planId={PAYPAL_PLANS[activeTab].advanced}
             className="mt-6 !h-14 flex-none"
