@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { PAYPAL_PLANS } from '@/utils/const';
+import { PAYPAL_PLANS, PAYPAL_SDK_URL } from '@/utils/const';
 
 import { Tabs, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
 import PaypalButton from './paypal-button';
@@ -341,7 +341,7 @@ export default function PriceSubscription({ subscription }) {
         onLoad={() => {
           setPaypalLoaded(true);
         }}
-        src="https://www.paypal.com/sdk/js?client-id=AagDFfkVuL3_R8sls5sM22RN2XLASBmKPQa7id-lv5P_B-4DZQNZpLlEWU9S38ALR7VP3ltSegpA1hFG&vault=true&intent=subscription&components=buttons"
+        src={PAYPAL_SDK_URL}
       />
       <div
         dir="ltr"
