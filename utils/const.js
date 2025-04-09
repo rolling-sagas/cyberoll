@@ -25,3 +25,15 @@ export const MESSAGE_STATUS = {
   error: 'error',
   outOfCredits: 'outOfCredits',
 }
+
+const paypalPlans = (process.env.NEXT_PUBLIC_PAYPAL_PLANS || '').split(' ');
+export const PAYPAL_PLANS = {
+  month: {
+    stardard: paypalPlans[0],
+    advanced: paypalPlans[1],
+  },
+  year: {
+    stardard: paypalPlans[2],
+    advanced: paypalPlans[3],
+  },
+}

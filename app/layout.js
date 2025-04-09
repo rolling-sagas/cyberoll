@@ -15,6 +15,8 @@ import { ToastPlaceholder } from "@/components/modal/toast-placeholder";
 import { AlertPlaceholder } from "@/components/modal/alert-placeholder";
 import SubscriptionCheck from "@/components/common/subscription-check";
 import useUserStore from "@/stores/user";
+// import Router from 'next/router';
+// import { usePathname } from "next/navigation";
 
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
@@ -33,6 +35,20 @@ export default function RootLayout({ children }) {
       applyTheme(light);
     }
   }, [theme]);
+
+  // useEffect(() => {
+  //   const handleRouteChange = (url) => {
+  //     console.log(111, url);
+  //   };
+
+  //   Router.events.on('routeChangeStart', handleRouteChange);
+  //   return () => {
+  //     Router.events.off('routeChangeStart', handleRouteChange);
+  //   };
+  // }, []);
+
+  // const pathname = usePathname()
+  // useEffect(() => console.log(222, pathname), [pathname])
 
   useEffect(() => {
     userStore.getUserInfo()

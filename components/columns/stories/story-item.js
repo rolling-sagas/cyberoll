@@ -29,6 +29,8 @@ import {
 import { Button } from '@/components/ui/button';
 import Avatar from '@/components/common/avatar';
 import HoverButton from '@/components/buttons/hover-button';
+import { useModalStore } from '@/components/modal/dialog-placeholder';
+import ResumeSession from './resume-session';
 
 export default function StoryItem({
   story,
@@ -47,16 +49,42 @@ export default function StoryItem({
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
   const [creatingSession, setCreatingSession] = useState(false);
   const [likeCount, setLikeCount] = useState(story._count?.likes || 0);
-  const play = useCallback(async () => {
-    setCreatingSession(true);
-    try {
-      const seid = await createSession(story.id);
-      router.push(`/sess/${seid}`);
-    } catch (e) {
-      console.error(e);
-      setCreatingSession(false);
+  const openModal = useModalStore((state) => state.open);
+  const closeModal = useModalStore((state) => state.close);
+
+  const play = useCallback(
+    async (id) => {
+      setCreatingSession(true);
+      try {
+        let seid = id;
+        if (id === story.id) {
+          seid = await createSession(story.id);
+        }
+        router.push(`/sess/${seid}`);
+      } catch (e) {
+        console.error(e);
+        setCreatingSession(false);
+      }
+    },
+    [story]
+  );
+
+  const checkHasSession = useCallback(() => {
+    if (story.storySessions?.length) {
+      openModal(
+        <ResumeSession
+          onCancel={closeModal}
+          onStart={(id) => {
+            play(id);
+            closeModal();
+          }}
+          story={story}
+        />
+      );
+    } else {
+      play(story.id);
     }
-  }, [story]);
+  }, [story, openModal]);
 
   return (
     <div className="px-6 py-4 border-b-1 border-gray-200 last:border-none">
@@ -122,7 +150,7 @@ export default function StoryItem({
         ) : null}
       </div>
       <div
-        className="w-full flex flex-col cursor-pointer mb-2"
+        className="w-full flex flex-col cursor-pointer mb-2 relative"
         onClick={() =>
           router.push(`/st/${story.id}${coverGoEdit ? '/edit' : ''}`)
         }
@@ -136,6 +164,11 @@ export default function StoryItem({
           alt={story.name}
           priority
         />
+        {story.storySessions?.length ? (
+          <div className="absolute top-4 right-0 px-2 bg-gray-300 rounded-l-md text-base">
+            Recently Played
+          </div>
+        ) : null}
       </div>
       <div className="flex flex-row items-center post-info gap-2 text-[#1f2937] mb-2 -ml-[10px]">
         {showLike ? (
@@ -184,10 +217,7 @@ export default function StoryItem({
         <span className="font-semibold text-nowrap text-base w-full overflow-hidden text-ellipsis">
           {showPrivateStatus ? (
             story.keepPrivate ? (
-              <ViewOffIcon
-                className="inline-block mr-1 align-top"
-                size="22"
-              />
+              <ViewOffIcon className="inline-block mr-1 align-top" size="22" />
             ) : (
               <ViewIcon className="inline-block mr-1 align-top" size="22" />
             )
@@ -203,10 +233,10 @@ export default function StoryItem({
       {showPlay ? (
         <Button
           disabled={creatingSession}
-          onClick={play}
-          className="w-full rounded-2xl text-background mt-2"
+          onClick={checkHasSession}
+          className="w-full rounded-xl text-background mt-2"
         >
-          {creatingSession ? 'Creating Session...' : 'Play'}{' '}
+          {creatingSession ? 'Starting...' : 'Play'}{' '}
           <PlayIcon type="sharp" variant="solid" />
         </Button>
       ) : null}

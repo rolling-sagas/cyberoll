@@ -3,30 +3,24 @@
 import { useState, useEffect } from 'react';
 import { useToggleStore } from '@/stores/pricing';
 import { PLAN } from '@/utils/credit';
-import { useRef } from 'react';
 import Link from 'next/link';
-import { capitalizeFirstLetter } from '@/utils/utils';
-import { PRICE_PLAN } from '@/utils/credit';
-import { updateSubscription } from '@/service/stripe';
-import { createCheckoutSession } from '@/service/stripe';
-import { getPricesByProductId } from '@/service/stripe';
-import { PRODUCT_ID_PLAN, convertPricesToPlanObject } from '@/utils/product';
-import dayjs from '@/utils/day';
 import { Button } from '@/app/components/ui/button';
 import './index.css';
 import { InformationCircleIcon } from '@hugeicons/react';
-import { createCustomerPortalSession } from '@/service/stripe';
-import { markChangeSubscription } from '@/service/subscription';
+import Script from 'next/script';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { PAYPAL_PLANS } from '@/utils/const';
 
 import { Tabs, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
+import PaypalButton from './paypal-button';
+import useUserStore from '@/stores/user';
 
-const subscription_list = {
+const subscriptionList = {
   free: {
     recommend: 'Play story for free',
     rights: [
@@ -89,7 +83,7 @@ const subscription_list = {
   },
 };
 
-const StandardItem = (activeTab, subscription_list, subscription, onChange) => (
+const StandardItem = (activeTab, subscriptionConf, subscription, paypal) => (
   <div className="lg:h-[755px] 2xl:h-[805px] bg-background shadow-[0px_10px_20px_rgba(0,0,0,0.05)] transition-all duration-500 dark:bg-neutral-800 dark:shadow-none  overflow-hidden rounded-[2.3rem] p-0 mobile:w-full lg:w-[264px] xl:w-[350px] 2xl:w-[434px] [.modal_&amp;]:max-h-[471px] [.modal_&amp;]:w-[262px] [.modal_&amp;]:rounded-xl [.modal_&amp;]:shadow-[0px_4px_20px_0px_rgba(0,0,0,0.08)] dark:[.modal_&amp;]:shadow-none">
     <div className="h-full bg-background lg:px-4 lg:py-12 xl:p-12 p-12 shadow-[0px_10px_20px_rgba(0,0,0,0.05)] transition-all duration-500 dark:bg-neutral-800 dark:shadow-none group flex  w-full flex-col rounded-2xl [.modal_&amp;]:rounded-[11px]">
       <div className="flex flex-col gap-3 [.modal_&amp;]:gap-2">
@@ -100,7 +94,7 @@ const StandardItem = (activeTab, subscription_list, subscription, onChange) => (
         </div>
       </div>
       <p className="block h-16 mt-4 font-normal text-base lg:text-xl 2xl:text-2xl  text-neutral-600 transition-all duration-500 dark:text-neutral-40 [.modal_&amp;]:text-xs">
-        {subscription_list['standard'].recommend}
+        {subscriptionConf.recommend}
       </p>
       <div className="lg:mt-10 flex items-center gap-2 [.modal_&amp;]:mt-auto">
         <span className="text-[50px] 2xl:text-[60px] font-semibold leading-[72px] text-neutral-900 transition-all duration-500 dark:text-background [.modal_&amp;]:text-5xl [.modal_&amp;]:leading-[60px]">
@@ -134,27 +128,37 @@ const StandardItem = (activeTab, subscription_list, subscription, onChange) => (
         )}
       </div>
       {subscription.plan === PLAN.STANDARD &&
-      subscription.interval ===
-        (activeTab === 'year' ? 'year' : 'month') ? (
+      subscription.interval === activeTab ? (
         <Button className="!pointer-events-none !text-black !text-lg !border-transparent !h-14 btn-primary !bg-orange-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden">
           Active
         </Button>
       ) : subscription.plan === PLAN.STANDARD ? (
-        <Button
-          className="!text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden"
-          onClick={onChange}
+        <PaypalButton
+          paypal={paypal}
+          planId={PAYPAL_PLANS[activeTab].stardard}
+          className="mt-6 !h-14 flex-none"
+          isChangePlan={subscription.plan !== 'free'}
         >
-          Change Commitment
-        </Button>
+          <Button className=" !text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3 w-full [.modal_&]:hidden">
+            Change Commitment
+          </Button>
+        </PaypalButton>
       ) : (
-        <Button className="!text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden">
-          Upgrade
-        </Button>
+        <PaypalButton
+          paypal={paypal}
+          planId={PAYPAL_PLANS[activeTab].stardard}
+          className="mt-6 !h-14 flex-none"
+          isChangePlan={subscription.plan !== 'free'}
+        >
+          <Button className=" !text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3 w-full [.modal_&]:hidden">
+            Upgrade
+          </Button>
+        </PaypalButton>
       )}
 
       <div className="mb-[42px] flex flex-col gap-3 [.modal_&amp;]:mb-0 mt-10">
         <ul className="flex flex-col gap-3">
-          {subscription_list['standard'].rights.map((item) => (
+          {subscriptionConf.rights.map((item) => (
             <li
               key={`standard_${item.right}`}
               className="flex items-center gap-1.5"
@@ -197,7 +201,7 @@ const StandardItem = (activeTab, subscription_list, subscription, onChange) => (
   </div>
 );
 
-const AdvancedItem = (activeTab, subscription_list, subscription, onChange) => (
+const AdvancedItem = (activeTab, subscriptionConf, subscription, paypal) => (
   <div className="relative mt-12 lg:mt-0">
     <div className="font-medium absolute left-0 bg-violet-500 text-white w-full -top-8 2xl:-top-12  text-center h-32 text-lg 2xl:text-xl leading-[2rem] 2xl:leading-[3rem] rounded-[1.25rem]">
       Best value
@@ -212,7 +216,7 @@ const AdvancedItem = (activeTab, subscription_list, subscription, onChange) => (
           </div>
         </div>
         <p className="block h-16 mt-4 font-normal text-base lg:text-xl 2xl:text-2xl  text-neutral-600 transition-all duration-500 dark:text-neutral-40 [.modal_&amp;]:text-xs">
-          {subscription_list['advanced'].recommend}
+          {subscriptionConf.recommend}
         </p>
         <div className="lg:mt-10 flex items-center gap-2 [.modal_&amp;]:mt-auto">
           <span className="text-[50px] 2xl:text-[60px] font-semibold leading-[72px] text-neutral-900 transition-all duration-500 dark:text-background [.modal_&amp;]:text-5xl [.modal_&amp;]:leading-[60px]">
@@ -246,26 +250,36 @@ const AdvancedItem = (activeTab, subscription_list, subscription, onChange) => (
           )}
         </div>
         {subscription.plan === PLAN.ADVANCED &&
-        subscription.interval ===
-          (activeTab === 'year' ? 'year' : 'month') ? (
+        subscription.interval === activeTab ? (
           <Button className="!pointer-events-none !text-black !text-lg !border-transparent !h-14 btn-primary !bg-orange-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden">
             Active
           </Button>
         ) : subscription.plan === PLAN.ADVANCED ? (
-          <Button
-            className="!text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden"
-            onClick={onChange}
+          <PaypalButton
+            paypal={paypal}
+            planId={PAYPAL_PLANS[activeTab].advanced}
+            className="mt-6 !h-14 flex-none"
+            isChangePlan={subscription.plan !== 'free'}
           >
-            Change Commitment
-          </Button>
+            <Button className="!text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3 w-full [.modal_&]:hidden">
+              Change Commitment
+            </Button>
+          </PaypalButton>
         ) : (
-          <Button className="!text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden">
-            Upgrade
-          </Button>
+          <PaypalButton
+            paypal={paypal}
+            planId={PAYPAL_PLANS[activeTab].advanced}
+            className="mt-6 !h-14 flex-none"
+            isChangePlan={subscription.plan !== 'free'}
+          >
+            <Button className="!text-black !text-lg !border-transparent !h-14 btn-primary !bg-amber-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3 w-full [.modal_&]:hidden">
+              Upgrade
+            </Button>
+          </PaypalButton>
         )}
         <div className="mb-[42px] flex flex-col gap-3 [.modal_&amp;]:mb-0 mt-10">
           <ul className="flex flex-col gap-3">
-            {subscription_list['advanced'].rights.map((item) => (
+            {subscriptionConf.rights.map((item) => (
               <li
                 key={`advanced_${item.right}`}
                 className="flex items-center gap-1.5"
@@ -310,63 +324,25 @@ const AdvancedItem = (activeTab, subscription_list, subscription, onChange) => (
 );
 
 export default function PriceSubscription({ subscription }) {
-  const changeCommit = useRef(null);
   const { activeTab, setActiveTab } = useToggleStore();
-  const proceedingModalRef = useRef(null);
-  const successModalRef = useRef(null);
-  const [commitModel, setCommitModel] = useState('');
-  const [priceEntity, setPriceEntity] = useState({});
+  const [paypal, setPaypal] = useState(null);
+  const userInfo = useUserStore(state => state.userInfo);
+  const [paypalLoaded, setPaypalLoaded] = useState(false)
 
   useEffect(() => {
-    const getPrices = async () => {
-      const [advancedPlan, standardPlan] = await Promise.all([
-        getPricesByProductId(PRODUCT_ID_PLAN.ADVANCED),
-        getPricesByProductId(PRODUCT_ID_PLAN.STANDARD),
-      ]);
-      const priceEntity = convertPricesToPlanObject(advancedPlan, standardPlan);
-      setPriceEntity(priceEntity);
-    };
-    getPrices();
-  }, []);
-
-  const onChange = async () => {
-    // changeCommit.current.showModal();
-    if (typeof window !== 'undefined') {
-      const url = window.location.href;
-      const currentPlan = subscription.plan;
-      const customerUrl = await createCustomerPortalSession(url);
-      console.log('onChangePlan', currentPlan, customerUrl);
-      if (customerUrl) {
-        markChangeSubscription();
-        window.location.href = customerUrl;
-      }
+    if (window.paypal && userInfo) {
+      setPaypal(paypal);
     }
-  };
-
-  const onConfirmChange = async () => {
-    changeCommit.current.close();
-    setCommitModel('Change Commitment');
-    proceedingModalRef.current.showModal();
-    await updateSubscription(
-      subscription.subscriptionId,
-      priceEntity[
-        `${subscription.plan}_${
-          subscription.interval === 'year' ? 'month' : 'year'
-        }`
-      ]
-    );
-    proceedingModalRef.current.close();
-    successModalRef.current.showModal();
-  };
-
-  const onClose = () => {
-    successModalRef.current.close();
-  };
-
-  console.log('priceEntity', priceEntity);
+  }, [userInfo, paypalLoaded]);
 
   return (
     <div className="flex w-full flex-col">
+      <Script
+        onLoad={() => {
+          setPaypalLoaded(true);
+        }}
+        src="https://www.paypal.com/sdk/js?client-id=AagDFfkVuL3_R8sls5sM22RN2XLASBmKPQa7id-lv5P_B-4DZQNZpLlEWU9S38ALR7VP3ltSegpA1hFG&vault=true&intent=subscription&components=buttons"
+      />
       <div
         dir="ltr"
         data-orientation="horizontal"
@@ -399,7 +375,7 @@ export default function PriceSubscription({ subscription }) {
                   </div>
                 </div>
                 <p className="block h-16 mt-4 font-normal text-base lg:text-xl 2xl:text-2xl  text-neutral-600 transition-all duration-500 dark:text-neutral-40 [.modal_&amp;]:text-xs">
-                  {subscription_list['free'].recommend}
+                  {subscriptionList['free'].recommend}
                 </p>
                 <div className="lg:mt-10 flex items-center gap-2 [.modal_&amp;]:mt-auto">
                   <span className="text-[50px] 2xl:text-[60px] font-semibold leading-[72px] text-neutral-900 transition-all duration-500 dark:text-background [.modal_&amp;]:text-5xl [.modal_&amp;]:leading-[60px]">
@@ -421,7 +397,7 @@ export default function PriceSubscription({ subscription }) {
                 </Button>
                 <div className="mb-[42px] flex flex-col gap-3 [.modal_&amp;]:mb-0 mt-10">
                   <ul className="flex flex-col gap-3">
-                    {subscription_list['free'].rights.map((item) => (
+                    {subscriptionList['free'].rights.map((item) => (
                       <li
                         key={`free_${item.right}`}
                         className="flex items-center gap-1.5"
@@ -463,268 +439,23 @@ export default function PriceSubscription({ subscription }) {
                     ))}
                   </ul>
                 </div>
-                <Button className="cursor-pointer items-center justify-center whitespace-nowrap text-center font-semibold shadow-none outline-none active:translate-y-[0.0625rem] active:transform disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-neutral-100 text-neutral-900 hover:bg-neutral-200 dark:bg-neutral-700 dark:text-background dark:hover:bg-neutral-600 h-10 rounded-[10px] px-4 py-2.5 text-sm mt-[19px] hidden w-full [.modal_&amp;]:inline-flex">
-                  Upgrade
-                </Button>
               </div>
             </div>
           </Link>
-          {subscription.plan === PLAN.STANDARD &&
-          subscription.interval ===
-            (activeTab === 'year' ? 'year' : 'month') ? (
-            StandardItem(activeTab, subscription_list, subscription)
-          ) : subscription.plan === PLAN.STANDARD ? (
-            StandardItem(activeTab, subscription_list, subscription, onChange)
-          ) : (
-            <span
-              onClick={() =>
-                createCheckoutSession(
-                  activeTab === 'year'
-                    ? priceEntity?.standard_year
-                    : priceEntity?.standard_month
-                )
-              }
-            >
-              {StandardItem(activeTab, subscription_list, subscription)}
-            </span>
+          {StandardItem(
+            activeTab,
+            subscriptionList.standard,
+            subscription,
+            paypal
           )}
-          {subscription.plan === PLAN.ADVANCED &&
-          subscription.interval ===
-            (activeTab === 'year' ? 'year' : 'month') ? (
-            AdvancedItem(activeTab, subscription_list, subscription)
-          ) : subscription.plan === PLAN.ADVANCED ? (
-            AdvancedItem(activeTab, subscription_list, subscription, onChange)
-          ) : (
-            <span
-              onClick={() =>
-                createCheckoutSession(
-                  activeTab === 'year'
-                    ? priceEntity?.advanced_year
-                    : priceEntity?.advanced_month
-                )
-              }
-            >
-              {AdvancedItem(activeTab, subscription_list, subscription)}
-            </span>
+          {AdvancedItem(
+            activeTab,
+            subscriptionList.advanced,
+            subscription,
+            paypal
           )}
         </div>
       </div>
-
-      <dialog id="my_modal_1" className="modal" ref={changeCommit}>
-        <div className="modal-box !bg-white text-black px-6 py-4 rounded-2xl">
-          <form method="dialog" className="flex items-center">
-            <div className="inline-flex w-full items-center justify-start gap-3 text-left font-semibold leading-6 text-xl">
-              Change Commitment
-            </div>
-            <Button className="btn btn-md btn-circle btn-ghost absolute right-6 top-4">
-              ✕
-            </Button>
-          </form>
-          <div className="shrink-0 px-4 py-6 sm:p-6 .bg-light-bg .dark:bg-dark-800  undefined false">
-            <div className="flex flex-col gap-2">
-              <p className="">
-                At the end of your billing cycle, your subscription plan will
-                automatically renew and update to your newly chosen plan.
-              </p>
-              <div className="mt-4 flex flex-col gap-1 overflow-hidden">
-                <div className="space-y-4 rounded-xl border border-light-200 dark:border-dark-800 bg-light-50 font-medium dark:bg-dark-900 p-4 py-6">
-                  <div>
-                    <h3>
-                      From{' '}
-                      <span className="!text-teal-400">
-                        {capitalizeFirstLetter(subscription.plan)}{' '}
-                        {subscription.interval === 'year'
-                          ? 'Annually'
-                          : 'Monthly'}
-                      </span>
-                    </h3>
-                    <div
-                      className="flex w-full items-center justify-between gap-4"
-                      aria-label="line item base price"
-                    >
-                      <p className="">Base price</p>
-                      <p className="font-medium">
-                        <span className="">$</span>
-                        {
-                          PRICE_PLAN[
-                            `${subscription.plan}_${subscription.interval}`
-                          ]
-                        }{' '}
-                        / {subscription.interval}
-                      </p>
-                    </div>
-                  </div>
-                  <hr className="my-2 border-slate-800" />
-                  <div>
-                    <h3>
-                      To{' '}
-                      <span className="!text-teal-400">
-                        {capitalizeFirstLetter(subscription.plan)}{' '}
-                        {subscription.interval === 'year'
-                          ? 'Monthly'
-                          : 'Annually'}
-                      </span>
-                    </h3>
-                    <div
-                      className="flex w-full items-center justify-between gap-4"
-                      aria-label="line item base price"
-                    >
-                      <p className="">Base price</p>
-                      <p className="font-medium">
-                        <span className="">$</span>
-                        {
-                          PRICE_PLAN[
-                            `${subscription.plan}_${
-                              subscription.interval === 'year'
-                                ? 'month'
-                                : 'year'
-                            }`
-                          ]
-                        }{' '}
-                        / {subscription.interval === 'year' ? 'month' : 'year'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4 border border-transparent p-4">
-                  <div>
-                    <div
-                      className="flex w-full items-center justify-between gap-4"
-                      aria-label="line due"
-                    >
-                      <p>
-                        Amount due on{' '}
-                        <span className="italic">
-                          {dayjs.unix(subscription.end).format('MMM DD, YYYY')}
-                        </span>
-                      </p>
-                      <p>
-                        <span>$</span>
-                        {
-                          PRICE_PLAN[
-                            `${subscription.plan}_${
-                              subscription.interval === 'year'
-                                ? 'month'
-                                : 'year'
-                            }`
-                          ]
-                        }
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="sm:pt-2 mt-0 rounded-b-xl bg-light-bg dark:bg-dark-800">
-            <div className="flex flex-col-reverse flex-wrap gap-4 xs:flex-row xs:flex-nowrap">
-              <Button
-                className="!border-[transparent] !outline-none !text-black !bg-amber-400  items-center py-2.5 empty:hidden px-1 w-full font-medium !text-base transition rounded-md"
-                onClick={onConfirmChange}
-              >
-                Confirm Change
-              </Button>
-            </div>
-          </div>
-        </div>
-      </dialog>
-      <dialog id="my_modal_3" className="modal" ref={proceedingModalRef}>
-        <div className="modal-box !bg-white text-black px-6 py-4 rounded-2xl">
-          <form method="dialog" className="flex items-center">
-            <div className="inline-flex w-full items-center justify-start gap-3 text-left font-semibold leading-6 text-xl">
-              {commitModel}
-            </div>
-            <Button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </Button>
-          </form>
-          <div className="shrink-0 py-4">
-            <h2>Processing...</h2>
-            <div className="my-2 flex flex-col gap-6 text-left">
-              <p>
-                Please wait while the payment and change is confirmed. If this
-                takes longer than a few minutes, please contact{' '}
-                <span className="text-red-600">support@rollingsagas.com</span>{' '}
-              </p>
-              <div className="flex w-full items-center justify-center gap-4 border-[1.5px] border-dashed p-3 text-left border-blue-900/70 text-blue-600 bg-blue-500/5 .text-slate-100 rounded-lg  sm:justify-between undefined">
-                <h3 className="text-base font-normal ">Update confirming...</h3>
-                <div className="flex size-6 items-center justify-center rounded-full">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    className="rotate-180 animate-spin text-blue-700size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="sm:pt-2 mt-0 rounded-b-xl bg-light-bg dark:bg-dark-800">
-            <div className="flex flex-col-reverse flex-wrap gap-4 xs:flex-row xs:flex-nowrap">
-              <Button className="btn  btn-neutral items-center py-2.5 empty:hidden px-1 w-full font-medium !text-base transition rounded-md buttonActiveRing select-none disabled:bg-opacity-40 disabled:text-light-600 dark:disabled:text-dark-500 disabled:pointer-events-none bg-light-800 dark:bg-dark-700 dark:shadow-button">
-                Please wait
-              </Button>
-            </div>
-          </div>
-        </div>
-      </dialog>
-      <dialog id="my_modal_4" className="modal" ref={successModalRef}>
-        <div className="modal-box !bg-white text-black px-6 py-4 rounded-2xl">
-          <form method="dialog" className="flex items-center">
-            <div className="inline-flex w-full items-center justify-start gap-3 text-left font-semibold leading-6 text-xl">
-              {commitModel}
-            </div>
-            <Button className="btn btn-md btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </Button>
-          </form>
-          <div className="shrink-0 py-4">
-            <h2>Success!</h2>
-            <div className="my-2 flex flex-col gap-6 text-left">
-              <p> Your plan change has been confirmed. </p>
-              <div className="flex w-full items-center justify-center gap-4 border-[1.5px] border-dashed p-3 text-left border-emerald-900/70 text-emerald-600 bg-emerald-500/5 .text-slate-100 rounded-lg  sm:justify-between">
-                <h3 className="text-base font-normal">Update confirmed</h3>
-                <div className="flex size-6 items-center justify-center rounded-full">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                    className="text-emerald-600 size-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M5 13l4 4L19 7"
-                    ></path>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="sm:pt-2 mt-0 rounded-b-xl bg-light-bg dark:bg-dark-800">
-            <div className="flex flex-col-reverse flex-wrap gap-4 xs:flex-row xs:flex-nowrap">
-              <Button
-                className="btn items-center py-2.5 empty:hidden px-1 w-full font-medium !text-base transition rounded-md buttonActiveRing select-none disabled:bg-opacity-40 disabled:text-light-600 dark:disabled:text-dark-500 disabled:pointer-events-none bg-light-800 dark:bg-dark-700 dark:shadow-button"
-                onClick={onClose}
-              >
-                Close
-              </Button>
-            </div>
-          </div>
-        </div>
-      </dialog>
     </div>
   );
 }

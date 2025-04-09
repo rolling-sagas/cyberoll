@@ -20,7 +20,7 @@ export default function ComponentForm({ isFuncTab = false }) {
   const editingComponent = useStore((state) => state.editingComponent);
 
   return (
-    <>
+    <div className="h-full overflow-y-auto flex flex-col gap-4 -mx-2 px-2">
       <div className="grid w-full max-w-sm items-center gap-1.5">
         <Label className="mb-1" htmlFor="component-name">
           Unique Name:
@@ -96,6 +96,7 @@ export default function ComponentForm({ isFuncTab = false }) {
       {editingComponent?.type === COMPONENT_TYPE.Image ? (
         <ImageAutoUploader
           value={editingComponent?.value}
+          returnSize
           onChange={(value) => {
             setEditingComponent({
               ...editingComponent,
@@ -104,6 +105,6 @@ export default function ComponentForm({ isFuncTab = false }) {
           }}
         />
       ) : null}
-    </>
+    </div>
   );
 }

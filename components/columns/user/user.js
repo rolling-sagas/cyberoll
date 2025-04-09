@@ -110,16 +110,24 @@ export default function User({ uid }) {
         <div className="flex items-center">
           <div className="flex">
             {followers.map((f) => (
-              <Avatar key={f.id} image={f?.follower.image} size={24} name={f?.follower.name} className="-mr-2 last:mr-1"/>
+              <Avatar
+                key={f.id}
+                image={f?.follower.image}
+                size={24}
+                name={f?.follower.name}
+                className="-mr-2 last:mr-1"
+              />
             ))}
           </div>
           <span className="text-gray-400 text-sm">
-            {followerCount} followers
+            {followerCount} follower{followerCount > 1 ? 's' : ''}
           </span>
         </div>
-        <Button className="h-6 px-2" size="sm" variant="outline">
-          {credits} credits
-        </Button>
+        {isSelf ? (
+          <Button className="h-6 px-2" size="sm" variant="outline">
+            {credits} credits
+          </Button>
+        ) : null}
       </div>
       {isSelf ? (
         <div className="flex gap-4">
@@ -146,11 +154,17 @@ export default function User({ uid }) {
       ) : null}
       {!isSelf ? (
         user?.followedByMe ? (
-          <Button onClick={() => toggleFollow(false)} variant="outline">
+          <Button
+            className="rounded-xl"
+            onClick={() => toggleFollow(false)}
+            variant="outline"
+          >
             Following
           </Button>
         ) : (
-          <Button onClick={toggleFollow}>Follow</Button>
+          <Button className="rounded-xl" onClick={toggleFollow}>
+            Follow
+          </Button>
         )
       ) : null}
       <UserTabs uid={uid} isSelf={isSelf} />

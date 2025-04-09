@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { getCurrentSubscription, dailyCheck } from "@/service/credits";
 import { COOKIE_LOGIN } from "@/utils/credit";
 
-export const HAS_OPENED_STRIPE = 'has_opened_stripe';
+export const WILL_CHANGE_SUBSCRIPTION = 'will_change_subscription';
 export const SUBSCRIB_CHECK_INTERVAL = 4 * 1000;
 
 export const EVENT_TYPE = {
@@ -11,22 +11,22 @@ export const EVENT_TYPE = {
   GIFT: 'gift',
 }
 
-export function markOpenedStripe() {
+export function markChangeSubscription() {
   Cookies.remove(COOKIE_LOGIN.DAILY_CHECK)
-  Cookies.set(HAS_OPENED_STRIPE, 1, {
+  Cookies.set(WILL_CHANGE_SUBSCRIPTION, 1, {
     expires: 1 / 2 / 24, // 半小时
   })
 }
 
-export function hasOpenedStripe() {
-  return !!Cookies.get(HAS_OPENED_STRIPE)
+export function willChangeSubscription() {
+  return !!Cookies.get(WILL_CHANGE_SUBSCRIPTION)
 }
 
 export async function loopIsSubscriptionChanged(plan) {
-  if (!plan || !hasOpenedStripe()) return false
+  if (!plan || !willChangeSubscription()) return false
   const { type: curPlan } = await dailyCheck()
   if (plan !== curPlan) {
-    Cookies.remove(HAS_OPENED_STRIPE)
+    Cookies.remove(WILL_CHANGE_SUBSCRIPTION)
     return true
   } else {
     return new Promise(resolve => {

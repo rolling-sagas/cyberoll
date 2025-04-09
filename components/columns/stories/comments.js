@@ -34,7 +34,7 @@ export default function Comments({sid}) {
 
   return (
     <>
-      <div ref={commentsRef} className='mx-6 flex-grow overflow-y-auto relative'>
+      <div ref={commentsRef} className='mx-6 flex-grow overflow-y-auto relative min-h-10'>
         {
           comments.map((c) => (<div className='flex my-2 gap-2' key={c.id}>
             <Avatar image={c.user.image} name={c.user.name} size={24} className='mt-2 flex-none' />

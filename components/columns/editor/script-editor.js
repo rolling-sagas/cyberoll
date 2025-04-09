@@ -16,7 +16,7 @@ export default function ScriptEditor({
 }) {
   return (
     <div
-      className={`w-full overflow-auto border border-gray-200 rounded h-1 flex-1 ${className}`}
+      className={`w-full overflow-auto border border-gray-200 rounded h-1 flex-1 ${className} min-h-32`}
     >
       <div className="w-full h-full">
         <Editor.default

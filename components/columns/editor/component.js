@@ -3,7 +3,7 @@
 import { setModal } from '@/stores/actions/ui';
 import { COMPONENT_TYPE } from '@/utils/const';
 import Image from "next/image";
-import { getImageUrlById } from "@/components/images/utils";
+import { getImageUrl } from '@/utils/utils';
 
 export default function Component({ id, name, value, type = 'toml', editFunc, deleteFunc }) {
   return (
@@ -22,7 +22,7 @@ export default function Component({ id, name, value, type = 'toml', editFunc, de
               {value}
             </div> :
             <Image
-              src={getImageUrlById(value)}
+              src={getImageUrl(value)}
               width={100}
               height={100}
               className="w-full h-full rounded-sm"

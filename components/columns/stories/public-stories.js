@@ -39,9 +39,14 @@ export default function Stories() {
   };
 
   useEffect(() => {
-    listSessions();
     loadmoreStories();
   }, []);
+
+  useEffect(() => {
+    if (userInfo) {
+      listSessions();
+    }
+  }, [userInfo])
 
   const scrollHandle = debounce((e) => {
     const el = e.target;

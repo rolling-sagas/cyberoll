@@ -1,7 +1,7 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { hasOpenedStripe, isSubscriptionChanged } from '@/service/subscription';
+import { willChangeSubscription, isSubscriptionChanged } from '@/service/subscription';
 import {
   Dialog,
   DialogContent,
@@ -17,10 +17,11 @@ export default function SubscriptionCheck() {
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false)
   const dailyCheck = useUserStore(state => state.dailyCheck)
+  const userInfo = useUserStore(state => state.userInfo)
 
   useEffect(() => {
     const check = async () => {
-      if (hasOpenedStripe()) {
+      if (willChangeSubscription()) {
         const success = searchParams.get('success');
         if (success) {
           const changed = await isSubscriptionChanged();
@@ -32,8 +33,8 @@ export default function SubscriptionCheck() {
       }
       dailyCheck()
     };
-    check();
-  }, []);
+    if (userInfo) check();
+  }, [userInfo]);
 
   return (
     <Dialog open={open} onOpenChange={open => setOpen(open)}>

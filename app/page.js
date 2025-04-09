@@ -22,6 +22,7 @@ export default function Page() {
   const [cur, setCur] = useState('Discover');
 
   useEffect(() => reset(), []);
+
   return (
     <PinnedColumns>
       <Column

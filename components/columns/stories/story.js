@@ -29,7 +29,7 @@ export default function Story({ story = null, sid, showUpdate = false }) {
   return (
     <>
       {
-        storyItem ? <div className="h-full flex flex-col">
+        storyItem ? <div className="h-full flex flex-col overflow-y-auto">
           <StoryItem showComment={false} story={storyItem} showPlay showAllDesc onUpdateClick={showUpdate ? () => onUpdateClick(storyItem, f) : null} />
           <Comments sid={storyItem.id} />
         </div> : null

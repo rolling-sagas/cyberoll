@@ -6,6 +6,7 @@ import { Button } from '@/app/components/ui/button';
 import { updateUserInfo } from '@/service/user';
 import ImageAutoUploader from '../components/image-auto-uploader';
 import { Textarea } from '@/app/components/ui/textarea';
+import toast from 'react-hot-toast/headless';
 
 export default function Profile() {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -26,6 +27,7 @@ export default function Profile() {
     setEditing(true)
     try {
       await updateUserInfo(editingInfo)
+      toast.success('Saved');
       await getUserInfo()
     } finally {
       setEditing(false)

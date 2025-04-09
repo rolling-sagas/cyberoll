@@ -61,7 +61,9 @@ export function getImageUrl(
   variant = 'public'
 ) {
   if (/^https?:\/\//.test(uri)) return uri;
-  return uri ? `${IMAGE_HOST}${uri}/${variant}` : fallbackUrl;
+  // uri 可能是json string
+  const data = parseJson(uri, uri);
+  return uri ? `${IMAGE_HOST}${data.id || data}/${variant}` : fallbackUrl;
 }
 
 export function getImageUrlByName(name, components = []) {
@@ -75,7 +77,9 @@ export function getImageIdByName(name, components = []) {
   const comp = components.find(
     (comp) => comp.type === COMPONENT_TYPE.Image && comp.name === name
   );
-  return comp ? comp?.value : undefined;
+  if (!comp) return undefined;
+  const data = parseJson(comp?.value, comp?.value);
+  return data?.id || data;
 }
 
 export function componentsToMap(components = [], needThrowError = false) {
