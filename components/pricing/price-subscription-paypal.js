@@ -331,7 +331,7 @@ export default function PriceSubscription({ subscription }) {
 
   useEffect(() => {
     if (window.paypal && userInfo) {
-      setPaypal(paypal);
+      setPaypal(window.paypal);
     }
   }, [userInfo, paypalLoaded]);
 
