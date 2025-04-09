@@ -2,7 +2,7 @@
 export const runtime = 'edge';
 
 import { useEffect, useState } from 'react';
-import PriceSubscription from '@/components/pricing/price-subscription';
+import PriceSubscription from '@/components/pricing/price-subscription-paypal';
 import { PLAN } from '@/utils/credit';
 import { getCurrentSubscription } from '@/service/credits';
 import useUserStore from '@/stores/user';
