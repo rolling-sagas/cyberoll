@@ -1,20 +1,19 @@
 'use client';
 
-import NavBar from '@/components/navbar/navbar';
+import { useEffect, Suspense } from 'react';
 import Head from 'next/head';
-import { Suspense, useEffect } from 'react';
+import NavBar from '@/components/navbar/navbar';
 
-import { applyTheme, useThemeStore } from '@/components/tailwind/store';
-import { light } from '@/components/tailwind/themeColors';
+import { useThemeStore, applyTheme } from '@/components/tailwind/store';
+import { light, dark } from '@/components/tailwind/themeColors';
 
 import { DialogPlaceholder } from '@/components/modal/dialog-placeholder';
 
 import './global.css';
 
-import SubscriptionCheck from '@/components/common/subscription-check';
-import { AlertPlaceholder } from '@/components/modal/alert-placeholder';
 import { ToastPlaceholder } from '@/components/modal/toast-placeholder';
-import { Toaster } from '@/components/ui/toaster';
+import { AlertPlaceholder } from '@/components/modal/alert-placeholder';
+import SubscriptionCheck from '@/components/common/subscription-check';
 import useUserStore from '@/stores/user';
 // import Router from 'next/router';
 // import { usePathname } from "next/navigation";
@@ -78,7 +77,6 @@ export default function RootLayout({ children }) {
         <Suspense fallback={null}>
           <SubscriptionCheck />
         </Suspense>
-        <Toaster />
       </body>
     </html>
   );

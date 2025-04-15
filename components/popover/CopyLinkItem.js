@@ -1,13 +1,13 @@
-import { useToast } from '@/app/hooks/use-toast';
+import toast from 'react-hot-toast/headless';
 import { Link01Icon } from '@hugeicons/react';
 
 export default function CopyLinkItem({ url }) {
-  const { toast } = useToast();
   const copyLink = () => {
     console.log('copyLink', url);
     navigator.clipboard.writeText(url);
-    toast({
-      title: 'Link copied to clipboard',
+    toast.success('Link copied to clipboard', {
+      duration: 2000,
+      position: 'top-right',
     });
   };
 
