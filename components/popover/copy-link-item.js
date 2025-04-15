@@ -3,7 +3,6 @@ import { Link01Icon } from '@hugeicons/react';
 
 export default function CopyLinkItem({ url }) {
   const copyLink = () => {
-    console.log('copyLink', url);
     navigator.clipboard.writeText(url);
     toast.success('Link copied to clipboard', {
       duration: 2000,
@@ -14,10 +13,10 @@ export default function CopyLinkItem({ url }) {
   return (
     <div
       onClick={copyLink}
-      className="flex items-center justify-between px-2 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground cursor-pointer"
+      className="flex gap-10 justify-between w-full cursor-pointer font-semibold"
     >
       <span>Copy link</span>
-      <Link01Icon size={16} className="text-muted-foreground" />
+      <Link01Icon size={20} />
     </div>
   );
 }
