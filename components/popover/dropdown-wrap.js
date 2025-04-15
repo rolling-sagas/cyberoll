@@ -1,21 +1,11 @@
 'use client';
 
-import PinnedColumns from '@/components/columns/pinned-columns';
-import Column from '@/components/column/column';
-import { useColumnsStore } from '@/components/columns/pinned-columns';
-
-import { useState, useEffect } from 'react';
-
-import PublicStories from '@/components/columns/stories/public-stories';
-import CircleIconButton from '@/components/buttons/circle-icon-button';
-import { ArrowDown01Icon, Tick02Icon } from '@hugeicons/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import SessionList from '@/components/columns/sessions/session-list';
 
 export default function DropdownWrap({ triggerChildren, columns }) {
   return (
