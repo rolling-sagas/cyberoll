@@ -7,8 +7,7 @@ import {
 import HoverButton from '@/components/buttons/hover-button';
 import Avatar from '@/components/common/avatar';
 import { useModalStore } from '@/components/modal/dialog-placeholder';
-import CopyLinkItem from '@/components/popover/CopyLinkItem';
-import PopoverWrap from '@/components/popover/PopoverWrap';
+import CopyLinkItem from '@/components/popover/copy-link-item';
 import { Button } from '@/components/ui/button';
 import { createSession } from '@/service/session';
 import { dislikeStory, likeStory } from '@/service/story';
@@ -32,7 +31,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import Image from '../../common/custom-image';
 import ResumeSession from './resume-session';
-
+import DropdownWrap from '@/components/popover/dropdown-wrap';
 export default function StoryItem({
   story,
   showLike = true,
@@ -211,7 +210,7 @@ export default function StoryItem({
           </HoverButton>
         ) : null}
         {!story?.keepPrivate && (
-          <PopoverWrap
+          <DropdownWrap
             triggerChildren={
               <HoverButton>
                 <Share01Icon size={18} />
