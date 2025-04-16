@@ -13,7 +13,9 @@ import { initStory } from '@/stores/actions/story';
 import Back from '@/components/common/back';
 import CreateStoryForm from '@/components/columns/stories/create-story-form';
 import { updateStory } from '@/service/story';
-
+import toast from 'react-hot-toast/headless';
+import { CheckmarkCircle01Icon } from '@hugeicons/react';
+import Spinner from '@/components/columns/spinner';
 export default function Page({ params }) {
   const id = params.id;
   const addColumn = useColumnsStore((state) => state.addColumn);
@@ -24,6 +26,9 @@ export default function Page({ params }) {
   const update = async (name, description, image, keepPrivate) => {
     if (saving) return;
     setSaving(true);
+    const tid = toast.loading('Saving story...', {
+      icon: <Spinner />,
+    });
     try {
       await updateStory(id, {
         name,
@@ -38,10 +43,14 @@ export default function Page({ params }) {
           description,
           image,
           keepPrivate,
-        }
-      })
+        },
+      });
     } finally {
       setSaving(false);
+      toast.success('Story saved', {
+        id: tid,
+        icon: <CheckmarkCircle01Icon />,
+      });
     }
   };
 
