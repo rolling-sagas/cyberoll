@@ -1,37 +1,37 @@
-import dayjs from '@/utils/day';
-import Image from '../../common/custom-image';
-import Link from 'next/link';
-import {
-  FavouriteIcon,
-  Comment02Icon,
-  SentIcon,
-  MoreHorizontalIcon,
-  Edit02Icon,
-  Activity01Icon,
-  Copy01Icon,
-  Delete01Icon,
-  Share01Icon,
-  PlayIcon,
-  ViewOffIcon,
-  ViewIcon,
-} from '@hugeicons/react';
-import { getImageUrl } from '@/utils/utils';
-import { useState, useCallback } from 'react';
-import { likeStory, dislikeStory } from '@/service/story';
-import { createSession } from '@/service/session';
-import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import Avatar from '@/components/common/avatar';
 import HoverButton from '@/components/buttons/hover-button';
+import Avatar from '@/components/common/avatar';
 import { useModalStore } from '@/components/modal/dialog-placeholder';
+import CopyLinkItem from '@/components/popover/copy-link-item';
+import { Button } from '@/components/ui/button';
+import { createSession } from '@/service/session';
+import { dislikeStory, likeStory } from '@/service/story';
+import dayjs from '@/utils/day';
+import { getImageUrl } from '@/utils/utils';
+import {
+  Activity01Icon,
+  Comment02Icon,
+  Copy01Icon,
+  Delete01Icon,
+  Edit02Icon,
+  FavouriteIcon,
+  MoreHorizontalIcon,
+  PlayIcon,
+  Share01Icon,
+  ViewIcon,
+  ViewOffIcon,
+} from '@hugeicons/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useCallback, useState } from 'react';
+import Image from '../../common/custom-image';
 import ResumeSession from './resume-session';
-
+import DropdownWrap from '@/components/popover/dropdown-wrap';
 export default function StoryItem({
   story,
   showLike = true,
@@ -209,9 +209,21 @@ export default function StoryItem({
             <Edit02Icon size={18} />
           </HoverButton>
         ) : null}
-        <HoverButton>
-          <Share01Icon size={18} />
-        </HoverButton>
+        {!story?.keepPrivate && (
+          <DropdownWrap
+            triggerChildren={
+              <HoverButton>
+                <Share01Icon size={18} />
+              </HoverButton>
+            }
+            columns={[
+              <CopyLinkItem
+                key={story.id}
+                url={`${window.location.origin}/st/${story.id}`}
+              />,
+            ]}
+          />
+        )}
       </div>
       <div className="flex flex-col">
         <span className="font-semibold text-nowrap text-base w-full overflow-hidden text-ellipsis">

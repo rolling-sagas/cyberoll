@@ -5,9 +5,6 @@ import toast from "react-hot-toast/headless";
 export const setFirstColumnWidth = (width) =>
   useStore.setState({ firstColumnWidth: width });
 
-export const setAutoGenerate = (value) =>
-  useStore.setState({ autoGenerate: value });
-
 export const setPlayMode = (value) => useStore.setState({ playMode: value });
 
 export const setScript = async (value) => {

@@ -80,7 +80,7 @@ export default function CreateStoryDialog({ name, desc, image, keepPrivate = tru
                     }
                   </div>
                 </div>
-                <div className="font-semibold col-start-2 rows-start-1 mb-2">is public to everyone</div>
+                <div className="font-semibold col-start-2 rows-start-1 mb-2">Is public to everyone</div>
                 <div className="flex items-center gap-2">
                   <Switch checked={!tKeepPrivate} onCheckedChange={(v) => setTKeepPrivate(!v)} id="is-public-switch" />
                 </div>
