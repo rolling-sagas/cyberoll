@@ -14,7 +14,6 @@ const initialState = {
   rolling: 0,
   lastRoll: null,
 
-  autoGenerate: false,
   playMode: true,
 
   script: "",

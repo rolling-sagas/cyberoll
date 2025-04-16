@@ -41,7 +41,6 @@ export default function Page({ params }) {
         components: res.components,
         messages: res.messages,
         storySessionId: res.id,
-        autoGenerate: true,
       }));
       executeScript(res.messages.length === 0);
     } finally {
