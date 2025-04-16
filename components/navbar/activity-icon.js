@@ -41,9 +41,9 @@ export default function ActivityIcon({ l1Pathname }) {
     <div className="relative">
       <FavouriteIcon
         strokeWidth="2"
-        variant={l1Pathname === '/a' ? 'solid' : 'stroke'}
+        variant={l1Pathname === 'a' ? 'solid' : 'stroke'}
       />
-      {hasNewActivity && l1Pathname !== '/a' && (
+      {hasNewActivity && l1Pathname !== 'a' && (
         <Badge
           variant="destructive"
           className="absolute -top-1 -right-1 h-2 w-2 p-0"
