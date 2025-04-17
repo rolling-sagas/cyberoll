@@ -8,8 +8,9 @@ import useUserStore from '@/stores/user';
 import { groupActivityDataByDate } from '@/utils/activity';
 import debounce from 'lodash/debounce';
 import { useEffect } from 'react';
+import { ActivityColumnCommentItem } from './activity-column-comment-item';
+import { ActivityColumnFollowItem } from './activity-column-follow-item';
 import { ActivityColumnLikeItem } from './activity-column-like-item';
-
 export default function ActivityColumnWrap({ type }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const [
@@ -44,7 +45,7 @@ export default function ActivityColumnWrap({ type }) {
       <div>
         {groupActivityDataByDate(activities).map((g) => {
           return g.items.length > 0 ? (
-            <div key={g.duration}>
+            <div key={g.duration} className="border-b-1 border-gray-200">
               <div className="px-6 py-4 border-gray-200">
                 <span className="font-semibold">{g.duration}</span>
               </div>
@@ -58,7 +59,19 @@ export default function ActivityColumnWrap({ type }) {
                       />
                     );
                   case 'follow':
-                    return <div key={item.createdAt}>follow</div>;
+                    return (
+                      <ActivityColumnFollowItem
+                        key={item.createdAt}
+                        data={item}
+                      />
+                    );
+                  case 'comment':
+                    return (
+                      <ActivityColumnCommentItem
+                        key={item.createdAt}
+                        data={item}
+                      />
+                    );
                   default:
                     return null;
                 }
