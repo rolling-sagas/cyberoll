@@ -21,7 +21,7 @@ import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { parse } from 'best-effort-json-parser';
 import { azure } from '@/service/ai';
-import { registerWithConfig, renderTemplate } from '@/utils/handlebars';
+import { registerWithConfig } from '@/utils/handlebars';
 
 const quickjs = new QuickJSManager();
 
@@ -56,7 +56,6 @@ export const executeScript = async (refresh = true) => {
 
     await quickjs.initialize(functions);
     await quickjs.executeScript(useStore.getState().script, components);
-
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
       console.log('onStart messages', messages);
@@ -105,8 +104,6 @@ export const generate = async (skipCache = false, defaultMsg) => {
       }
       return { role, content };
     });
-
-    if (!messages.length) return;
 
     // const body = { messages: messages, type: 'json', skip_cache: skipCache };
     // if (model) body.model = model;
