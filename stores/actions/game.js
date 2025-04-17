@@ -26,7 +26,6 @@ import { registerWithConfig, renderTemplate } from '@/utils/handlebars';
 const quickjs = new QuickJSManager();
 
 export const executeScript = async (refresh = true) => {
-  console.log(2222, 'executeScript')
   let components = null;
 
   try {
@@ -62,7 +61,7 @@ export const executeScript = async (refresh = true) => {
       const messages = await quickjs.callFunction('onStart');
       console.log('onStart messages', messages);
       await resetMessages(messages);
-      if (messages?.length) await generate();
+      await generate();
     } else {
       // load game session
       await loadGameSession();
@@ -106,6 +105,8 @@ export const generate = async (skipCache = false, defaultMsg) => {
       }
       return { role, content };
     });
+
+    if (!messages.length) return;
 
     // const body = { messages: messages, type: 'json', skip_cache: skipCache };
     // if (model) body.model = model;
