@@ -1,7 +1,6 @@
-import { COMPONENT_TYPE } from '@/utils/const';
-import mustache from 'mustache';
-import { IMAGE_HOST, DEFAULT_STORY_IMAGE } from '@/utils/const';
+import { COMPONENT_TYPE, DEFAULT_STORY_IMAGE, IMAGE_HOST } from '@/utils/const';
 import parseString from '@iarna/toml/parse-string';
+import mustache from 'mustache';
 
 export function ArrayToKeyValue(list) {
   const result = { meta: {} };

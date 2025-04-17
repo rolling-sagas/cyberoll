@@ -1,17 +1,15 @@
 'use client';
 
-import { FavouriteIcon } from '@hugeicons/react';
 import { Badge } from '@/app/components/ui/badge';
-import { useState, useEffect } from 'react';
 import { checkActivityUpdateStatus } from '@/service/activity';
 import useUserStore from '@/stores/user';
-import NavButton from './nav-button';
-
-var statusInterval = null;
+import { FavouriteIcon } from '@hugeicons/react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function ActivityIcon({ l1Pathname }) {
   const [hasNewActivity, setHasNewActivity] = useState(false);
   const userInfo = useUserStore((state) => state.userInfo);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (userInfo) {
@@ -19,23 +17,32 @@ export default function ActivityIcon({ l1Pathname }) {
         try {
           const res = await checkActivityUpdateStatus();
           setHasNewActivity(res || false);
-          console.log(
-            'checkActivity at ',
-            new Date().toISOString(),
-            'res is: ',
-            res
-          );
         } catch (error) {
           console.error('Failed to check activity status:', error);
         }
       };
-      if (!statusInterval) {
-        checkActivity();
-        // 每10秒检查一次活动状态
-        statusInterval = setInterval(checkActivity, 10000);
-      }
+
+      // 立即执行一次检查
+      checkActivity();
+
+      // 每30秒检查一次活动状态
+      intervalRef.current = setInterval(checkActivity, 30000);
+
+      // 组件卸载时清理定时器
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+      };
     }
   }, [userInfo]);
+
+  // 当用户访问活动页面时，清除红点提示
+  useEffect(() => {
+    if (l1Pathname === 'a') {
+      setHasNewActivity(false);
+    }
+  }, [l1Pathname]);
 
   return (
     <div className="relative">

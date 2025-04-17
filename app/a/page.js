@@ -16,10 +16,11 @@ import { useColumnsStore } from '@/components/columns/pinned-columns';
 import Back from '@/components/common/back';
 import { ArrowDown01Icon, Tick02Icon } from '@hugeicons/react';
 import { useEffect, useState } from 'react';
+
 const ActivityDropdownItems = [
   {
     label: 'All',
-    value: 'all',
+    value: '',
   },
   {
     label: 'Social',
