@@ -30,7 +30,6 @@ export default function Page({ params }) {
       useStore.setState(() => ({
         loading: true,
       }));
-      console.log(2, useStore.getState().loading);
       resetEditor({
         loading: true,
       });

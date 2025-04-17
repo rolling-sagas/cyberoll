@@ -1,7 +1,7 @@
 import { COMPONENT_TYPE } from '@/utils/const';
-import mustache from 'mustache';
 import { IMAGE_HOST, DEFAULT_STORY_IMAGE } from '@/utils/const';
 import parseString from '@iarna/toml/parse-string';
+import { renderTemplate } from './handlebars';
 
 export function ArrayToKeyValue(list) {
   const result = { meta: {} };
@@ -131,7 +131,7 @@ export function formatMessages(
   };
   return messages.map((m) => ({
     role: m.role,
-    content: mustache.render(m.content, context),
+    content: renderTemplate(m.content, context),
   }));
 }
 

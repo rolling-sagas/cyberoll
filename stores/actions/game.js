@@ -21,10 +21,12 @@ import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { parse } from 'best-effort-json-parser';
 import { azure } from '@/service/ai';
+import { registerWithConfig, renderTemplate } from '@/utils/handlebars';
 
 const quickjs = new QuickJSManager();
 
 export const executeScript = async (refresh = true) => {
+  console.log(2222, 'executeScript')
   let components = null;
 
   try {
@@ -37,6 +39,8 @@ export const executeScript = async (refresh = true) => {
     });
     return;
   }
+
+  registerWithConfig(components);
 
   if (useStore.getState().rolling > 0) {
     await clearRoll();

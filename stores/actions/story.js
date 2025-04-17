@@ -6,7 +6,6 @@ export const startViewingMessage = (message) =>
   useStore.setState(() => ({ viewingMessage: message }));
 
 export const initStory = async (storyId) => {
-  console.log(123)
   const story = await getStory(storyId, {
     script: true,
     components: true,
