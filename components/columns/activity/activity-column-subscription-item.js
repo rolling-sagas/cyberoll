@@ -7,19 +7,21 @@ import { useRouter } from 'next/navigation';
 
 function getRenewAndExpireDate(data) {
   const extraInfo = parseJson(data.extraInfo, '');
-  if (extraInfo?.renewDate) {
+  console.log('extraInfo', extraInfo);
+  if (extraInfo?.end) {
     return dayjs(extraInfo?.end).format('YYYY/MM/DD');
   }
   return '';
 }
 
 function getText(subType, data) {
+  console.log({ subType, data });
   switch (subType) {
     case ACTIVITY_SUB_TYPE.MonthlyCreditsUpdate:
       return 'Your monthly credits have been updated!';
     case ACTIVITY_SUB_TYPE.SubscriptionSuccess:
       return 'You have successfully subscribed Standard Monthly plan!';
-    case ACTIVITY_SUB_TYPE.SubscriptionWillRenewal:
+    case ACTIVITY_SUB_TYPE.SubscriotionWillRenewal:
       return `Your subscription plan will automatically renew on ${getRenewAndExpireDate(
         data
       )}. Click to manage.`;
@@ -39,7 +41,7 @@ export function ActivityColumnSubscriptionItem({ data, subType }) {
     <div
       className="px-6 py-4 border-gray-200 bg-background hover:cursor-pointer hover:bg-rs-background-hover"
       onClick={() => {
-        router.push(`/st/${data.story.id}`);
+        router.push(`/pricing`);
       }}
     >
       <div className="flex gap-2 items-center justify-between">
@@ -49,14 +51,18 @@ export function ActivityColumnSubscriptionItem({ data, subType }) {
             size={36}
             name={data.user?.name || ''}
           />
-          <span className="flex flex-col">
-            <span className="text-base flex gap-1.5">
-              <span>{getText(subType, data)}</span>
-              <span className="text-zinc-400 font-light">
-                {dayjs(data.createdAt).fromNow()}
-              </span>
-            </span>
-          </span>
+          <div className="flex-1 min-w-0">
+            <div className="text-base text-foreground">
+              <div className="flex flex-wrap gap-1.5">
+                <span className="line-clamp-3 break-words gap-1.5">
+                  <span>{getText(subType, data)}</span>
+                  <span className="text-zinc-400 font-light whitespace-nowrap pl-[0.375rem]">
+                    {dayjs(data.createdAt).fromNow()}
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
