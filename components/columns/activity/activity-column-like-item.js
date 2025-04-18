@@ -1,10 +1,11 @@
 import Avatar from '@/components/common/avatar';
+import { ACTIVITY_SUB_TYPE } from '@/utils/activity';
 import { getImageUrl } from '@/utils/utils';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import Image from '../../common/custom-image';
 
-export function ActivityColumnLikeItem({ data }) {
+export function ActivityColumnLikeItem({ data, subType }) {
   const router = useRouter();
   return (
     <div
@@ -23,7 +24,13 @@ export function ActivityColumnLikeItem({ data }) {
                 {dayjs(data.createdAt).fromNow()}
               </span>
             </span>
-            <span className="">liked your story.</span>
+            <span className="">
+              {subType === ACTIVITY_SUB_TYPE.Like && 'liked your story.'}
+              {subType === ACTIVITY_SUB_TYPE.FirstPlayStory &&
+                `${data.user.name} played ${data.story.name} for the first time.`}
+              {subType === ACTIVITY_SUB_TYPE.PublishStory &&
+                `${data.user.name} published a new story.`}
+            </span>
           </span>
         </div>
         <div className="flex gap-2 items-center">

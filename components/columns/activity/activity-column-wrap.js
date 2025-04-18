@@ -5,12 +5,29 @@ import usePageData from '@/components/hooks/use-page-data';
 import StoryListSkeleton from '@/components/skeleton/story-list-skeleton';
 import { getActivities } from '@/service/activity';
 import useUserStore from '@/stores/user';
-import { groupActivityDataByDate } from '@/utils/activity';
+import { ACTIVITY_SUB_TYPE, groupActivityDataByDate } from '@/utils/activity';
 import debounce from 'lodash/debounce';
 import { useEffect } from 'react';
 import { ActivityColumnCommentItem } from './activity-column-comment-item';
 import { ActivityColumnFollowItem } from './activity-column-follow-item';
 import { ActivityColumnLikeItem } from './activity-column-like-item';
+import { ActivityColumnSubscriptionItem } from './activity-column-subscription-item';
+
+const mockData = {
+  user: null,
+  targetUser: {
+    id: 'cm42eb9ku0000tunmf0o9dbo9',
+    name: 'Luoyeshu',
+    image: '409f5160-1fa2-4272-ab44-4b2b337cec00',
+  },
+  comment: null,
+  story: null,
+  type: 'subscription',
+  subType: 'monthly_credits_update',
+  createdAt: '2025-04-14T13:51:52.465Z',
+  extraInfo: null,
+};
+
 export default function ActivityColumnWrap({ type }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const [
@@ -27,7 +44,6 @@ export default function ActivityColumnWrap({ type }) {
   ] = usePageData(getActivities, 10, 'activitys');
 
   useEffect(() => {
-    console.log('exe 2');
     if (userInfo) {
       resetByRest(type);
     }
@@ -44,6 +60,7 @@ export default function ActivityColumnWrap({ type }) {
     <div className="w-full h-full overflow-y-auto" onScroll={scrollHandle}>
       <div>
         {groupActivityDataByDate(activities).map((g) => {
+          g.items.unshift(mockData);
           return g.items.length > 0 ? (
             <div key={g.duration} className="border-b-1 border-gray-200">
               <div className="px-6 py-4 border-gray-200">
@@ -51,25 +68,39 @@ export default function ActivityColumnWrap({ type }) {
               </div>
               {g.items.map((item) => {
                 switch (item?.subType) {
-                  case 'like':
+                  case ACTIVITY_SUB_TYPE.Like:
+                  case ACTIVITY_SUB_TYPE.FirstPlayStory:
+                  case ACTIVITY_SUB_TYPE.PublishStory:
                     return (
                       <ActivityColumnLikeItem
                         key={item.createdAt}
                         data={item}
+                        subType={item?.subType}
                       />
                     );
-                  case 'follow':
+                  case ACTIVITY_SUB_TYPE.Follow:
                     return (
                       <ActivityColumnFollowItem
                         key={item.createdAt}
                         data={item}
                       />
                     );
-                  case 'comment':
+                  case ACTIVITY_SUB_TYPE.Comment:
                     return (
                       <ActivityColumnCommentItem
                         key={item.createdAt}
                         data={item}
+                      />
+                    );
+                  case ACTIVITY_SUB_TYPE.MonthlyCreditsUpdate:
+                  case ACTIVITY_SUB_TYPE.SubscriptionSuccess:
+                  case ACTIVITY_SUB_TYPE.SubscriptionWillRenewal:
+                  case ACTIVITY_SUB_TYPE.SubscriptionWillExpire:
+                    return (
+                      <ActivityColumnSubscriptionItem
+                        key={item.createdAt}
+                        data={item}
+                        subType={item?.subType}
                       />
                     );
                   default:
@@ -106,7 +137,11 @@ export default function ActivityColumnWrap({ type }) {
               </div>
             </div>
           ) : (
-            <div>No activity yet</div>
+            <div>
+              {type === 'subscription'
+                ? 'No subscription yet'
+                : 'No activity yet'}
+            </div>
           )
         }
       />
