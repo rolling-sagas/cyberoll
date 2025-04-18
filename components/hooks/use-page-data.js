@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 /**
  * usePageData Hook to fetch paginated data. page start from 0
@@ -20,7 +20,7 @@ export default function usePageData(
   const [loading, setLoading] = useState(false);
   const [pageData, setPageData] = useState(null);
 
-  const hasMore = total === -1 || (page + 1) * size < total;
+  let hasMore = total === -1 || (page + 1) * size < total;
 
   const fetchData = useCallback(
     async (page, ...rest) => {
@@ -64,5 +64,22 @@ export default function usePageData(
     setPageNum(0);
   };
 
-  return [data, total, loading, page, hasMore, loadmore, setPageNum, reset, pageData];
+  const resetByRest = (...rest) => {
+    hasMore = true;
+    setData([]);
+    setPageNum(0, ...(rest || []));
+  };
+
+  return [
+    data,
+    total,
+    loading,
+    page,
+    hasMore,
+    loadmore,
+    setPageNum,
+    reset,
+    pageData,
+    resetByRest,
+  ];
 }

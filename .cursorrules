@@ -32,6 +32,8 @@
 ### UI 与样式规范
 - 使用 Shadcn UI 和 Tailwind 进行组件开发和样式设计。
 - 使用 Tailwind CSS 实现响应式设计；采用移动优先的方法。
+- 涉及到颜色的，因为要做多主题，所以使用global.css中的颜色变量。
+- 背景色一般使用global.css中的background和 foreground.
 
 ### 性能优化
 - 尽量减少使用 `use client`、`useEffect` 和 `setState`；优先使用 React 服务器组件（RSC）。

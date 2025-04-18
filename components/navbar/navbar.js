@@ -3,10 +3,8 @@
 import {
   CinnamonRollIcon,
   CrownIcon,
-  FavouriteIcon,
   Home02Icon,
   Menu08Icon,
-  Search01Icon,
   UserIcon,
   Notebook01Icon,
   PlusSignIcon,
@@ -32,6 +30,7 @@ import {
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import { onLoginOut } from './login-out-action';
+import ActivityIcon from './activity-icon';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -81,15 +80,9 @@ export default function NavBar() {
               scale-100 bg-rs-background-hover"
           />
         </span>
-        {/* <NavButton href="/">
-          <Search01Icon strokeWidth={l1Pathname === 'search' ? '3' : '2'} />
+        <NavButton href="/a" active={l1Pathname === 'a'}>
+          <ActivityIcon l1Pathname={l1Pathname} />
         </NavButton>
-        <NavButton href="/">
-          <FavouriteIcon
-            strokeWidth="2"
-            variant={l1Pathname === 'search' ? 'solid' : 'stroke'}
-          />
-        </NavButton> */}
         <NavButton href="/u/_" active={l1Pathname === 'u'}>
           <UserIcon
             strokeWidth="2"
@@ -98,7 +91,6 @@ export default function NavBar() {
         </NavButton>
       </div>
       <div className="nav mb-6">
-        {/* <PinButton /> */}
         <NavButton href={subscription?.type === 'free' ? '/pricing' : '/plan'}>
           <CrownIcon
             strokeWidth="2"
