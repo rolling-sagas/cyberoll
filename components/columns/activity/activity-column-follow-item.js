@@ -108,18 +108,20 @@ export function ActivityColumnFollowItem({ data }) {
         className="border-solid outline"
       >
         <AlertDialogContent className="w-[280px] h-[206px] p-0 rounded-2xl flex flex-col">
-          <div className="flex flex-col items-center p-7 pb-2">
+          <div className="flex flex-col items-center p-7 pb-1">
             <Avatar
               image={data.user.image}
               size={64}
               name={data.user.name}
               className="mb-4"
             />
-            <p className="text-center text-foreground font-semibold overflow-hidden text-ellipsis whitespace-nowrap">
-              Unfollow {data.user.name}?
-            </p>
+            <div className="flex flex-col items-center h-[42px] w-[200px]">
+              <p className="text-center text-foreground font-semibold line-clamp-2 text-wrap w-full text-overflow-ellipsis">
+                Unfollow {data.user.name}
+              </p>
+            </div>
           </div>
-          <div className="flex border-t border-border">
+          <div className="flex border-t border-border -mt-4">
             <div
               onClick={() => setShowUnfollowDialog(false)}
               className="flex-1 h-12 flex items-center justify-center cursor-pointer  hover:cursor border-r border-border"
