@@ -65,6 +65,7 @@ export function ActivityColumnFollowItem({ data }) {
   };
 
   const handleUnfollow = async () => {
+    setIsLoading(true);
     try {
       setShowUnfollowDialog(false);
       await toggleFollowUser(data.user.id, false);
@@ -97,8 +98,10 @@ export function ActivityColumnFollowItem({ data }) {
             <Button
               variant={isFollowing ? 'outline' : ''}
               // size="sm"
-              className={`min-w-[100px] rounded-lg ${
-                isFollowing ? 'hover:bg-backgroundhover border-1' : ''
+              className={`min-w-[100px] rounded-[10px] ${
+                isFollowing
+                  ? 'hover:bg-backgroundhover border-1 text-zinc-400 hover:text-zinc-400'
+                  : ''
               }`}
               onClick={() => {
                 if (isFollowing) {
@@ -109,11 +112,12 @@ export function ActivityColumnFollowItem({ data }) {
               }}
               disabled={isLoading}
             >
-              {/* TODO: 字体颜色调整一下 */}
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : isFollowing ? (
-                <span className="font-semibod text-secondary2">Following</span>
+                <span className="font-semibod text-text-secondary2">
+                  Following
+                </span>
               ) : (
                 <span className="font-semibod">Follow back</span>
               )}

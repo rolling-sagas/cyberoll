@@ -32,7 +32,6 @@ const config = {
             primary: 'rgb(var(--rs-color-text-primary) / <alpha-value>)',
             secondary: 'rgb(var(--rs-color-text-secondary) / <alpha-value>)',
             tertiary: 'rgb(var(--rs-color-text-tertiary) / <alpha-value>)',
-            secondary2: 'var(--btn-secondary)',
           },
           background: {
             1: 'rgb(var(--rs-color-background-1) / <alpha-value>)',
