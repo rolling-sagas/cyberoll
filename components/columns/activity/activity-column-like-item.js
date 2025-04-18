@@ -16,7 +16,12 @@ export function ActivityColumnLikeItem({ data, subType }) {
     >
       <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-3 items-center">
-          <Avatar image={data.user.image} size={36} name={data.user.name} />
+          <Avatar
+            className="cursor-pointer mt-1"
+            image={data.user.image}
+            size={36}
+            name={data.user.name}
+          />
           <span className="flex flex-col">
             <span className="text-base flex gap-1.5">
               <span className="font-semibold">{data.user.name}</span>

@@ -8,43 +8,17 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 
-const mockData = {
-  user: {
-    id: 'cm42e1xom0000hl7qlk6ivc5f',
-    name: 'xiao',
-    image: '6cf470c7-1ffa-4d18-02cb-1c536436f400',
-    followers: [],
-  },
-  targetUser: {
-    id: 'cm9gtdx5t0000jyxr7tjs2ldf',
-    name: 'Alucard',
-    image:
-      'https://lh3.googleusercontent.com/a/ACg8ocIefMqmVRLlbVcm57hz6F0VYyerq4d3xPnTKvOBAmBA1yKdw9lZ=s96-c',
-  },
-  comment: null,
-  story: null,
-  type: 'social',
-  subType: 'follow',
-  createdAt: '2025-04-16T08:23:36.383Z',
-};
-
 export function ActivityColumnFollowItem({ data }) {
+  // 0、init var
   const router = useRouter();
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
 
+  // 1、ctrl
   useEffect(() => {
-    const ret = data.user.followers.some(
+    const ret = (data.user?.followers || []).some(
       (item) => item.followerId === data.targetUser.id
-    );
-    console.log(
-      'me',
-      data.targetUser.id,
-      'source followers',
-      data.user.followers,
-      'ret',
-      ret
     );
     setIsFollowing(ret);
   }, [data]);
@@ -65,6 +39,7 @@ export function ActivityColumnFollowItem({ data }) {
   };
 
   const handleUnfollow = async () => {
+    if (isLoading) return;
     setIsLoading(true);
     try {
       setShowUnfollowDialog(false);
@@ -78,12 +53,18 @@ export function ActivityColumnFollowItem({ data }) {
     }
   };
 
+  // 3、view
   return (
     <>
       <div className="px-6 py-4 border-gray-200 bg-background  hover:bg-rs-background-hover">
         <div className="flex gap-2 items-center justify-between">
           <div className="flex gap-3 items-center">
-            <Avatar image={data.user.image} size={36} name={data.user.name} />
+            <Avatar
+              className="cursor-pointer mt-1"
+              image={data.user.image}
+              size={36}
+              name={data.user.name}
+            />
             <span className="flex flex-col">
               <span className="text-base flex gap-1.5">
                 <span className="font-semibold">{data.user.name}</span>
@@ -97,18 +78,13 @@ export function ActivityColumnFollowItem({ data }) {
           <div className="flex items-center">
             <Button
               variant={isFollowing ? 'outline' : ''}
-              // size="sm"
               className={`min-w-[100px] rounded-[10px] ${
                 isFollowing
                   ? 'hover:bg-backgroundhover border-1 text-zinc-400 hover:text-zinc-400'
                   : ''
               }`}
               onClick={() => {
-                if (isFollowing) {
-                  setShowUnfollowDialog(true);
-                } else {
-                  handleFollow();
-                }
+                isFollowing ? setShowUnfollowDialog(true) : handleFollow();
               }}
               disabled={isLoading}
             >
@@ -148,7 +124,7 @@ export function ActivityColumnFollowItem({ data }) {
               onClick={() => setShowUnfollowDialog(false)}
               className="flex-1 h-12 flex items-center justify-center cursor-pointer  hover:cursor border-r border-border"
             >
-              Cancel
+              Cancels
             </div>
             <div
               onClick={handleUnfollow}

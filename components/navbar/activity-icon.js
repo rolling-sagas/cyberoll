@@ -25,8 +25,8 @@ export default function ActivityIcon({ l1Pathname }) {
       // 立即执行一次检查
       checkActivity();
 
-      // 每30秒检查一次活动状态
-      intervalRef.current = setInterval(checkActivity, 30000);
+      // 每10秒检查一次活动状态
+      intervalRef.current = setInterval(checkActivity, 10000);
 
       // 组件卸载时清理定时器
       return () => {

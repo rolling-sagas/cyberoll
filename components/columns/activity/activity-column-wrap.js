@@ -11,71 +11,6 @@ import { ActivityColumnFollowItem } from './activity-column-follow-item';
 import { ActivityColumnLikeItem } from './activity-column-like-item';
 import { ActivityColumnSubscriptionItem } from './activity-column-subscription-item';
 
-const mockData = [
-  {
-    user: null,
-    targetUser: {
-      id: 'cm42eb9ku0000tunmf0o9dbo9',
-      name: 'Luoyeshu',
-      image: '409f5160-1fa2-4272-ab44-4b2b337cec00',
-    },
-    comment: null,
-    story: null,
-    type: 'subscription',
-    subType: ACTIVITY_SUB_TYPE.MonthlyCreditsUpdate,
-    createdAt: '2025-04-14T13:51:52.465Z',
-    extraInfo: null,
-  },
-  {
-    user: null,
-    targetUser: {
-      id: 'cm42eb9ku0000tunmf0o9dbo9',
-      name: 'Luoyeshu',
-      image: '409f5160-1fa2-4272-ab44-4b2b337cec00',
-    },
-    comment: null,
-    story: null,
-    type: 'subscription',
-    subType: ACTIVITY_SUB_TYPE.SubscriotionWillRenewal,
-    createdAt: '2025-05-14T13:51:52.465Z',
-    extraInfo: JSON.stringify({
-      end: '2025-05-14T13:53:52.465Z',
-    }),
-  },
-  {
-    user: null,
-    targetUser: {
-      id: 'cm42eb9ku0000tunmf0o9dbo9',
-      name: 'Luoyeshu',
-      image: '409f5160-1fa2-4272-ab44-4b2b337cec00',
-    },
-    comment: null,
-    story: null,
-    type: 'subscription',
-    subType: ACTIVITY_SUB_TYPE.SubscriptionWillExpire,
-    createdAt: '2025-01-14T13:51:52.465Z',
-    extraInfo: JSON.stringify({
-      end: '2025-05-14T13:51:52.465Z',
-    }),
-  },
-  {
-    user: null,
-    targetUser: {
-      id: 'cm42eb9ku0000tunmf0o9dbo9',
-      name: 'Luoyeshu',
-      image: '409f5160-1fa2-4272-ab44-4b2b337cec00',
-    },
-    comment: null,
-    story: null,
-    type: 'subscription',
-    subType: ACTIVITY_SUB_TYPE.SubscriptionSuccess,
-    createdAt: '2025-02-14T13:51:52.465Z',
-    extraInfo: JSON.stringify({
-      end: '2025-05-14T13:51:52.465Z',
-    }),
-  },
-];
-
 export default function ActivityColumnWrap({ type }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const [
@@ -108,7 +43,6 @@ export default function ActivityColumnWrap({ type }) {
     <div className="w-full h-full overflow-y-auto" onScroll={scrollHandle}>
       <div>
         {groupActivityDataByDate(activities).map((g) => {
-          g.items.unshift(...mockData);
           return g.items.length > 0 ? (
             <div key={g.duration} className="border-b-1 border-gray-200">
               <div className="px-6 py-4 border-gray-200">

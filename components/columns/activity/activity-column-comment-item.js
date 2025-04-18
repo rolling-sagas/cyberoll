@@ -29,6 +29,7 @@ export function ActivityColumnCommentItem({ data }) {
               </span>
             </span>
             <p className="mt-1 text-foreground line-clamp-3 break-words">
+              {/* TODO: 这里是否要支持富文本，比如@加粗这种 */}
               {data.comment?.content || ''}
             </p>
           </div>

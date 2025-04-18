@@ -7,7 +7,6 @@ import { useRouter } from 'next/navigation';
 
 function getRenewAndExpireDate(data) {
   const extraInfo = parseJson(data.extraInfo, '');
-  console.log('extraInfo', extraInfo);
   if (extraInfo?.end) {
     return dayjs(extraInfo?.end).format('YYYY/MM/DD');
   }
@@ -15,7 +14,6 @@ function getRenewAndExpireDate(data) {
 }
 
 function getText(subType, data) {
-  console.log({ subType, data });
   switch (subType) {
     case ACTIVITY_SUB_TYPE.MonthlyCreditsUpdate:
       return 'Your monthly credits have been updated!';

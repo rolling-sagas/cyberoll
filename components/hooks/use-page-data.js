@@ -50,7 +50,6 @@ export default function usePageData(
   };
 
   const loadmore = async (...rest) => {
-    console.log('loadmore', loading, hasMore);
     if (loading || !hasMore) return;
     try {
       setPage(page + 1);
