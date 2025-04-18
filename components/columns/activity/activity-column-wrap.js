@@ -1,3 +1,5 @@
+import BaseButton from '@/components/buttons/base-button';
+import Avatar from '@/components/common/avatar';
 import PageDataStatus from '@/components/common/page-data-status';
 import usePageData from '@/components/hooks/use-page-data';
 import StoryListSkeleton from '@/components/skeleton/story-list-skeleton';
