@@ -21,6 +21,7 @@ import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { parse } from 'best-effort-json-parser';
 import { azure } from '@/service/ai';
+import { registerWithConfig } from '@/utils/handlebars';
 
 const quickjs = new QuickJSManager();
 
@@ -38,6 +39,8 @@ export const executeScript = async (refresh = true) => {
     return;
   }
 
+  registerWithConfig(components);
+
   if (useStore.getState().rolling > 0) {
     await clearRoll();
   }
@@ -53,15 +56,11 @@ export const executeScript = async (refresh = true) => {
 
     await quickjs.initialize(functions);
     await quickjs.executeScript(useStore.getState().script, components);
-
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
       console.log('onStart messages', messages);
       await resetMessages(messages);
-
-      if (useStore.getState().autoGenerate) {
-        await generate();
-      }
+      await generate();
     } else {
       // load game session
       await loadGameSession();
@@ -188,7 +187,7 @@ export const onUserAction = async (action) => {
     if (result.messages) {
       const msg = createMessage('assistant', 'Generating...');
       const res = addMessages(result.messages, false, [msg]);
-      if (useStore.getState().autoGenerate && !result.action) {
+      if (!result.action) {
         await generate(false, msg);
       }
       await res;
@@ -202,9 +201,7 @@ export const onUserAction = async (action) => {
           const msg = createMessage('assistant', 'Generating...');
           const res = addMessages(messages, false, [msg]);
 
-          if (useStore.getState().autoGenerate) {
-            await generate(false, msg);
-          }
+          await generate(false, msg);
           await res;
           break;
       }
@@ -326,7 +323,6 @@ export const restartFromMessage = async (mid, exclude = false) => {
     }
     await loadGameSession();
     if (
-      useStore.getState().autoGenerate &&
       !isLastMessageHasTailAction(newMessages)
     ) {
       await generate(exclude);

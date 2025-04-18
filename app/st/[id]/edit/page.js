@@ -56,21 +56,15 @@ export default function Page({ params }) {
 
   useEffect(() => {
     reset();
-    const loading = useStore.getState().loading;
-    if (loading) return;
+    const storyId = useStore.getState().storyId;
+    if (storyId === id || !id) return;
     try {
-      useStore.setState(() => ({
-        loading: true,
-      }));
-      useStore.getState().reset();
-      useStore.setState(() => ({
+      useStore.getState().reset({
         storyId: id,
-      }));
+      });
       initStory(id);
-    } finally {
-      useStore.setState(() => ({
-        loading: false,
-      }));
+    } catch(e) {
+      console.error(e);
     }
   }, [addColumn, id]);
 

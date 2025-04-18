@@ -30,7 +30,6 @@ export default function Page({ params }) {
       useStore.setState(() => ({
         loading: true,
       }));
-      console.log(2, useStore.getState().loading);
       resetEditor({
         loading: true,
       });
@@ -41,7 +40,6 @@ export default function Page({ params }) {
         components: res.components,
         messages: res.messages,
         storySessionId: res.id,
-        autoGenerate: true,
       }));
       executeScript(res.messages.length === 0);
     } finally {
