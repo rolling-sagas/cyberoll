@@ -4,13 +4,11 @@ import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
 import { toggleFollowUser } from '@/service/relation';
 import dayjs from 'dayjs';
 import { Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 
 export function ActivityColumnFollowItem({ data }) {
   // 0、init var
-  const router = useRouter();
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
@@ -30,9 +28,7 @@ export function ActivityColumnFollowItem({ data }) {
       await toggleFollowUser(data.user.id, true);
       setIsFollowing(true);
     } catch (error) {
-      toast.error('Following failed', {
-        id: tid,
-      });
+      toast.error('Following failed');
     } finally {
       setIsLoading(false);
     }
@@ -62,7 +58,7 @@ export function ActivityColumnFollowItem({ data }) {
             <Avatar
               className="cursor-pointer mt-1"
               image={data.user.image}
-              size={36}
+              size={40}
               name={data.user.name}
             />
             <span className="flex flex-col">
@@ -126,13 +122,13 @@ export function ActivityColumnFollowItem({ data }) {
               onClick={() => setShowUnfollowDialog(false)}
               className="flex-1 h-12 flex items-center justify-center cursor-pointer  hover:cursor border-r border-border"
             >
-              Cancels
+              Cancel
             </div>
             <div
               onClick={handleUnfollow}
               className="flex-1 h-12 flex items-center justify-center cursor-pointer text-destructive font-semibold hover:cursor"
             >
-              Unfollow
+              Unfollowed
             </div>
           </div>
         </AlertDialogContent>

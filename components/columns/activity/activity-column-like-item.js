@@ -19,7 +19,7 @@ export function ActivityColumnLikeItem({ data, subType }) {
           <Avatar
             className="cursor-pointer mt-1"
             image={data.user.image}
-            size={36}
+            size={40}
             name={data.user.name}
           />
           <span className="flex flex-col">
