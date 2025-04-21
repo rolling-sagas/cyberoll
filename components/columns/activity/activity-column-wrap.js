@@ -7,6 +7,7 @@ import { getActivities } from '@/service/activity';
 import useUserStore from '@/stores/user';
 import { ACTIVITY_SUB_TYPE, groupActivityDataByDate } from '@/utils/activity';
 import debounce from 'lodash/debounce';
+import { mockSubscriptionItems } from 'mock/activity';
 import { useEffect } from 'react';
 import { ActivityColumnCommentItem } from './activity-column-comment-item';
 import { ActivityColumnFollowItem } from './activity-column-follow-item';
@@ -50,7 +51,9 @@ export default function ActivityColumnWrap({ type }) {
               <div className="px-6 py-4 border-gray-200">
                 <span className="font-semibold">{g.duration}</span>
               </div>
-              {g.items.map((item) => {
+              {/* {g.items.map((item) => { */}
+              {/* TODO: remove mock data */}
+              {[...g.items, ...mockSubscriptionItems].map((item) => {
                 switch (item?.subType) {
                   case ACTIVITY_SUB_TYPE.Like:
                   case ACTIVITY_SUB_TYPE.FirstPlayStory:

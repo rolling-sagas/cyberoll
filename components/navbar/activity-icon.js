@@ -53,7 +53,7 @@ export default function ActivityIcon({ l1Pathname }) {
       {hasNewActivity && l1Pathname !== 'a' && (
         <Badge
           variant="destructive"
-          className="absolute -top-1 -right-1 h-2 w-2 p-0"
+          className="absolute top-[0.1rem] -right-[0.1rem] h-2 w-2 p-0"
         />
       )}
     </div>

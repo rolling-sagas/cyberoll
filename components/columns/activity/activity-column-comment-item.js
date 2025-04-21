@@ -13,12 +13,12 @@ export function ActivityColumnCommentItem({ data }) {
         router.push(`/st/${data.story.id}`);
       }}
     >
-      <div className="flex gap-2 items-center justify-between">
+      <div className="flex gap-x-[60px] items-center justify-between">
         <div className="flex gap-3 items-top">
           <Avatar
             className="cursor-pointer mt-1"
             image={data.user.image}
-            size={36}
+            size={40}
             name={data.user.name}
           />
           <div className="flex-1 min-w-0">
