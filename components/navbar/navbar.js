@@ -5,32 +5,31 @@ import {
   CrownIcon,
   Home02Icon,
   Menu08Icon,
-  UserIcon,
   Notebook01Icon,
   PlusSignIcon,
+  UserIcon,
 } from '@hugeicons/react';
 
 import Link from 'next/link';
 
-import './navbar.css';
-import NavButton from './nav-button';
 import HoverButton from './hover-button';
+import NavButton from './nav-button';
+import './navbar.css';
 
-import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import PinButton from './pin-button';
-import useUserStore from '@/stores/user';
-import { onCreateClick } from '../columns/stories/story-action';
-import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import { onLoginOut } from './login-out-action';
+import useUserStore from '@/stores/user';
+import { useRouter } from 'next/navigation';
+import { onCreateClick } from '../columns/stories/story-action';
 import ActivityIcon from './activity-icon';
+import { onLoginOut } from './login-out-action';
 
 export default function NavBar() {
   const pathname = usePathname();
