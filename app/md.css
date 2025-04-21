@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .markdown-content {
+    @apply prose prose-slate dark:prose-invert max-w-none;
+  }
+
+  .markdown-content h1 {
+    @apply text-center text-4xl font-bold mb-16 last:mb-0 text-rs-text-primary font-medium;
+  }
+
+  .markdown-content h2 {
+    @apply text-2xl font-semibold mt-12 mb-8 text-rs-text-primary font-medium;
+  }
+
+  .markdown-content h3 {
+    @apply text-xl font-medium mt-8 mb-6 text-rs-text-primary font-medium;
+  }
+
+  .markdown-content p {
+    @apply my-6 text-rs-text-primary leading-relaxed text-[17px];
+  }
+
+  .markdown-content ul,
+  .markdown-content ol {
+    @apply my-4 pl-6 text-rs-text-primary text-[17px] leading-[1.6];
+  }
+
+  .markdown-content li {
+    @apply my-2;
+  }
+
+  .markdown-content a {
+    @apply text-rs-blue hover:text-rs-blue/80 transition-colors;
+  }
+
+  .markdown-content blockquote {
+    @apply border-l-4 border-rs-border pl-4 my-4 italic text-rs-text-tertiary;
+  }
+
+  .markdown-content code {
+    @apply bg-rs-background-3 px-2 py-1 rounded text-sm font-mono text-rs-text-primary;
+  }
+
+  .markdown-content pre {
+    @apply bg-rs-background-3 p-4 rounded-lg my-4 overflow-x-auto;
+  }
+
+  .markdown-content pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .markdown-content table {
+    @apply w-full my-4 border-collapse;
+  }
+
+  .markdown-content th,
+  .markdown-content td {
+    @apply border border-rs-border px-4 py-2 text-rs-text-secondary;
+  }
+
+  .markdown-content th {
+    @apply bg-rs-background-3 font-semibold;
+  }
+
+  .markdown-content img {
+    @apply my-4 rounded-lg mx-auto;
+  }
+
+  .markdown-content hr {
+    @apply my-8 border-rs-border;
+  }
+}
