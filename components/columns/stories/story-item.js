@@ -6,8 +6,10 @@ import {
 } from '@/app/components/ui/dropdown-menu';
 import HoverButton from '@/components/buttons/hover-button';
 import Avatar from '@/components/common/avatar';
+import UserName from '@/components/common/user-name';
 import { useModalStore } from '@/components/modal/dialog-placeholder';
 import CopyLinkItem from '@/components/popover/copy-link-item';
+import DropdownWrap from '@/components/popover/dropdown-wrap';
 import { Button } from '@/components/ui/button';
 import { createSession } from '@/service/session';
 import { dislikeStory, likeStory } from '@/service/story';
@@ -31,7 +33,6 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import Image from '../../common/custom-image';
 import ResumeSession from './resume-session';
-import DropdownWrap from '@/components/popover/dropdown-wrap';
 export default function StoryItem({
   story,
   showLike = true,
@@ -90,15 +91,18 @@ export default function StoryItem({
     <div className="px-6 py-4 border-b-1 border-gray-200 last:border-none">
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-3 items-center">
-          <Link href={`/u/${story.author?.id}`}>
-            <Avatar
-              image={story.author?.image}
-              size={36}
-              name={story.author?.name}
-            />
-          </Link>
+          <Avatar
+            image={story.author?.image}
+            size={36}
+            name={story.author?.name}
+            uid={story.author?.id}
+          />
           <span className="text-base flex gap-1.5">
-            <span className="font-semibold">{story.author?.name}</span>
+            <UserName
+              name={story.author?.name}
+              uid={story.author?.id}
+              className="font-semibold cursor-pointer"
+            />
             <span className="text-zinc-400 font-light">
               {dayjs(story.updatedAt).fromNow()}
             </span>

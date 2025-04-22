@@ -3,6 +3,7 @@
 import HoverButton from '@/components/buttons/hover-button';
 import Avatar from '@/components/common/avatar';
 import NoData from '@/components/common/no-data';
+import UserName from '@/components/common/user-name';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
 import {
   DropdownMenu,
@@ -18,7 +19,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 import Spinner from '../spinner';
 import AddComment from './add-comment';
-
 export default function Comments({ sid }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const confirm = useAlertStore((state) => state.confirm);
@@ -85,14 +85,17 @@ export default function Comments({ sid }) {
               image={c.user.image}
               name={c.user.name}
               size={24}
-              className="mt-2 flex-none"
+              className="mt-2 flex-none cursor-pointer"
+              uid={c.user.id}
             />
             <div className="w-full mr-3">
               <div className="flex justify-between">
                 <div>
-                  <strong className="font-semibold text-sm mr-2">
-                    {c.user.name}
-                  </strong>
+                  <UserName
+                    name={c.user.name}
+                    uid={c.user.id}
+                    className="font-semibold text-sm mr-2"
+                  />
                   <span className="text-xs mt-2 text-gray-500">
                     {dayjs(c.createdAt).fromNow(true)}
                   </span>
