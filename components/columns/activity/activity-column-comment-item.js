@@ -4,6 +4,13 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import Image from '../../common/custom-image';
 
+function getCommentContent(content = '') {
+  if (content.indexOf('commented') === 0) {
+    return content;
+  }
+  return `commented: ${content}`;
+}
+
 export function ActivityColumnCommentItem({ data }) {
   const router = useRouter();
   return (
@@ -30,7 +37,7 @@ export function ActivityColumnCommentItem({ data }) {
             </span>
             <p className="mt-1 text-foreground line-clamp-3 break-words">
               {/* TODO: 这里是否要支持富文本，比如@加粗这种 */}
-              {data.comment?.content || ''}
+              {getCommentContent(data.comment?.content || '')}
             </p>
           </div>
         </div>

@@ -32,9 +32,9 @@ export function ActivityColumnLikeItem({ data, subType }) {
             <span className="">
               {subType === ACTIVITY_SUB_TYPE.Like && 'liked your story.'}
               {subType === ACTIVITY_SUB_TYPE.FirstPlayStory &&
-                `${data.user.name} played ${data.story.name} for the first time.`}
+                `played ${data.story.name} for the first time.`}
               {subType === ACTIVITY_SUB_TYPE.PublishStory &&
-                `${data.user.name} published a new story.`}
+                `published a new story.`}
             </span>
           </span>
         </div>

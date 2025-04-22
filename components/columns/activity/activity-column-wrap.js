@@ -10,7 +10,6 @@ import { ActivityColumnCommentItem } from './activity-column-comment-item';
 import { ActivityColumnFollowItem } from './activity-column-follow-item';
 import { ActivityColumnLikeItem } from './activity-column-like-item';
 import { ActivityColumnSubscriptionItem } from './activity-column-subscription-item';
-
 export default function ActivityColumnWrap({ type }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const [
@@ -24,7 +23,7 @@ export default function ActivityColumnWrap({ type }) {
     _reset,
     _pageData,
     resetByRest,
-  ] = usePageData(getActivities, 10, 'activitys');
+  ] = usePageData(getActivities, 15, 'activitys');
 
   useEffect(() => {
     if (userInfo) {
@@ -102,6 +101,7 @@ export default function ActivityColumnWrap({ type }) {
         loadMoreHandle={() => loadMore()}
         noMoreData={!hasMore}
         loadingComp={<StoryListSkeleton />}
+        loadMoreComp={<div></div>}
         noDataComp={
           <div>
             {type === 'subscription'
