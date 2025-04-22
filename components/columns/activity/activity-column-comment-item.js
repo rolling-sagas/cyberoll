@@ -1,4 +1,5 @@
 import Avatar from '@/components/common/avatar';
+import UserName from '@/components/common/user-name';
 import { getImageUrl } from '@/utils/utils';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
@@ -27,10 +28,15 @@ export function ActivityColumnCommentItem({ data }) {
             image={data.user.image}
             size={40}
             name={data.user.name}
+            uid={data?.user?.id}
           />
           <div className="flex-1 min-w-0">
             <span className="text-base flex gap-1.5">
-              <span className="font-semibold">{data.user.name}</span>
+              <UserName
+                name={data.user.name}
+                uid={data?.user?.id}
+                className="font-semibold cursor-pointer"
+              />
               <span className="text-zinc-400 font-light">
                 {dayjs(data.createdAt).fromNow()}
               </span>

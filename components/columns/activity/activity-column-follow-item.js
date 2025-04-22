@@ -1,5 +1,6 @@
 import { Button } from '@/app/components/ui/button';
 import Avatar from '@/components/common/avatar';
+import UserName from '@/components/common/user-name';
 import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
 import { toggleFollowUser } from '@/service/relation';
 import dayjs from 'dayjs';
@@ -60,10 +61,15 @@ export function ActivityColumnFollowItem({ data }) {
               image={data.user.image}
               size={40}
               name={data.user.name}
+              uid={data?.user?.id}
             />
             <span className="flex flex-col">
               <span className="text-base flex gap-1.5">
-                <span className="font-semibold">{data.user.name}</span>
+                <UserName
+                  name={data.user.name}
+                  uid={data?.user?.id}
+                  className="font-semibold cursor-pointer"
+                />
                 <span className="text-zinc-400 font-light">
                   {dayjs(data.createdAt).fromNow()}
                 </span>
