@@ -1,21 +1,21 @@
-import Image from '../../common/custom-image';
-import { MoreHorizontalIcon, Delete01Icon, PlayIcon } from '@hugeicons/react';
-import { getImageUrl } from '@/utils/utils';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import { deleteSession } from '@/service/session';
-import Avatar from '@/components/common/avatar';
-import Link from 'next/link';
-import dayjs from '@/utils/day';
 import HoverButton from '@/components/buttons/hover-button';
+import Avatar from '@/components/common/avatar';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
+import { deleteSession } from '@/service/session';
+import dayjs from '@/utils/day';
+import { getImageUrl } from '@/utils/utils';
+import { Delete01Icon, MoreHorizontalIcon } from '@hugeicons/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import toast from 'react-hot-toast/headless';
+import Image from '../../common/custom-image';
 
 export default function SessionItem({ session, onDelete, lastPlayed = false }) {
   const router = useRouter();
@@ -81,9 +81,13 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
                 className="h-11 rounded-xl px-3 text-base"
                 onClick={del}
               >
-                <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
+                <div className="flex gap-2 justify-between w-full cursor-pointer font-semibold text-red-500">
                   Delete
-                  <Delete01Icon size={20} />
+                  <Delete01Icon
+                    size={20}
+                    strokeWidth={2}
+                    className="text-red-500"
+                  />
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
