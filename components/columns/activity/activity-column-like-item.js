@@ -34,10 +34,13 @@ export function ActivityColumnLikeItem({ data, subType }) {
                 {dayjs(data.createdAt).fromNow()}
               </span>
             </span>
-            <span className="">
+            <span>
               {subType === ACTIVITY_SUB_TYPE.Like && 'liked your story.'}
-              {subType === ACTIVITY_SUB_TYPE.FirstPlayStory &&
-                `played ${data.story.name} for the first time.`}
+              {subType === ACTIVITY_SUB_TYPE.FirstPlayStory && (
+                <span>
+                  played <strong>{data.story.name}</strong> for the first time.
+                </span>
+              )}
               {subType === ACTIVITY_SUB_TYPE.PublishStory &&
                 `published a new story.`}
             </span>
