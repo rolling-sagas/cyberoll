@@ -14,7 +14,7 @@ import {
 import { deleteComment, getComments } from '@/service/comment';
 import useUserStore from '@/stores/user';
 import dayjs from '@/utils/day';
-import { MoreHorizontalIcon, TrashIcon } from 'lucide-react';
+import { Delete01Icon, MoreHorizontalIcon } from '@hugeicons/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 import Spinner from '../spinner';
@@ -122,7 +122,11 @@ export default function Comments({ sid }) {
                         >
                           <div className="flex gap-2 justify-between w-full cursor-pointer font-semibold text-red-500">
                             <span>Delete</span>
-                            <TrashIcon size={20} className="text-red-500" />
+                            <Delete01Icon
+                              size={20}
+                              strokeWidth={2}
+                              className="text-red-500"
+                            />
                           </div>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
