@@ -32,8 +32,15 @@ function getText(subType, data) {
   }
 }
 
+// TODO: 现在订阅还没好，等好了再放开
+const CAN_PUBLISH = false;
+
 export function ActivityColumnSubscriptionItem({ data, subType }) {
   const router = useRouter();
+
+  if (!CAN_PUBLISH) {
+    return null;
+  }
 
   return (
     <div
