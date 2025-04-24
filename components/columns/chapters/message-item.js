@@ -1,5 +1,5 @@
 import dayjs from '@/utils/day';
-import mustache from 'mustache'
+import { renderTemplate } from '@/utils/handlebars';
 
 import {
   ArrowDown02Icon,
@@ -115,7 +115,7 @@ export default function MessageItem({
         {!foldContent &&
           (raw || message.role === "system" ? (
             <div className="whitespace-pre-wrap">{
-              mustache.render(message.content, ArrayToKeyValue(components))
+              renderTemplate(message.content, ArrayToKeyValue(components))
             }</div>
           ) : (
             <MessageContent

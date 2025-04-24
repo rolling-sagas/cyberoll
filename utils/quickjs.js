@@ -1,7 +1,7 @@
-import Mustache from 'mustache';
 import { nanoid } from 'nanoid';
 import variant from '@jitl/quickjs-singlefile-browser-release-sync';
 import { newQuickJSWASMModuleFromVariant } from 'quickjs-emscripten-core';
+import { renderTemplate } from './handlebars';
 
 export default class QuickJSManager {
   constructor() {
@@ -85,7 +85,7 @@ export default class QuickJSManager {
       const nativeTemplate = this.context.dump(template);
       const nativeValue = this.context.dump(value);
       return this.context.newString(
-        Mustache.render(nativeTemplate, nativeValue)
+        renderTemplate(nativeTemplate, nativeValue)
       );
     });
 

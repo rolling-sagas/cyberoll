@@ -21,6 +21,7 @@ import { resetSession } from '@/service/session';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { parse } from 'best-effort-json-parser';
 import { azure } from '@/service/ai';
+import { registerWithConfig } from '@/utils/handlebars';
 
 const quickjs = new QuickJSManager();
 
@@ -38,6 +39,8 @@ export const executeScript = async (refresh = true) => {
     return;
   }
 
+  registerWithConfig(components);
+
   if (useStore.getState().rolling > 0) {
     await clearRoll();
   }
@@ -53,12 +56,11 @@ export const executeScript = async (refresh = true) => {
 
     await quickjs.initialize(functions);
     await quickjs.executeScript(useStore.getState().script, components);
-
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
       console.log('onStart messages', messages);
       await resetMessages(messages);
-      if (messages?.length) await generate();
+      await generate();
     } else {
       // load game session
       await loadGameSession();

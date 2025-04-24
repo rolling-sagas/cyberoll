@@ -3,34 +3,32 @@
 import {
   CinnamonRollIcon,
   CrownIcon,
-  FavouriteIcon,
   Home02Icon,
   Menu08Icon,
-  Search01Icon,
-  UserIcon,
   Notebook01Icon,
   PlusSignIcon,
+  UserIcon,
 } from '@hugeicons/react';
 
 import Link from 'next/link';
 
-import './navbar.css';
-import NavButton from './nav-button';
 import HoverButton from './hover-button';
+import NavButton from './nav-button';
+import './navbar.css';
 
-import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import PinButton from './pin-button';
-import useUserStore from '@/stores/user';
-import { onCreateClick } from '../columns/stories/story-action';
-import { useRouter } from 'next/navigation';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
+import useUserStore from '@/stores/user';
+import { useRouter } from 'next/navigation';
+import { onCreateClick } from '../columns/stories/story-action';
+import ActivityIcon from './activity-icon';
 import { onLoginOut } from './login-out-action';
 
 export default function NavBar() {
@@ -81,15 +79,9 @@ export default function NavBar() {
               scale-100 bg-rs-background-hover"
           />
         </span>
-        {/* <NavButton href="/">
-          <Search01Icon strokeWidth={l1Pathname === 'search' ? '3' : '2'} />
+        <NavButton href="/a" active={l1Pathname === 'a'}>
+          <ActivityIcon l1Pathname={l1Pathname} />
         </NavButton>
-        <NavButton href="/">
-          <FavouriteIcon
-            strokeWidth="2"
-            variant={l1Pathname === 'search' ? 'solid' : 'stroke'}
-          />
-        </NavButton> */}
         <NavButton href="/u/_" active={l1Pathname === 'u'}>
           <UserIcon
             strokeWidth="2"
@@ -98,7 +90,6 @@ export default function NavBar() {
         </NavButton>
       </div>
       <div className="nav mb-6">
-        {/* <PinButton /> */}
         <NavButton href={subscription?.type === 'free' ? '/pricing' : '/plan'}>
           <CrownIcon
             strokeWidth="2"

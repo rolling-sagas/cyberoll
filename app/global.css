@@ -6,14 +6,8 @@ body {
   @apply transition-colors duration-200 bg-rs-background-1 text-rs-text-primary 
   text-base antialiased w-screen h-screen;
   overscroll-behavior-y: contain;
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, Roboto, Helvetica,
+    Arial, sans-serif;
 }
 
 input {
@@ -70,7 +64,7 @@ input {
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 240 5% 64.9%
+    --sidebar-ring: 240 5% 64.9%;
   }
   .dark {
     --background: 240 10% 3.9%;
@@ -104,7 +98,7 @@ input {
     --sidebar-accent: 240 3.7% 15.9%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 240 4.9% 83.9%
+    --sidebar-ring: 240 4.9% 83.9%;
   }
 }
 @layer base {

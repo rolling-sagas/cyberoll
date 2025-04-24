@@ -1,6 +1,6 @@
-import NoData from './no-data';
-import Spinner from '../columns/spinner';
 import { Button } from '@/app/components/ui/button';
+import Spinner from '../columns/spinner';
+import NoData from './no-data';
 
 export default function PageDataStatus({
   loading = false,

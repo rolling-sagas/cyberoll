@@ -1,19 +1,20 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
-import Head from 'next/head';
 import NavBar from '@/components/navbar/navbar';
+import Head from 'next/head';
+import { usePathname } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
 
-import { useThemeStore, applyTheme } from '@/components/tailwind/store';
-import { light, dark } from '@/components/tailwind/themeColors';
+import { applyTheme, useThemeStore } from '@/components/tailwind/store';
+import { light } from '@/components/tailwind/themeColors';
 
 import { DialogPlaceholder } from '@/components/modal/dialog-placeholder';
 
 import './global.css';
 
-import { ToastPlaceholder } from '@/components/modal/toast-placeholder';
-import { AlertPlaceholder } from '@/components/modal/alert-placeholder';
 import SubscriptionCheck from '@/components/common/subscription-check';
+import { AlertPlaceholder } from '@/components/modal/alert-placeholder';
+import { ToastPlaceholder } from '@/components/modal/toast-placeholder';
 import useUserStore from '@/stores/user';
 // import Router from 'next/router';
 // import { usePathname } from "next/navigation";
@@ -21,6 +22,7 @@ import useUserStore from '@/stores/user';
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
   const userStore = useUserStore();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (
@@ -53,6 +55,19 @@ export default function RootLayout({ children }) {
   useEffect(() => {
     userStore.getUserInfo();
   }, []);
+
+  // 如果是在 doc 路径下，直接返回 children
+  if (pathname?.startsWith('/doc')) {
+    return (
+      <html lang="en">
+        <Head>
+          <link rel="icon" href="/favicon.ico" sizes="any" />
+          <title>Rolling Sagas Playground</title>
+        </Head>
+        <body suppressHydrationWarning={true}>{children}</body>
+      </html>
+    );
+  }
 
   return (
     <html lang="en">
