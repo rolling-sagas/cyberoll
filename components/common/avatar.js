@@ -24,6 +24,7 @@ export default function Avatar({
         width: `${size}px`,
         height: `${size}px`,
         minWidth: `${size}px`,
+        minHeight: `${size}px`,
         ...(url ? { backgroundImage: `url(${url})` } : {}),
       }}
       title={name}
