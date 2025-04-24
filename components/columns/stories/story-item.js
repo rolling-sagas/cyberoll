@@ -143,7 +143,7 @@ export default function StoryItem({
                   className="h-11 rounded-xl px-3 text-base"
                   onClick={onDeleteClick}
                 >
-                  <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500">
+                  <div className="flex gap-10 justify-between w-full cursor-pointer text-red-500 font-semibold">
                     Delete
                     <Delete01Icon size={20} />
                   </div>

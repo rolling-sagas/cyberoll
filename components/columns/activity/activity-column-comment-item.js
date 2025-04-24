@@ -47,11 +47,11 @@ export function ActivityColumnCommentItem({ data }) {
           </div>
         </div>
         <div className="flex gap-2 items-top">
-          <div className="w-10 h-10 rounded-md overflow-hidden">
+          <div className="w-[42px] h-[42px] rounded-md overflow-hidden">
             <Image
               src={getImageUrl(data.story.image)}
-              width={40}
-              height={40}
+              width={42}
+              height={42}
               alt={data.story.name}
               objectFit="cover"
               className="rounded-lg"
