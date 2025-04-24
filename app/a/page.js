@@ -25,10 +25,10 @@ const ActivityDropdownItems = [
     label: 'Social',
     value: 'social',
   },
-  {
-    label: 'Subscription',
-    value: 'subscription',
-  },
+  // {
+  //   label: 'Subscription',
+  //   value: 'subscription',
+  // },
 ];
 
 export default function Page() {

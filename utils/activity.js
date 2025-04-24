@@ -26,19 +26,22 @@ function groupActivityDataByDate(data) {
     { duration: 'Earlier', items: [] },
   ];
 
-  return data.reduce((acc, item) => {
-    const date = dayjs(item.createdAt);
-    if (date >= today) {
-      acc[0].items.push(item);
-    } else if (date >= thisWeek) {
-      acc[1].items.push(item);
-    } else if (date >= thisMonth) {
-      acc[2].items.push(item);
-    } else {
-      acc[3].items.push(item);
-    }
-    return acc;
-  }, groups);
+  // TODO: 这次只上social
+  return data
+    .filter((item) => item.type === 'social')
+    .reduce((acc, item) => {
+      const date = dayjs(item.createdAt);
+      if (date >= today) {
+        acc[0].items.push(item);
+      } else if (date >= thisWeek) {
+        acc[1].items.push(item);
+      } else if (date >= thisMonth) {
+        acc[2].items.push(item);
+      } else {
+        acc[3].items.push(item);
+      }
+      return acc;
+    }, groups);
 }
 
 export { groupActivityDataByDate };
