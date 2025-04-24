@@ -45,7 +45,7 @@ export function ActivityColumnFollowItem({ data }) {
     } catch (error) {
       toast.error('Unfollowing failed');
     } finally {
-      toast.success('Unfollowing success');
+      toast.success('Unfollowed');
       setIsLoading(false);
     }
   };
@@ -80,7 +80,7 @@ export function ActivityColumnFollowItem({ data }) {
           <div className="flex items-center">
             <Button
               variant={isFollowing ? 'outline' : ''}
-              className={`min-w-[100px] rounded-[10px] ${
+              className={`min-w-[120px] rounded-[10px] ${
                 isFollowing
                   ? 'hover:bg-backgroundhover border-1 text-zinc-400 hover:text-zinc-400'
                   : ''
@@ -134,7 +134,7 @@ export function ActivityColumnFollowItem({ data }) {
               onClick={handleUnfollow}
               className="flex-1 h-12 flex items-center justify-center cursor-pointer text-destructive font-semibold hover:cursor"
             >
-              Unfollowed
+              Unfollow
             </div>
           </div>
         </AlertDialogContent>

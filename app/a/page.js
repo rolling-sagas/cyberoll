@@ -13,7 +13,6 @@ import CircleIconButton from '@/components/buttons/circle-icon-button';
 import Column from '@/components/column/column';
 import ActivityColumnWrap from '@/components/columns/activity/activity-column-wrap';
 import { useColumnsStore } from '@/components/columns/pinned-columns';
-import Back from '@/components/common/back';
 import { ArrowDown01Icon, Tick02Icon } from '@hugeicons/react';
 import { useEffect, useState } from 'react';
 
@@ -41,7 +40,8 @@ export default function Page() {
   return (
     <PinnedColumns>
       <Column
-        headerLeft={<Back />}
+        // headerLeft={<Back />}
+        headerLeft={null}
         headerCenter={
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none" asChild>

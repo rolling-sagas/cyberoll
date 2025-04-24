@@ -21,7 +21,7 @@ export function ActivityColumnCommentItem({ data }) {
         router.push(`/st/${data.story.id}`);
       }}
     >
-      <div className="flex gap-x-[60px] items-center justify-between">
+      <div className="flex gap-x-[60px] items-top justify-between">
         <div className="flex gap-3 items-top">
           <Avatar
             className="cursor-pointer mt-1"
@@ -41,17 +41,17 @@ export function ActivityColumnCommentItem({ data }) {
                 {dayjs(data.createdAt).fromNow()}
               </span>
             </span>
-            <p className="mt-1 text-foreground line-clamp-3 break-words">
+            <p className="mt-1 text-foreground line-clamp-2 break-words">
               {getCommentContent(data.comment?.content || '')}
             </p>
           </div>
         </div>
-        <div className="flex gap-2 items-top">
-          <div className="w-10 h-10 rounded-md overflow-hidden">
+        <div className="flex gap-2 items-top mt-1">
+          <div className="w-[42px] h-[42px] rounded-md overflow-hidden">
             <Image
               src={getImageUrl(data.story.image)}
-              width={40}
-              height={40}
+              width={42}
+              height={42}
               alt={data.story.name}
               objectFit="cover"
               className="rounded-lg"
