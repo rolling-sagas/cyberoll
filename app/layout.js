@@ -18,6 +18,7 @@ import { ToastPlaceholder } from '@/components/modal/toast-placeholder';
 import useUserStore from '@/stores/user';
 // import Router from 'next/router';
 // import { usePathname } from "next/navigation";
+import FirebaseInit from '@/components/firbase/firebase-init';
 
 export default function RootLayout({ children }) {
   const theme = useThemeStore((state) => state.theme);
@@ -64,7 +65,10 @@ export default function RootLayout({ children }) {
           <link rel="icon" href="/favicon.ico" sizes="any" />
           <title>Rolling Sagas Playground</title>
         </Head>
-        <body suppressHydrationWarning={true}>{children}</body>
+        <body suppressHydrationWarning={true}>
+          <FirebaseInit />
+          {children}
+        </body>
       </html>
     );
   }
@@ -81,6 +85,7 @@ export default function RootLayout({ children }) {
           <div className="flex overflow-y-hidden overflow-x-auto px-5 w-full">
             <div className="block min-w-[76px]" />
             <div className="flex flex-row flex-grow gap-3 justify-center">
+              <FirebaseInit />
               {children}
             </div>
             <div className="block min-w-[76px]" />
