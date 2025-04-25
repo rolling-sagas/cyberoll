@@ -1,3 +1,6 @@
+'use client';
+export const runtime = 'edge';
+
 import termsOfServicesMDContent from '@/components/doc/md/terms-of-services';
 import { MarkdownRenderer } from '@/components/markdown/markdown-renderer';
 
