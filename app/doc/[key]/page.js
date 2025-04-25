@@ -1,20 +1,35 @@
 'use client';
 export const runtime = 'edge';
 
+import privacyPolicyMDContent from '@/components/doc/md/privacy-policy';
+import rulesOfConductMDContent from '@/components/doc/md/rules-of-conduct';
 import termsOfServicesMDContent from '@/components/doc/md/terms-of-services';
 import { MarkdownRenderer } from '@/components/markdown/markdown-renderer';
 
 const defaultContent = 'Content not found';
 
 function getContentByKey(key) {
-  console.log({ key });
-  switch (key) {
-    case 'terms-of-services':
-      return termsOfServicesMDContent;
-    default:
-      return defaultContent;
-  }
+  const doc = docs.find((doc) => doc.key === key);
+  return doc?.content || defaultContent;
 }
+
+export const docs = [
+  {
+    key: 'terms-of-services',
+    title: 'Terms of Services',
+    content: termsOfServicesMDContent,
+  },
+  {
+    key: 'privacy-policy',
+    title: 'Privacy Policy',
+    content: privacyPolicyMDContent,
+  },
+  {
+    key: 'rules-of-conduct',
+    title: 'Rules of Conduct',
+    content: rulesOfConductMDContent,
+  },
+];
 
 export default function DocPage({ params }) {
   const { key } = params;
