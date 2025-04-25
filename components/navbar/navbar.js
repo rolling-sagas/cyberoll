@@ -36,6 +36,8 @@ import { useRouter } from 'next/navigation';
 import { onCreateClick } from '../columns/stories/story-action';
 import ActivityIcon from './activity-icon';
 import { onLoginOut } from './login-out-action';
+import { onReportProblem } from './report-problem-action';
+
 export default function NavBar() {
   const pathname = usePathname();
   const [l1Pathname, setL1Pathname] = useState('');
@@ -138,14 +140,14 @@ export default function NavBar() {
               </DropdownMenuSub>
             </DropdownMenuGroup>
             {/* <DropdownMenuSeparator /> */}
-            {/* <DropdownMenuItem
+            <DropdownMenuItem
               className="h-11 rounded-xl px-3 text-base font-semibold"
-              onClick={onReportProblem}
+              onClick={() => onReportProblem({ type: 'app' })}
             >
               <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-rs-text-primary">
                 Report a problem
               </div>
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="h-11 rounded-xl px-3 text-base font-semibold"
               onClick={onLoginOut}

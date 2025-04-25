@@ -1,11 +1,11 @@
 'use client';
 export const runtime = 'edge';
 
+import cookiesPolicyMDContent from '@/components/doc/md/cookies-policy';
 import privacyPolicyMDContent from '@/components/doc/md/privacy-policy';
 import rulesOfConductMDContent from '@/components/doc/md/rules-of-conduct';
 import termsOfServicesMDContent from '@/components/doc/md/terms-of-services';
 import { MarkdownRenderer } from '@/components/markdown/markdown-renderer';
-
 const defaultContent = 'Content not found';
 
 function getContentByKey(key) {
@@ -28,6 +28,11 @@ export const docs = [
     key: 'rules-of-conduct',
     title: 'Rules of Conduct',
     content: rulesOfConductMDContent,
+  },
+  {
+    key: 'cookies-policy',
+    title: 'Cookies Policy',
+    content: cookiesPolicyMDContent,
   },
 ];
 
