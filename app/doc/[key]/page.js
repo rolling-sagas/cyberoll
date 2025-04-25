@@ -1,6 +1,7 @@
 'use client';
 export const runtime = 'edge';
 
+import privacyPolicyMDContent from '@/components/doc/md/privacy-policy';
 import termsOfServicesMDContent from '@/components/doc/md/terms-of-services';
 import { MarkdownRenderer } from '@/components/markdown/markdown-renderer';
 
@@ -11,6 +12,8 @@ function getContentByKey(key) {
   switch (key) {
     case 'terms-of-services':
       return termsOfServicesMDContent;
+    case 'privacy-policy':
+      return privacyPolicyMDContent;
     default:
       return defaultContent;
   }
