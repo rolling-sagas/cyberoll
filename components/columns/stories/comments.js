@@ -19,6 +19,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 import Spinner from '../spinner';
 import AddComment from './add-comment';
+import { onReportProblem } from '@/components/navbar/report-problem-action';
+import { FEEDBACK_TYPE } from '@/service/feedback';
+import { AlertSquareIcon } from '@hugeicons/react';
+
 export default function Comments({ sid }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const confirm = useAlertStore((state) => state.confirm);
@@ -100,21 +104,38 @@ export default function Comments({ sid }) {
                     {dayjs(c.createdAt).fromNow(true)}
                   </span>
                 </div>
-                {c.user.id === userInfo?.id && (
-                  <div>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className="outline-none">
-                        <HoverButton className="-mr-[9px] -mt-1.5">
-                          <MoreHorizontalIcon
-                            size={21}
-                            className="text-rs-text-secondary"
-                          />
-                        </HoverButton>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent
-                        align="end"
-                        className="rounded-2xl p-2 w-52"
+                <div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="outline-none">
+                      <HoverButton className="-mr-[9px] -mt-1.5">
+                        <MoreHorizontalIcon
+                          size={21}
+                          className="text-rs-text-secondary"
+                        />
+                      </HoverButton>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="rounded-2xl p-2 w-52"
+                    >
+                      <DropdownMenuItem
+                        className="h-11 rounded-xl px-3 text-base font-semibold"
+                        onClick={() =>
+                          onReportProblem({
+                            title: 'Report Comment',
+                            type: FEEDBACK_TYPE.COMMENT,
+                            data: {
+                              commentId: c.id,
+                            },
+                          })
+                        }
                       >
+                        <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+                          Report
+                          <AlertSquareIcon size={20} />
+                        </div>
+                      </DropdownMenuItem>
+                      {c.user.id === userInfo?.id && (
                         <DropdownMenuItem
                           disabled={loading}
                           className="h-11 rounded-xl px-3 text-base"
@@ -129,10 +150,10 @@ export default function Comments({ sid }) {
                             />
                           </div>
                         </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
               <div className="font-normal line-14 text-14px">{c.content}</div>
             </div>
