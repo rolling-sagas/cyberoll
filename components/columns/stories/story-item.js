@@ -27,12 +27,16 @@ import {
   Share01Icon,
   ViewIcon,
   ViewOffIcon,
+  AlertSquareIcon,
 } from '@hugeicons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import Image from '../../common/custom-image';
 import ResumeSession from './resume-session';
+import { FEEDBACK_TYPE } from '@/service/feedback';
+import { onReportProblem } from '@/components/navbar/report-problem-action';
+
 export default function StoryItem({
   story,
   showLike = true,
@@ -138,6 +142,23 @@ export default function StoryItem({
                   </div>
                 </DropdownMenuItem>
               ) : null}
+              <DropdownMenuItem
+                className="h-11 rounded-xl px-3 text-base font-semibold"
+                onClick={() =>
+                  onReportProblem({
+                    title: 'Report Story',
+                    type: FEEDBACK_TYPE.STORY,
+                    data: {
+                      storyId: story.id,
+                    },
+                  })
+                }
+              >
+                <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+                  Report
+                  <AlertSquareIcon size={20} />
+                </div>
+              </DropdownMenuItem>
               {onDeleteClick ? (
                 <DropdownMenuItem
                   className="h-11 rounded-xl px-3 text-base"

@@ -10,10 +10,10 @@ import { feedback } from '@/service/feedback';
 import useUserStore from '@/stores/user';
 import { toast } from 'react-hot-toast/headless';
 
-export const onReportProblem = ({ type, data }) => {
+export const onReportProblem = ({ type, data, title }) => {
   const openModal = useModalStore.getState().open;
 
-  openModal(<ReportProblemDIalog type={type} basicData={data} />);
+  openModal(<ReportProblemDIalog type={type} basicData={data} title={title} />);
 };
 
 export const ReportProblemDIalog = ({ title, type, basicData }) => {

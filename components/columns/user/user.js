@@ -4,13 +4,24 @@ import { useState, useEffect, useCallback } from 'react';
 import { getUserInfo } from '@/service/user';
 import UserSkeleton from '@/components/skeleton/user-skeleton';
 import { Button } from '@/app/components/ui/button';
-import { CrownIcon } from '@hugeicons/react';
+import { CrownIcon, MoreHorizontalCircle02Icon } from '@hugeicons/react';
 import { toggleFollowUser, getFollowers } from '@/service/relation';
 import UserTabs from './user-tabs';
 import Link from 'next/link';
 import useUserStore from '@/stores/user';
 import { getCurrentCredits } from '@/service/credits';
 import Avatar from '@/components/common/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/app/components/ui/dropdown-menu';
+import { onReportProblem } from '@/components/navbar/report-problem-action';
+import { FEEDBACK_TYPE } from '@/service/feedback';
+import HoverButton from '@/components/buttons/hover-button';
+import { AlertSquareIcon } from '@hugeicons/react';
+
 
 export default function User({ uid }) {
   const [user, setUser] = useState(null);
@@ -83,6 +94,10 @@ export default function User({ uid }) {
     fetchUser();
   }, [uid]);
 
+  useEffect(() => {
+    console.log({isSelf})
+  }, [isSelf]);
+
   return (
     <div className="flex h-full px-6 py-4 w-full flex-col gap-4">
       {userLoading ? (
@@ -123,12 +138,42 @@ export default function User({ uid }) {
             {followerCount} follower{followerCount > 1 ? 's' : ''}
           </span>
         </div>
+        <div className="flex gap-1 items-center">
         {isSelf ? (
           <Button className="h-6 px-2" size="sm" variant="outline">
             {credits} credits
           </Button>
         ) : null}
-      </div>
+        {user?.id && !isSelf && (
+          <DropdownMenu>
+            <DropdownMenuTrigger className="outline-none">
+              <HoverButton className="-mr-[9px]">
+                <MoreHorizontalCircle02Icon size={20} />
+              </HoverButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
+            <DropdownMenuItem
+              className="h-11 rounded-xl px-3 text-base font-semibold"
+              onClick={() =>
+                onReportProblem({
+                  title: 'Report User',
+                  type: FEEDBACK_TYPE.USER,
+                  data: {
+                    targetUserId: user.id,
+                  },
+                })
+              }
+            >
+              <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+                Report
+                <AlertSquareIcon size={20} />
+              </div>
+            </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
+        </div>
+        </div>
       {isSelf ? (
         <div className="flex gap-4">
           <Link href="/u/_/edit" className="w-full">
