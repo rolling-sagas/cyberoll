@@ -16,22 +16,22 @@ function getContentByKey(key) {
 export const docs = [
   {
     key: 'terms-of-services',
-    title: 'Terms of Services',
+    title: 'Terms of service',
     content: termsOfServicesMDContent,
   },
   {
     key: 'privacy-policy',
-    title: 'Privacy Policy',
+    title: 'Privacy policy',
     content: privacyPolicyMDContent,
   },
   {
     key: 'rules-of-conduct',
-    title: 'Rules of Conduct',
+    title: 'Rules of conduct',
     content: rulesOfConductMDContent,
   },
   {
     key: 'cookies-policy',
-    title: 'Cookies Policy',
+    title: 'Cookies policy',
     content: cookiesPolicyMDContent,
   },
 ];

@@ -146,9 +146,9 @@ export default function User({ uid }) {
         ) : null}
         {user?.id && !isSelf && (
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none">
+            <DropdownMenuTrigger className="outline-none big-size-trigger">
               <HoverButton className="-mr-[9px]">
-                <MoreHorizontalCircle02Icon size={20} />
+                <MoreHorizontalCircle02Icon size={24} strokeWidth="2"  />
               </HoverButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="rounded-2xl p-2 w-52">
