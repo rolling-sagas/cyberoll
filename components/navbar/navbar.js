@@ -13,7 +13,7 @@ import {
 
 import Link from 'next/link';
 
-import { docs } from '@/app/doc/[key]/page';
+import { docs } from '@/components/doc/help/setting-docs';
 import HoverButton from './hover-button';
 import NavButton from './nav-button';
 import './navbar.css';
@@ -131,7 +131,9 @@ export default function NavBar() {
                       className="h-11 rounded-xl px-3 text-base text-rs-text-primary"
                     >
                       <div className="flex gap-10 justify-between w-full cursor-pointer">
-                        <Link href={`/doc/${d.key}`}>{d.title}</Link>
+                        <Link href={d.url} target="_blank">
+                          {d.title}
+                        </Link>
                         <LinkSquare01Icon size={20} className="mt-[1px]" />
                       </div>
                     </DropdownMenuItem>
