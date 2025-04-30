@@ -24,12 +24,12 @@ export default async function ifetch(url, options = {}) {
     if (res.ok) {
       return await res.json()
     } else {
-      await bi.error({
-        status: res.status,
-        error: res.statusText,
-        url,
-        options,
-      })
+      // await bi.error({
+      //   status: res.status,
+      //   error: res.statusText,
+      //   url,
+      //   options,
+      // })
       console.error(`[ifetch error]: ${res.statusText}`)
       throw res.statusText
     }
