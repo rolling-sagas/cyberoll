@@ -23,10 +23,13 @@ import { parse } from 'best-effort-json-parser';
 import { azure } from '@/service/ai';
 import { registerWithConfig } from '@/utils/handlebars';
 
-const quickjs = new QuickJSManager();
+let quickjs = null;
 
 export const executeScript = async (refresh = true) => {
   let components = null;
+
+  // 每次使用新实例
+  quickjs = new QuickJSManager();
 
   try {
     components = componentsToMap(useStore.getState().components, true);
@@ -311,8 +314,12 @@ export const restartFromMessage = async (mid, exclude = false) => {
   try {
     const messages = useStore.getState().messages || [];
     const message = getMessageById(mid);
+    if (message.role === 'divider') {
+      exclude = true;
+    }
     const isLocalMessage = !!message.status;
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
+    console.log(111, messages, newMessages, message, mid)
     useStore.setState({
       messages: newMessages,
     });

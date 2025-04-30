@@ -1,3 +1,5 @@
+'use client';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -253,7 +255,6 @@ export default function StoryItem({
             columns={[
               <CopyLinkItem
                 key={story.id}
-                url={`${window.location.origin}/st/${story.id}`}
               />,
             ]}
           />
