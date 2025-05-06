@@ -7,16 +7,22 @@ import {
 import HoverButton from '@/components/buttons/hover-button';
 import Avatar from '@/components/common/avatar';
 import UserName from '@/components/common/user-name';
+import DropdownBlockItem from '@/components/dropdown/dropdown-block-item';
 import { useModalStore } from '@/components/modal/dialog-placeholder';
+import { onReportProblem } from '@/components/navbar/report-problem-action';
 import CopyLinkItem from '@/components/popover/copy-link-item';
 import DropdownWrap from '@/components/popover/dropdown-wrap';
 import { Button } from '@/components/ui/button';
+import { BLOCK_TYPE } from '@/service/block';
+import { FEEDBACK_TYPE } from '@/service/feedback';
 import { createSession } from '@/service/session';
 import { dislikeStory, likeStory } from '@/service/story';
+import useUserStore from '@/stores/user';
 import dayjs from '@/utils/day';
 import { getImageUrl } from '@/utils/utils';
 import {
   Activity01Icon,
+  AlertSquareIcon,
   Comment02Icon,
   Copy01Icon,
   Delete01Icon,
@@ -27,19 +33,15 @@ import {
   Share01Icon,
   ViewIcon,
   ViewOffIcon,
-  AlertSquareIcon,
 } from '@hugeicons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Image from '../../common/custom-image';
 import ResumeSession from './resume-session';
-import { FEEDBACK_TYPE } from '@/service/feedback';
-import { onReportProblem } from '@/components/navbar/report-problem-action';
-import useUserStore from '@/stores/user';
 
 const notSelfSotry = (userInfo, storyAuthorId) => {
-  if(!userInfo?.id) return false;
+  if (!userInfo?.id) return false;
   return userInfo?.id !== storyAuthorId;
 };
 
@@ -51,6 +53,7 @@ export default function StoryItem({
   onUpdateClick,
   onDuplicateClick,
   onDeleteClick,
+  showBlock = true,
   showPlay = false,
   showAllDesc = false,
   coverGoEdit = false,
@@ -63,6 +66,11 @@ export default function StoryItem({
   const [likeCount, setLikeCount] = useState(story._count?.likes || 0);
   const openModal = useModalStore((state) => state.open);
   const closeModal = useModalStore((state) => state.close);
+  const [blockId, setBlockId] = useState(story?.blockId);
+
+  useEffect(() => {
+    setBlockId(story?.blockId);
+  }, [story]);
 
   const play = useCallback(
     async (id) => {
@@ -119,7 +127,11 @@ export default function StoryItem({
             </span>
           </span>
         </div>
-        {showViewActivity || onDuplicateClick || onDeleteClick  || notSelfSotry(userInfo, story.authorId) ? (
+        {showViewActivity ||
+        onDuplicateClick ||
+        onDeleteClick ||
+        notSelfSotry(userInfo, story.authorId) ||
+        showBlock ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <HoverButton className="-mr-[9px]">
@@ -149,25 +161,39 @@ export default function StoryItem({
                   </div>
                 </DropdownMenuItem>
               ) : null}
+              {showBlock && !story?.blockId ? (
+                <DropdownBlockItem
+                  type={BLOCK_TYPE.STORY}
+                  basicData={{
+                    storyId: story.id,
+                  }}
+                  targetName={story?.name}
+                  blockId={blockId}
+                  onSuccessCallback={() => {
+                    setBlockId(blockId ? undefined : story?.id);
+                  }}
+                />
+              ) : null}
               {notSelfSotry(userInfo, story.authorId) ? (
-              <DropdownMenuItem
-                className="h-11 rounded-xl px-3 text-base font-semibold"
-                onClick={() =>
-                  onReportProblem({
-                    title: 'Report Story',
-                    type: FEEDBACK_TYPE.STORY,
-                    data: {
-                      storyId: story.id,
-                    },
-                  })
-                }
-              >
-                <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
-                  Report
-                  <AlertSquareIcon size={20} />
-                </div>
+                <DropdownMenuItem
+                  className="h-11 rounded-xl px-3 text-base font-semibold"
+                  onClick={() =>
+                    onReportProblem({
+                      title: 'Report Story',
+                      type: FEEDBACK_TYPE.STORY,
+                      data: {
+                        storyId: story.id,
+                      },
+                    })
+                  }
+                >
+                  <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+                    Report
+                    <AlertSquareIcon size={20} />
+                  </div>
                 </DropdownMenuItem>
               ) : null}
+
               {onDeleteClick ? (
                 <DropdownMenuItem
                   className="h-11 rounded-xl px-3 text-base"
