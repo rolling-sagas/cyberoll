@@ -31,6 +31,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
+import DropdownDeleteSelfAccountItem from '@/components/dropdown/dropdown-delete-self-account-item/index';
 import useUserStore from '@/stores/user';
 import { useRouter } from 'next/navigation';
 import { onCreateClick } from '../columns/stories/story-action';
@@ -116,6 +117,19 @@ export default function NavBar() {
             sideOffset={0}
             className="rounded-2xl p-2 w-70"
           >
+            <DropdownMenuGroup>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
+                  Settings
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent
+                  sideOffset={16}
+                  className="rounded-2xl p-2 w-70"
+                >
+                  <DropdownDeleteSelfAccountItem />
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
             <DropdownMenuGroup>
               <DropdownMenuSub>
                 <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
