@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/modal/dialog";
 import { Image01Icon } from "@hugeicons/react";
 import Image from "next/image";
+import { useRef, useState } from "react";
 
 export default function ImageUploader({ value, onChange, showDesc = true }) {
   const [pValue, setValue] = useState(value ? JSON.parse(value) : null)

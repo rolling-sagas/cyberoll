@@ -1,24 +1,32 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-import CodeEditor from './editor';
 import { Button } from '@/app/components/ui/button';
+import CodeEditor from './editor';
 
-import { useMemo, useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
-import { useAlertStore } from '@/components/modal/alert-placeholder';
 import Alert from '@/components/modal/alert';
+import { useAlertStore } from '@/components/modal/alert-placeholder';
 import { useModalStore } from '@/components/modal/dialog-placeholder';
 import { js } from 'js-beautify';
 
 // import Script from 'next/script';
 
+// export default function EditorModal({
+//   value = '',
+//   title = '',
+//   lang = 'javascript',
+// 	onSave = () => {},
+// 	titleReadOnly = false,
+// 	langList = ['toml'],
+// }) {
 export default function EditorModal({
   value = '',
   title = '',
   lang = 'javascript',
-	onSave = () => {},
-	titleReadOnly = false,
-	langList = ['toml'],
+  onSave = () => {},
+  titleReadOnly = false,
+  // langList = ['toml'],
 }) {
   const openAlert = useAlertStore((state) => state.open);
 
@@ -60,7 +68,7 @@ export default function EditorModal({
 
   function save() {
     try {
-			onSave(content);
+      onSave(content);
     } catch (e) {
       openAlert(
         <Alert title="Can't save" message={e.message} confirmLabel="OK" />
@@ -91,7 +99,7 @@ export default function EditorModal({
         </button>
         <div className="font-semibold justify-self-center w-full">
           <input
-						readOnly={titleReadOnly}
+            readOnly={titleReadOnly}
             ref={inputRef}
             type="text"
             className="w-full text-center outline-none font-[16px]"

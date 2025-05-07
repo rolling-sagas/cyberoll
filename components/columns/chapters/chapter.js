@@ -1,26 +1,27 @@
-import toast from 'react-hot-toast/headless';
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { createStore, useStore } from 'zustand';
-import Spinner from '../spinner';
 import BaseButton from '@/components/buttons/base-button';
-import { useModalStore } from '@/components/modal/dialog-placeholder';
-import CreateMessageDialog from './create-message-dialog';
-import CreateChapterDialog from './create-chapter-dialog';
 import { createComponentStore } from '@/components/columns/components/components';
+import { useModalStore } from '@/components/modal/dialog-placeholder';
+import { azure } from '@/service/ai';
+import { updateComponentsWithName } from '@/service/component';
 import {
-  getMessages,
   createMessage,
   deleteMessage,
-  updateMessage,
+  getMessages,
   setEntryMessage,
+  updateMessage,
 } from '@/service/message';
-import { azure } from '@/service/ai';
-import { updateComponentsWithName } from '@/service/component'
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast/headless';
+import { createStore, useStore } from 'zustand';
+import Spinner from '../spinner';
+import CreateChapterDialog from './create-chapter-dialog';
+import CreateMessageDialog from './create-message-dialog';
 
 import { copyChapter, resetChapter } from '@/service/chapter';
 import { formatMessages } from '@/utils/utils';
 
+// eslint-disable-next-line
 const createChapterStore = (data) =>
   createStore((set, get) => ({
     id: data.id,
@@ -89,18 +90,18 @@ import {
   ViewOffIcon,
 } from '@hugeicons/react';
 
-import MessageItem from './message-item';
-import { useAlertStore } from '@/components/modal/alert-placeholder';
-import Alert from '@/components/modal/alert';
-import { useColumnsStore } from '@/components/columns/pinned-columns';
-import Components from '../components/components';
 import CircleIconButton from '@/components/buttons/circle-icon-button';
 import {
   ItemMenuButton,
   MenuButtonDivider,
   MenuButtonItem,
 } from '@/components/buttons/menu-button';
+import { useColumnsStore } from '@/components/columns/pinned-columns';
+import Alert from '@/components/modal/alert';
+import { useAlertStore } from '@/components/modal/alert-placeholder';
 import { parseError } from '@/utils/utils';
+import Components from '../components/components';
+import MessageItem from './message-item';
 
 export default function Chapter({ data }) {
   const router = useRouter();
@@ -124,7 +125,7 @@ export default function Chapter({ data }) {
     listMessages();
   }, []);
 
-  const storeRef = useRef(createChapterStore(data));
+  // const storeRef = useRef(createChapterStore(data));
 
   const openModal = useModalStore((state) => state.open);
   const openAlert = useAlertStore((state) => state.open);
@@ -139,8 +140,8 @@ export default function Chapter({ data }) {
     );
   }
 
-  const generate = useStore(storeRef.current, (state) => state.generate);
-  const regenerate = useStore(storeRef.current, (state) => state.regenerate);
+  // const generate = useStore(storeRef.current, (state) => state.generate);
+  // const regenerate = useStore(storeRef.current, (state) => state.regenerate);
 
   const addColumn = useColumnsStore((state) => state.addColumn);
   const rmColumn = useColumnsStore((state) => state.rmColumn);
@@ -345,6 +346,7 @@ export default function Chapter({ data }) {
                       });
                       // await generate();
                       await azure(formatMessages(msgs, components));
+                      // eslint-disable-next-line
                       for (let m of arr) {
                         await createMessage(data.id, 'assistant', m);
                       }
