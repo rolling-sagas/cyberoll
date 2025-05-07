@@ -27,12 +27,22 @@ import {
   Share01Icon,
   ViewIcon,
   ViewOffIcon,
+  AlertSquareIcon,
 } from '@hugeicons/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
 import Image from '../../common/custom-image';
 import ResumeSession from './resume-session';
+import { FEEDBACK_TYPE } from '@/service/feedback';
+import { onReportProblem } from '@/components/navbar/report-problem-action';
+import useUserStore from '@/stores/user';
+
+const notSelfSotry = (userInfo, storyAuthorId) => {
+  if(!userInfo?.id) return false;
+  return userInfo?.id !== storyAuthorId;
+};
+
 export default function StoryItem({
   story,
   showLike = true,
@@ -46,6 +56,7 @@ export default function StoryItem({
   coverGoEdit = false,
   showPrivateStatus = false,
 }) {
+  const userInfo = useUserStore((state) => state.userInfo);
   const router = useRouter();
   const [likedByMe, setLikedByMe] = useState(story.likes?.length > 0);
   const [creatingSession, setCreatingSession] = useState(false);
@@ -108,7 +119,7 @@ export default function StoryItem({
             </span>
           </span>
         </div>
-        {showViewActivity || onDuplicateClick || onDeleteClick ? (
+        {showViewActivity || onDuplicateClick || onDeleteClick  || notSelfSotry(userInfo, story.authorId) ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <HoverButton className="-mr-[9px]">
@@ -136,6 +147,25 @@ export default function StoryItem({
                     Duplicate
                     <Copy01Icon size={20} />
                   </div>
+                </DropdownMenuItem>
+              ) : null}
+              {notSelfSotry(userInfo, story.authorId) ? (
+              <DropdownMenuItem
+                className="h-11 rounded-xl px-3 text-base font-semibold"
+                onClick={() =>
+                  onReportProblem({
+                    title: 'Report Story',
+                    type: FEEDBACK_TYPE.STORY,
+                    data: {
+                      storyId: story.id,
+                    },
+                  })
+                }
+              >
+                <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+                  Report
+                  <AlertSquareIcon size={20} />
+                </div>
                 </DropdownMenuItem>
               ) : null}
               {onDeleteClick ? (

@@ -45,12 +45,15 @@ export default function Page({ params }) {
           keepPrivate,
         },
       });
-    } finally {
-      setSaving(false);
       toast.success('Story saved', {
         id: tid,
         icon: <CheckmarkCircle01Icon />,
       });
+    } catch (e) {
+      console.error(e);
+      toast.dismiss(tid);
+    } finally {
+      setSaving(false);
     }
   };
 

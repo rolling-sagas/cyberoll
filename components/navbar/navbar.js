@@ -4,6 +4,7 @@ import {
   CinnamonRollIcon,
   CrownIcon,
   Home02Icon,
+  LinkSquare01Icon,
   Menu08Icon,
   Notebook01Icon,
   PlusSignIcon,
@@ -12,6 +13,7 @@ import {
 
 import Link from 'next/link';
 
+import { docs } from '@/components/doc/help/setting-docs';
 import HoverButton from './hover-button';
 import NavButton from './nav-button';
 import './navbar.css';
@@ -22,7 +24,11 @@ import { useEffect, useState } from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import useUserStore from '@/stores/user';
@@ -30,6 +36,7 @@ import { useRouter } from 'next/navigation';
 import { onCreateClick } from '../columns/stories/story-action';
 import ActivityIcon from './activity-icon';
 import { onLoginOut } from './login-out-action';
+import { onReportProblem } from './report-problem-action';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -107,8 +114,42 @@ export default function NavBar() {
             align="center"
             side="right"
             sideOffset={0}
-            className="rounded-2xl p-2 w-36"
+            className="rounded-2xl p-2 w-70"
           >
+            <DropdownMenuGroup>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
+                  Help
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent
+                  sideOffset={16}
+                  className="rounded-2xl p-2 w-70"
+                >
+                  {docs.map((d) => (
+                    <DropdownMenuItem
+                      key={d.key}
+                      className="h-11 rounded-xl px-3 text-base text-rs-text-primary"
+                    >
+                      <div className="flex gap-10 justify-between w-full cursor-pointer">
+                        <Link href={d.url} target="_blank">
+                          {d.title}
+                        </Link>
+                        <LinkSquare01Icon size={20} className="mt-[1px]" />
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuGroup>
+            {/* <DropdownMenuSeparator /> */}
+            <DropdownMenuItem
+              className="h-11 rounded-xl px-3 text-base font-semibold"
+              onClick={() => onReportProblem({ type: 'app' })}
+            >
+              <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-rs-text-primary">
+                Report a problem
+              </div>
+            </DropdownMenuItem>
             <DropdownMenuItem
               className="h-11 rounded-xl px-3 text-base font-semibold"
               onClick={onLoginOut}
