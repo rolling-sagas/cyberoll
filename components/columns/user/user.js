@@ -12,7 +12,7 @@ import Avatar from '@/components/common/avatar';
 import DropdownBlockItem from '@/components/dropdown/dropdown-block-item';
 import { onReportProblem } from '@/components/navbar/report-problem-action';
 import UserSkeleton from '@/components/skeleton/user-skeleton';
-import { BLOCK_TYPE } from '@/service/block';
+import { BLOCK_TYPE, deleteBlock } from '@/service/block';
 import { getCurrentCredits } from '@/service/credits';
 import { FEEDBACK_TYPE } from '@/service/feedback';
 import { getFollowers, toggleFollowUser } from '@/service/relation';
@@ -25,6 +25,7 @@ import {
 } from '@hugeicons/react';
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast/headless';
 import UserTabs from './user-tabs';
 
 export default function User({ uid }) {
@@ -90,6 +91,16 @@ export default function User({ uid }) {
       });
     } finally {
       setFollowing(false);
+    }
+  };
+
+  const unblockUser = async () => {
+    try {
+      await deleteBlock(user?.blockId);
+      toast.success('Unblock Success');
+      setUser({ ...user, blockId: '' });
+    } catch (e) {
+      toast.error('Unblock failed');
     }
   };
 
@@ -211,7 +222,11 @@ export default function User({ uid }) {
           </Link>
         </div>
       ) : null}
-      {!isSelf ? (
+      {user?.blockId ? (
+        <Button variant="outline" className="rounded-xl" onClick={unblockUser}>
+          Unblock
+        </Button>
+      ) : !isSelf ? (
         user?.followedByMe ? (
           <Button
             className="rounded-xl"
