@@ -11,3 +11,9 @@ export async function updateUserInfo(info) {
   const res = await http.post(`/u`, info);
   return res;
 }
+
+// 删除当前用户
+export async function deleteSelf() {
+  const res = await http.delete(`/u/_`);
+  return res;
+}
