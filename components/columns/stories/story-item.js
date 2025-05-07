@@ -131,7 +131,7 @@ export default function StoryItem({
         onDuplicateClick ||
         onDeleteClick ||
         notSelfSotry(userInfo, story.authorId) ||
-        showBlock ? (
+        (showBlock && story?.author?.id !== userInfo?.id) ? (
           <DropdownMenu>
             <DropdownMenuTrigger className="outline-none">
               <HoverButton className="-mr-[9px]">
@@ -161,7 +161,7 @@ export default function StoryItem({
                   </div>
                 </DropdownMenuItem>
               ) : null}
-              {showBlock && !story?.blockId ? (
+              {showBlock && story?.author?.id !== userInfo?.id ? (
                 <DropdownBlockItem
                   type={BLOCK_TYPE.STORY}
                   basicData={{
@@ -169,8 +169,8 @@ export default function StoryItem({
                   }}
                   targetName={story?.name}
                   blockId={blockId}
-                  onSuccessCallback={() => {
-                    setBlockId(blockId ? undefined : story?.id);
+                  onSuccessCallback={(bid) => {
+                    setBlockId(bid ? bid : '');
                   }}
                 />
               ) : null}

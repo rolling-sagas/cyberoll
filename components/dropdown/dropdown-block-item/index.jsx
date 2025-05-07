@@ -30,9 +30,9 @@ export default function DropdownBlockItem({
 
   const block = async () => {
     try {
-      await createBlock(type, basicData);
+      const res = await createBlock(type, basicData);
       toast.success('Block Success');
-      onSuccessCallback();
+      onSuccessCallback(res?.id);
     } catch (error) {
       toast.error('Block failed');
     }
