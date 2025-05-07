@@ -1,10 +1,10 @@
 'use client';
 
-import Script from 'next/script';
-import useUserStore from '@/stores/user';
-import toast from 'react-hot-toast/headless';
 import { savePaypalSubscription } from '@/service/paypal';
-import { useEffect, useCallback, useState, useRef } from 'react';
+import useUserStore from '@/stores/user';
+import Script from 'next/script';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast/headless';
 
 export default function Page() {
   const [inited, setInited] = useState(false);
@@ -32,7 +32,7 @@ export default function Page() {
             custom_id: userInfo?.id,
           });
         },
-        onApprove: async function (data, actions) {
+        onApprove: async function (data, _actions) {
           console.log('Subscription created successfully!', data);
           await savePaypalSubscription(data.subscriptionID);
         },

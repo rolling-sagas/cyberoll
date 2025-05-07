@@ -1,9 +1,9 @@
-import { useModalStore } from '../modal/dialog-placeholder';
+import { Button } from '@/app/components/ui/button';
 import { goLogout } from '@/utils/index';
 import { CinnamonRollIcon } from '@hugeicons/react';
-import { Button } from '@/app/components/ui/button';
+import { useModalStore } from '../modal/dialog-placeholder';
 
-export const onLoginOut = (story, router) => {
+export const onLoginOut = (_story, _router) => {
   const openModal = useModalStore.getState().open;
   const closeModal = useModalStore.getState().close;
 

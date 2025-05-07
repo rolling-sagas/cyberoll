@@ -1,12 +1,13 @@
-import { ArrowLeft02Icon } from "@hugeicons/react";
+import { ArrowLeft02Icon } from '@hugeicons/react';
 // import { useColumnsStore } from "../columns/pinned-columns";
 
-export default function ColumnBackButton({ backId, backChildren, onClick }) {
+// export default function ColumnBackButton({ backId, backChildren, onClick }) {
+export default function ColumnBackButton({ onClick }) {
   // const setColumn = useColumnsStore((state) => state.setColumn);
   return (
     <button
       onClick={() => {
-        if (onClick) onClick()
+        if (onClick) onClick();
         // setColumn(backId, backChildren);
       }}
       className="border rounded-full bg-rs-background-2 outline-none

@@ -1,17 +1,19 @@
-import "react-image-crop/dist/ReactCrop.css";
-import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
-import { useState, useRef } from "react";
 import { useModalStore } from "@/components/modal/dialog-placeholder";
 import Image from "next/image";
+import { useRef, useState } from "react";
+import ReactCrop, { centerCrop, makeAspectCrop } from "react-image-crop";
+import "react-image-crop/dist/ReactCrop.css";
 
 const TO_RADIANS = Math.PI / 180;
 
 export function convertToPixelCrop(crop, containerWidth, containerHeight) {
   if (!crop.unit) {
+    // eslint-disable-next-line
     return { ...defaultCrop, ...crop, unit: "px" };
   }
 
   if (crop.unit === "px") {
+    // eslint-disable-next-line
     return { ...defaultCrop, ...crop, unit: "px" };
   }
 
@@ -114,7 +116,7 @@ export default function Cropper({ src, onChange, minWidth, minHeight }) {
   const [crop, setCrop] = useState();
   const close = useModalStore((state) => state.close);
   const [scale, setScale] = useState(1);
-  const [error, setError] = useState();
+  const [_error, setError] = useState();
 
   function onImageLoad(e) {
     // console.log(e.currentTarget);

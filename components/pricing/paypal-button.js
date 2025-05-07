@@ -1,12 +1,11 @@
 'use client';
 
-import useUserStore from '@/stores/user';
-import toast from 'react-hot-toast/headless';
-import { savePaypalSubscription } from '@/service/paypal';
-import { useEffect, useCallback, useState, useRef } from 'react';
-import { changePaypalSubscription } from '@/service/paypal';
+import { changePaypalSubscription, savePaypalSubscription } from '@/service/paypal';
 import { markChangeSubscription } from '@/service/subscription';
+import useUserStore from '@/stores/user';
 import { goSso } from '@/utils/index';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast/headless';
 
 export default function PaypalButton({
   paypal,
@@ -38,7 +37,7 @@ export default function PaypalButton({
             custom_id: userInfo?.id,
           });
         },
-        onApprove: async function (data, actions) {
+        onApprove: async function (data, _actions) {
           console.log('Subscription created successfully!', data);
           await savePaypalSubscription(data.subscriptionID);
           toast.success('Success');

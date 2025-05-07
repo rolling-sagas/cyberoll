@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-function validateRGB(rgb) {
-  if (!rgb) return true;
-  const rgbRegex = /^(\d{1,3})\s*(\d{1,3})\s*(\d{1,3})$/;
-  return rgbRegex.test(rgb);
-}
+// function validateRGB(rgb) {
+//   if (!rgb) return true;
+//   const rgbRegex = /^(\d{1,3})\s*(\d{1,3})\s*(\d{1,3})$/;
+//   return rgbRegex.test(rgb);
+// }
 
 export function applyTheme(themeColors) {
   const root = document.documentElement;
