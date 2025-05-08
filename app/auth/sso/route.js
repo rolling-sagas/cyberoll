@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
-import ifetch from '@/utils/ifetch';
+// import { NextResponse } from "next/server";
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
+import ifetch from '@/utils/ifetch';
 
 export const runtime = 'edge';
 

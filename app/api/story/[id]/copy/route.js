@@ -1,8 +1,8 @@
-import prisma from "@/prisma/client";
 import { isKnownError } from "@/app/api/common";
+import prisma from "@/prisma/client";
 
 export const runtime = "edge";
-const LIST_LIMIT = 512;
+// const LIST_LIMIT = 512
 
 export async function POST(req, { params }) {
   console.log("duplicate this story - id:", params.id);

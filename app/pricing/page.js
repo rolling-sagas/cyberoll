@@ -1,17 +1,17 @@
 'use client';
 export const runtime = 'edge';
 
-import { useEffect, useState } from 'react';
 import PriceSubscription from '@/components/pricing/price-subscription-paypal';
-import { PLAN } from '@/utils/credit';
 import { getCurrentSubscription } from '@/service/credits';
 import useUserStore from '@/stores/user';
+import { PLAN } from '@/utils/credit';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
   const [currentSubscription, setCurrentSubscription] = useState({
     plan: PLAN.FREE,
   });
-  const [isLoading, setIsloading] = useState(true);
+  const [_isLoading, setIsloading] = useState(true);
   const userInfo = useUserStore((state) => state.userInfo)
 
   useEffect(() => {

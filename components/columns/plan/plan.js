@@ -1,15 +1,14 @@
 'use client';
-import { PLAN, PRICE_PLAN } from '@/utils/credit';
-import { capitalizeFirstLetter } from '@/utils/utils';
-import { useEffect, useRef } from 'react';
-import { useState } from 'react';
-import { getCurrentSubscription, getCurrentCredits } from '@/service/credits';
-import Loading from '../spinner';
-import { markChangeSubscription } from '@/service/subscription';
-import { createCustomerPortalSession } from '@/service/stripe';
-import dayjs from '@/utils/day';
 import { Button } from '@/app/components/ui/button';
+import { getCurrentCredits, getCurrentSubscription } from '@/service/credits';
+import { createCustomerPortalSession } from '@/service/stripe';
+import { markChangeSubscription } from '@/service/subscription';
+import { PLAN, PRICE_PLAN } from '@/utils/credit';
+import dayjs from '@/utils/day';
+import { capitalizeFirstLetter } from '@/utils/utils';
 import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
+import Loading from '../spinner';
 
 export default function Plan() {
   const [currentSubscription, setCurrentSubscription] = useState({
@@ -68,15 +67,15 @@ export default function Plan() {
     }
   };
 
-  const onRecoverBill = async () => {
-    const res = await recoverBill();
-    if (res.ok) {
-      setRecover(true);
-    }
-    setTimeout(() => {
-      setRecover(false);
-    }, 1000);
-  };
+  // const onRecoverBill = async () => {
+  //   const res = await recoverBill();
+  //   if (res.ok) {
+  //     setRecover(true);
+  //   }
+  //   setTimeout(() => {
+  //     setRecover(false);
+  //   }, 1000);
+  // };
 
   console.log('cancelModel', cancelModel);
 

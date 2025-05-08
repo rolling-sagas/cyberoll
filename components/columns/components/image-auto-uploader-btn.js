@@ -16,7 +16,7 @@ export default function ImageAutoUploaderBtn({
   const imageInput = useRef(null);
   const [localUrl, setLocalUrl] = useState('');
   const [loading, setLoading] = useState(false);
-  const [size, setSize] = useState({ width, height });
+  const [_size, setSize] = useState({ width, height });
   const [fileName, setFileName] = useState('');
 
   const url = getImageUrl(pValue?.id || pValue, '', variant);

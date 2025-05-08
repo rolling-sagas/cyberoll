@@ -4,7 +4,7 @@ import ColumnMenuButton from "../column/column-menu-button";
 
 import { usePinStore } from "./stores";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { create } from "zustand";
 
@@ -25,7 +25,7 @@ export default function Prompts() {
   const unpin = usePinStore((state) => state.unpin);
 
   const list = store((state) => state.list);
-  const prompts = store((state) => state.prompts);
+  // const prompts = store((state) => state.prompts);
 
   useEffect(() => {
     list();
