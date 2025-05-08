@@ -3,6 +3,7 @@ import { Button } from '@/app/components/ui/button';
 import { getCurrentCredits, getCurrentSubscription } from '@/service/credits';
 import { createCustomerPortalSession } from '@/service/stripe';
 import { markChangeSubscription } from '@/service/subscription';
+import { featureCtrl } from '@/stores/ctrl';
 import { PLAN, PRICE_PLAN } from '@/utils/credit';
 import dayjs from '@/utils/day';
 import { capitalizeFirstLetter } from '@/utils/utils';
@@ -52,7 +53,10 @@ export default function Plan() {
   };
 
   const onChangePlan = async () => {
-    if (currentSubscription.plan === PLAN.FREE || currentSubscription.platform === 'paypal') {
+    if (
+      currentSubscription.plan === PLAN.FREE ||
+      currentSubscription.platform === 'paypal'
+    ) {
       return router.push('/pricing');
     }
     if (typeof window !== 'undefined') {
@@ -82,28 +86,31 @@ export default function Plan() {
   if (isLoading) return <Loading />;
   return (
     <div className="mx-6 xy-4">
-      <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
-        <div className="text-base font-semibold leading-normal w-44">
-          Subscription
+      {featureCtrl.enablePricing && (
+        <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
+          <div className="text-base font-semibold leading-normal w-44">
+            Subscription
+          </div>
+          <div className="flex flex-1 flex-col">
+            <div className="text-base font-semibold leading-normal">{`${capitalizeFirstLetter(
+              currentSubscription.plan
+            )} ${
+              (currentSubscription?.interval &&
+                (currentSubscription?.interval === 'year'
+                  ? 'Annually'
+                  : 'Monthly')) ||
+              ''
+            }`}</div>
+          </div>
+          <div className="SubscriptionDetails__actions__EqSLO">
+            <Button variant="outline" onClick={onChangePlan}>
+              Change plan
+            </Button>
+          </div>
         </div>
-        <div className="flex flex-1 flex-col">
-          <div className="text-base font-semibold leading-normal">{`${capitalizeFirstLetter(
-            currentSubscription.plan
-          )} ${
-            (currentSubscription?.interval &&
-              (currentSubscription?.interval === 'year'
-                ? 'Annually'
-                : 'Monthly')) ||
-            ''
-          }`}</div>
-        </div>
-        <div className="SubscriptionDetails__actions__EqSLO">
-          <Button variant="outline" onClick={onChangePlan}>
-            Change plan
-          </Button>
-        </div>
-      </div>
-      <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
+      )}
+      {/* <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10"> */}
+      <div className="flex md:flex-row gap-3 pb-[32px] mt-10">
         <div className="text-base font-semibold leading-normal w-44">
           Credits
         </div>
@@ -133,7 +140,9 @@ export default function Plan() {
           <div className="flex flex-1 flex-col">
             <div className="text-base font-semibold leading-normal">
               {`${credits.daily} `}daily login credits
-              <div className='font-light'>Daily credits reset at 00:00 UTC.</div>
+              <div className="font-light">
+                Daily credits reset at 00:00 UTC.
+              </div>
             </div>
           </div>
         )}
@@ -144,66 +153,71 @@ export default function Plan() {
             </div>
           </div>
         )}
-        <div className="md:justify-end flex row gap-2">
-          <Button variant="outline" onClick={onChangePlan}>
-            Get credits
-          </Button>
-        </div>
-      </div>
-      <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
-        <div className="text-base font-semibold leading-normal w-44">
-          Billing & Payment
-        </div>
-        {currentSubscription.plan != PLAN.FREE && (
-          <div className="flex flex-1 flex-col">
-            <div className="text-base font-semibold leading-normal">
-              $
-              {
-                PRICE_PLAN[
-                  `${currentSubscription.plan}_${currentSubscription.interval}`
-                ]
-              }
-              /{currentSubscription.interval}
-            </div>
-            <div className="mt-1 text-sm font-normal">
-              Billing period:{' '}
-              {currentSubscription.interval === 'year' ? 'Annually' : 'Monthly'}
-            </div>
-            <div className="mt-1 md:mb-[36px] text-sm font-normal">
-              {currentSubscription?.isCancelAtPeriodEnd
-                ? `Cancelling on: ${dayjs(currentSubscription.end).format(
-                    'MMM DD, YYYY'
-                  )}`
-                : `Renewal date: ${dayjs(currentSubscription.end).format(
-                    'MMM DD, YYYY'
-                  )}`}
-            </div>
-          </div>
-        )}
-        {currentSubscription.plan === PLAN.FREE && (
-          <div className="flex flex-1 flex-col">
-            <div className="text-base font-semibold leading-normal">
-              None
-            </div>
-          </div>
-        )}
-        {currentSubscription.plan != PLAN.FREE && currentSubscription.platform !== 'paypal' && (
+        {featureCtrl.enablePricing && (
           <div className="md:justify-end flex row gap-2">
-            {currentSubscription?.isCancelAtPeriodEnd ? (
-              <Button variant="outline" onClick={onChangePlan}>
-                Uncancel plan
-              </Button>
-            ) : (
-              <Button variant="outline" onClick={onChangePlan}>
-                Cancel plan
-              </Button>
-            )}
-            {/* <Button variant="outline" onClick={onRecoverBill}>
+            <Button variant="outline" onClick={onChangePlan}>
+              Get credits
+            </Button>
+          </div>
+        )}
+      </div>
+      {featureCtrl.enablePricing && (
+        <div className="flex md:flex-row border-b-1 gap-3 pb-[32px] mt-10">
+          <div className="text-base font-semibold leading-normal w-44">
+            Billing & Payment
+          </div>
+          {currentSubscription.plan != PLAN.FREE && (
+            <div className="flex flex-1 flex-col">
+              <div className="text-base font-semibold leading-normal">
+                $
+                {
+                  PRICE_PLAN[
+                    `${currentSubscription.plan}_${currentSubscription.interval}`
+                  ]
+                }
+                /{currentSubscription.interval}
+              </div>
+              <div className="mt-1 text-sm font-normal">
+                Billing period:{' '}
+                {currentSubscription.interval === 'year'
+                  ? 'Annually'
+                  : 'Monthly'}
+              </div>
+              <div className="mt-1 md:mb-[36px] text-sm font-normal">
+                {currentSubscription?.isCancelAtPeriodEnd
+                  ? `Cancelling on: ${dayjs(currentSubscription.end).format(
+                      'MMM DD, YYYY'
+                    )}`
+                  : `Renewal date: ${dayjs(currentSubscription.end).format(
+                      'MMM DD, YYYY'
+                    )}`}
+              </div>
+            </div>
+          )}
+          {currentSubscription.plan === PLAN.FREE && (
+            <div className="flex flex-1 flex-col">
+              <div className="text-base font-semibold leading-normal">None</div>
+            </div>
+          )}
+          {currentSubscription.plan != PLAN.FREE &&
+            currentSubscription.platform !== 'paypal' && (
+              <div className="md:justify-end flex row gap-2">
+                {currentSubscription?.isCancelAtPeriodEnd ? (
+                  <Button variant="outline" onClick={onChangePlan}>
+                    Uncancel plan
+                  </Button>
+                ) : (
+                  <Button variant="outline" onClick={onChangePlan}>
+                    Cancel plan
+                  </Button>
+                )}
+                {/* <Button variant="outline" onClick={onRecoverBill}>
               Recover Bill
             </Button> */}
-          </div>
-        )}
-      </div>
+              </div>
+            )}
+        </div>
+      )}
       <dialog id="my_modal_3" className="modal" ref={proceedingModalRef}>
         <div className="modal-box">
           <form method="dialog" className="flex items-center">
