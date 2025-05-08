@@ -1,4 +1,5 @@
 import { AvatarWithIcon } from '@/components/common/avatar';
+import { featureCtrl } from '@/stores/ctrl';
 import { ACTIVITY_SUB_TYPE } from '@/utils/activity';
 import { parseJson } from '@/utils/utils';
 import { CrownIcon } from '@hugeicons/react';
@@ -46,7 +47,9 @@ export function ActivityColumnSubscriptionItem({ data, subType }) {
     <div
       className="px-6 py-4 border-gray-200 bg-background hover:cursor-pointer hover:bg-rs-background-hover"
       onClick={() => {
-        router.push(`/pricing`);
+        if (featureCtrl.enablePricing) {
+          router.push(`/pricing`);
+        }
       }}
     >
       <div className="flex gap-2 mr-[110px] items-center justify-between">

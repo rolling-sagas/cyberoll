@@ -32,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
 import DropdownDeleteSelfAccountItem from '@/components/dropdown/dropdown-delete-self-account-item/index';
+import { featureCtrl } from '@/stores/ctrl';
 import useUserStore from '@/stores/user';
 import { useRouter } from 'next/navigation';
 import { onCreateClick } from '../columns/stories/story-action';
@@ -98,13 +99,17 @@ export default function NavBar() {
         </NavButton>
       </div>
       <div className="nav mb-6">
-        <NavButton href={subscription?.type === 'free' ? '/pricing' : '/plan'}>
-          <CrownIcon
-            strokeWidth="2"
-            className={subscription?.type === 'free' ? '' : '!text-amber-500'}
-            variant="duotone"
-          />
-        </NavButton>
+        {featureCtrl.enablePricing && (
+          <NavButton
+            href={subscription?.type === 'free' ? '/pricing' : '/plan'}
+          >
+            <CrownIcon
+              strokeWidth="2"
+              className={subscription?.type === 'free' ? '' : '!text-amber-500'}
+              variant="duotone"
+            />
+          </NavButton>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger className="outline-none">
             <HoverButton>
