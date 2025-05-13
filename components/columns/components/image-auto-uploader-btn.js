@@ -54,7 +54,7 @@ export default function ImageAutoUploaderBtn({
 
           try {
             const uploadedImage = await uploadImage(file);
-            console.log({ uploadedImage });
+            // console.log({ uploadedImage });
             const { id } = uploadedImage;
             if (!returnSize) onChange(id);
             if (localUrl !== '') {

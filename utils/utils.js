@@ -19,8 +19,7 @@ export function ArrayToKeyValue(list) {
         obj.name = item.name;
         result.meta[item.type].push(obj);
       } catch (e) {
-        console.log(item, e);
-        console.error('json template rendering error');
+        console.error('json template rendering error: ', e);
       }
     } else if (item.type === 'num') {
       result[item.name] = Number(item.value);
@@ -59,10 +58,16 @@ export function getImageUrl(
   fallbackUrl = DEFAULT_STORY_IMAGE,
   variant = 'public'
 ) {
+  if (!uri) return fallbackUrl;
   if (/^https?:\/\//.test(uri)) return uri;
   // uri 可能是json string
-  const data = parseJson(uri, uri);
-  return uri ? `${IMAGE_HOST}${data.id || data}/${variant}` : fallbackUrl;
+  try {
+    const data = parseJson(uri, uri);
+    return uri ? `${IMAGE_HOST}${data.id || data}/${variant}` : fallbackUrl;
+  } catch (e) {
+    console.error(`[getImageUrl fail: uri ${uri}]`, e);
+    return fallbackUrl;
+  }
 }
 
 export function getImageUrlByName(name, components = []) {
