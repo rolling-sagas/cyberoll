@@ -33,7 +33,7 @@ export default function Page() {
           });
         },
         onApprove: async function (data, _actions) {
-          console.log('Subscription created successfully!', data);
+          // console.log('Subscription created successfully!', data);
           await savePaypalSubscription(data.subscriptionID);
         },
         onError: function (err) {
@@ -45,7 +45,7 @@ export default function Page() {
   }, [elRef]);
 
   useEffect(() => {
-    console.log(111);
+    // console.log(111);
     onload();
   }, [elRef]);
 
