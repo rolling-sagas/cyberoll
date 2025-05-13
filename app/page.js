@@ -10,7 +10,6 @@ export default function Page({searchParams}) {
 
   return (
     <>
-    1111
       <Column
         headerCenter={
           <TypeDropdown />

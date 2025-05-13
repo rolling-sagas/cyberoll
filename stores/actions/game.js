@@ -319,7 +319,6 @@ export const restartFromMessage = async (mid, exclude = false) => {
     }
     const isLocalMessage = !!message.status;
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
-    console.log(111, messages, newMessages, message, mid)
     useStore.setState({
       messages: newMessages,
     });
@@ -328,6 +327,11 @@ export const restartFromMessage = async (mid, exclude = false) => {
     if (storySessionId && !isLocalMessage) {
       await resetSession(storySessionId, mid, exclude);
     }
+
+    if (!newMessages?.length) {
+      return executeScript(true);
+    }
+
     await loadGameSession();
     if (
       !isLastMessageHasTailAction(newMessages)

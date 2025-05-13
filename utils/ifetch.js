@@ -34,7 +34,7 @@ export default async function ifetch(url, options = {}) {
       throw res.statusText
     }
   } catch (e) {
-    console.error(`[ifetch error]: ${e.message}`);
+    console.error(`[ifetch error]: ${e?.message || e}`);
     throw e.message;
   }
 }

@@ -16,11 +16,7 @@ export default function PublicStoriesClient() {
     _,
     hasMoreStory,
     loadmoreStories,
-  ] = usePageData(getPublicStories, 12, 'stories');
-
-  useEffect(() => {
-    loadmoreStories();
-  }, []);
+  ] = usePageData(getPublicStories, 12, 'stories', undefined, 0);
 
   const scrollHandle = debounce((e) => {
     const el = e.target;
@@ -28,6 +24,13 @@ export default function PublicStoriesClient() {
       loadmoreStories();
     }
   }, 200);
+
+  useEffect(() => {
+    const el = document.querySelector('.public-story-container');
+    if (el) el.addEventListener('scroll', scrollHandle, false);
+
+    return () => el.removeEventListener('scroll', scrollHandle, false);
+  }, [scrollHandle])
 
   return (
     <>
