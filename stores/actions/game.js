@@ -21,10 +21,13 @@ import {
 } from './message';
 import { setModal } from './ui';
 
-const quickjs = new QuickJSManager();
+let quickjs = null;
 
 export const executeScript = async (refresh = true) => {
   let components = null;
+
+  // 每次使用新实例
+  quickjs = new QuickJSManager();
 
   try {
     components = componentsToMap(useStore.getState().components, true);
@@ -304,6 +307,9 @@ export const restartFromMessage = async (mid, exclude = false) => {
   try {
     const messages = useStore.getState().messages || [];
     const message = getMessageById(mid);
+    if (message.role === 'divider') {
+      exclude = true;
+    }
     const isLocalMessage = !!message.status;
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
     useStore.setState({
@@ -314,6 +320,11 @@ export const restartFromMessage = async (mid, exclude = false) => {
     if (storySessionId && !isLocalMessage) {
       await resetSession(storySessionId, mid, exclude);
     }
+
+    if (!newMessages?.length) {
+      return executeScript(true);
+    }
+
     await loadGameSession();
     if (!isLastMessageHasTailAction(newMessages)) {
       await generate(exclude);

@@ -174,8 +174,29 @@ function Message({ message, style = null }) {
           </div>
         </div>
       ) : (
-        <div key={message.id} className="divider message-item" style={style}>
+        <div key={message.id} className="divider message-item relative" style={style}>
           {message.content}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="outline-none absolute top-1/2 right-[15px] -translate-y-1/2">
+              <HoverButton>
+                <MoreHorizontalIcon size={20} />
+              </HoverButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              className="rounded-2xl p-2 w-52"
+            >
+              <DropdownMenuItem
+                disabled={generating}
+                className="h-11 rounded-xl px-3 text-base"
+                onClick={() => restartFromMessageHandle(message.id)}
+              >
+                <div className="flex gap-2 justify-between w-full cursor-pointer font-semibold">
+                  Restart from here
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       )}
     </>
