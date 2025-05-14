@@ -8,6 +8,7 @@ import {
   Menu08Icon,
   Notebook01Icon,
   PlusSignIcon,
+  Search01Icon,
   UserIcon,
 } from '@hugeicons/react';
 
@@ -60,6 +61,12 @@ export default function NavBar() {
       <div className="nav flex-1">
         <NavButton href="/" active={l1Pathname === ''}>
           <Home02Icon
+            strokeWidth="2"
+            variant={l1Pathname === '' ? 'solid' : 'stroke'}
+          />
+        </NavButton>
+        <NavButton href="/srch" active={l1Pathname === 'srch'}>
+          <Search01Icon
             strokeWidth="2"
             variant={l1Pathname === '' ? 'solid' : 'stroke'}
           />

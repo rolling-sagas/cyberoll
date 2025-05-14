@@ -18,6 +18,6 @@ Using Firebase to monitor this site.
 - [firebase performance dashboard: dev](https://console.firebase.google.com/project/rollingsagas/performance/app/web:MGEwMmRhMTAtZDJiMi00ZGQ4LWJiMGItYjM0NDlhNmRmYmMw/trends?hl=zh-cn)
 - [firebase performance dashboard: prod](https://console.firebase.google.com/project/rollingsagas/performance/app/web:ZjZkMTQwNGUtN2RjZS00M2ZhLWJkYzEtYTkwMTE3MTYzMTIz/trends?hl=zh-cn)
 
-## Tech
+## Version
 
-- "zustand": "^4.5.4"
+- [V1.1.0: Add Search](./docs/v1.1.0_add_search.md)
