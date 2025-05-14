@@ -46,13 +46,12 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
     <div className="border-b-1 border-gray-200 py-4 px-6 last:border-none">
       <div className="flex gap-2 items-center mb-3 justify-between">
         <div className="flex gap-3 items-center">
-          <Link href={`/sess/${session.id}`}>
-            <Avatar
-              image={session.avatar?.imageId}
-              size={36}
-              name={session.avatar?.name}
-            />
-          </Link>
+          <Avatar
+            image={session.avatar?.imageId}
+            size={36}
+            name={session.avatar?.name}
+            href={`/sess/${session.id}`}
+          />
           <span className="flex flex-col">
             <span className="font-semibold text-base/5">
               {session.avatar?.name}

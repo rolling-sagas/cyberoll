@@ -1,13 +1,13 @@
-import './messages.css';
-import useStore from '@/stores/editor';
-import { onUserAction } from '@/stores/actions/game';
-import { setDiceBox, clearRoll } from '@/stores/actions/dice';
-import Message from './message';
-import { MESSAGE_STATUS } from '@/utils/const';
 import CircleIconButton from '@/components/buttons/circle-icon-button';
+import { clearRoll, setDiceBox } from '@/stores/actions/dice';
+import { onUserAction } from '@/stores/actions/game';
+import useStore from '@/stores/editor';
+import { MESSAGE_STATUS } from '@/utils/const';
 import { ArrowDown01Icon } from '@hugeicons/react';
+import Message from './message';
+import './messages.css';
 
-import { useRef, useEffect, useState, useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 function Messages() {
   const scrollContainer = useRef(null);
@@ -33,7 +33,7 @@ function Messages() {
     if (diceBoxRef.current) {
       const canvas = diceBoxRef.current.getElementsByTagName('canvas');
       if (canvas.length === 0) {
-        console.log('refreshed...', diceBoxRef.current);
+        // console.log('refreshed...', diceBoxRef.current);
         setDiceBox(diceBoxRef.current);
       }
     }
@@ -63,9 +63,12 @@ function Messages() {
         }
       }
     });
-    const container = scrollContainer.current
+    const container = scrollContainer.current;
     if (container) {
-      if (container.scrollTop + container.offsetHeight + 300 < container.scrollHeight ) {
+      if (
+        container.scrollTop + container.offsetHeight + 300 <
+        container.scrollHeight
+      ) {
         setShowGoBottom(true);
       } else {
         setShowGoBottom(false);
@@ -107,7 +110,7 @@ function Messages() {
   );
 
   useEffect(() => {
-    console.log('[messages]', renderMessages);
+    // console.log('[messages]', renderMessages);
     const dividers = document.querySelectorAll('.divider');
     setDividers(dividers);
     calcMinHeight(renderMessages, dividers);
@@ -156,7 +159,9 @@ function Messages() {
       </div>
       <CircleIconButton
         onClick={scrollToBottom}
-        className={`absolute bottom-2 left-1/2 h-7 w-7 -ml-3.5 z-2 ${showGoBottom ? '' : 'hidden'}`}
+        className={`absolute bottom-2 left-1/2 h-7 w-7 -ml-3.5 z-2 ${
+          showGoBottom ? '' : 'hidden'
+        }`}
         icon={<ArrowDown01Icon type="sharp" size={20} />}
       />
     </div>

@@ -7,11 +7,11 @@ import { useColumnsStore } from '@/components/columns/pinned-columns';
 import { useEffect, useState } from 'react';
 
 import Session from '@/components/columns/sessions/session';
-import { getSession, resetSession } from '@/service/session';
-import useStore from '@/stores/editor';
-import { executeScript } from '@/stores/actions/game';
-import { useAlertStore } from '@/components/modal/alert-placeholder';
 import Back from '@/components/common/back';
+import { useAlertStore } from '@/components/modal/alert-placeholder';
+import { getSession, resetSession } from '@/service/session';
+import { executeScript } from '@/stores/actions/game';
+import useStore from '@/stores/editor';
 
 export default function Page({ params }) {
   const id = params.id;
@@ -43,7 +43,7 @@ export default function Page({ params }) {
       }));
       executeScript(res.messages.length === 0);
     } finally {
-      console.log('finally');
+      // console.log('finally');
       useStore.setState(() => ({
         loading: false,
       }));

@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/legacy/image';
 import { useState } from 'react';
 import { generateBase64Svg } from '@/utils/utils';

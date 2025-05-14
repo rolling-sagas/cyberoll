@@ -43,7 +43,7 @@ export default function User({ uid }) {
   useEffect(() => {
     const fetchData = async () => {
       const credits = await getCurrentCredits();
-      console.log('credits', credits);
+      // console.log('credits', credits);
       let data = credits.daily + credits.monthly;
       if (credits.unlimited) {
         data = 'unlimited';

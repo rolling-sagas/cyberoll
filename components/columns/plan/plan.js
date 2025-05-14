@@ -34,8 +34,8 @@ export default function Plan() {
           getCurrentSubscription(),
           getCurrentCredits(),
         ]);
-        console.log('subscription', subscription);
-        console.log('credits', credits);
+        // console.log('subscription', subscription);
+        // console.log('credits', credits);
         setCurrentSubscription(subscription);
         setCancelModel(
           subscription?.isCancelAtPeriodEnd ? 'uncancel' : 'cancel'

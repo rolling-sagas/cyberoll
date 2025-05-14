@@ -20,7 +20,7 @@ export default function Page() {
       setIsloading(true);
       try {
         const subscription = await getCurrentSubscription();
-        console.log('subscription', subscription);
+        // console.log('subscription', subscription);
         setCurrentSubscription(subscription);
       } finally {
         setIsloading(false);

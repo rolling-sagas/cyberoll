@@ -1,32 +1,33 @@
+import { azure } from '@/service/ai';
+import { resetSession } from '@/service/session';
+import { updateStory } from '@/service/story';
+import { COMPONENT_TYPE, MESSAGE_STATUS } from '@/utils/const';
+import { registerWithConfig } from '@/utils/handlebars';
 import QuickJSManager from '@/utils/quickjs';
+import { componentsToMap } from '@/utils/utils';
+import { parse } from 'best-effort-json-parser';
 import useStore from '../editor';
-import { setModal } from './ui';
 import {
   addMessage,
+  addMessages,
   createMessage,
-  updateMessage,
+  getLastMessageState,
+  getMessageById,
   getMessagesAfterLastDivider,
   resetMessages,
-  syncMessage,
-  addMessages,
-  getMessageById,
-  getLastMessageState,
   sliceMessagesTillMid,
+  syncMessage,
+  updateMessage,
 } from './message';
-import { updateStory } from '@/service/story';
-import { COMPONENT_TYPE } from '@/utils/const';
-import { componentsToMap } from '@/utils/utils';
-import { AI_BASE_URL } from '@/utils/const';
-import { resetSession } from '@/service/session';
-import { MESSAGE_STATUS } from '@/utils/const';
-import { parse } from 'best-effort-json-parser';
-import { azure } from '@/service/ai';
-import { registerWithConfig } from '@/utils/handlebars';
+import { setModal } from './ui';
 
-const quickjs = new QuickJSManager();
+let quickjs = null;
 
 export const executeScript = async (refresh = true) => {
   let components = null;
+
+  // 每次使用新实例
+  quickjs = new QuickJSManager();
 
   try {
     components = componentsToMap(useStore.getState().components, true);
@@ -58,7 +59,6 @@ export const executeScript = async (refresh = true) => {
     await quickjs.executeScript(useStore.getState().script, components);
     if (refresh) {
       const messages = await quickjs.callFunction('onStart');
-      console.log('onStart messages', messages);
       await resetMessages(messages);
       await generate();
     } else {
@@ -130,7 +130,6 @@ export const generate = async (skipCache = false, defaultMsg) => {
     try {
       // 这里用 JSON.parse 让非正常json报错，展示报错ui
       finalContent = JSON.parse(resText);
-      console.log('[ai parsed json]:', finalContent);
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
         return updateMessage(message.id, {
@@ -179,10 +178,8 @@ export const onUserAction = async (action) => {
   useStore.setState({
     doingUserAction: true,
   });
-  console.log('[onUserAction]');
   try {
     let result = await quickjs.callFunction('onAction', action);
-    console.log('[onUserAction result]', result);
     // add messages
     if (result.messages) {
       const msg = createMessage('assistant', 'Generating...');
@@ -223,7 +220,6 @@ export const loadGameSession = async () => {
   try {
     const messages = useStore.getState().messages;
     const state = getLastMessageState(messages);
-    console.log('loadGameSession', state);
     await quickjs.callFunction('onLoad', state);
   } catch (e) {
     setModal({
@@ -311,6 +307,9 @@ export const restartFromMessage = async (mid, exclude = false) => {
   try {
     const messages = useStore.getState().messages || [];
     const message = getMessageById(mid);
+    if (message.role === 'divider') {
+      exclude = true;
+    }
     const isLocalMessage = !!message.status;
     const newMessages = sliceMessagesTillMid(messages, mid, exclude);
     useStore.setState({
@@ -321,10 +320,13 @@ export const restartFromMessage = async (mid, exclude = false) => {
     if (storySessionId && !isLocalMessage) {
       await resetSession(storySessionId, mid, exclude);
     }
+
+    if (!newMessages?.length) {
+      return executeScript(true);
+    }
+
     await loadGameSession();
-    if (
-      !isLastMessageHasTailAction(newMessages)
-    ) {
+    if (!isLastMessageHasTailAction(newMessages)) {
       await generate(exclude);
     }
   } catch (e) {
