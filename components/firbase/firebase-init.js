@@ -17,10 +17,12 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+const disableFirebase = true;
+
 export default function FirebaseInit() {
   useEffect(() => {
     // 只在客户端初始化 Firebase
-    if (!app) {
+    if (!app && !disableFirebase) {
       app = initializeApp(firebaseConfig);
       perf = getPerformance(app);
       if (perf) {

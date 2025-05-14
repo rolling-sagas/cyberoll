@@ -1,7 +1,7 @@
 'use client';
 
 import StoryListSkeleton from '@/components/skeleton/story-list-skeleton';
-import { Input } from '@/components/ui/input';
+import { IconInput } from '@/components/ui/icon-input';
 import { Search01Icon } from '@hugeicons/react';
 import { useEffect, useRef } from 'react';
 import { useSearchController } from './ctrl';
@@ -47,7 +47,7 @@ export default function Search() {
 
   return (
     <div className="w-full space-y-4 p-4">
-      <Input
+      <IconInput
         type="text"
         placeholder="Search..."
         value={searchTerm}
