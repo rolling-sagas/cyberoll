@@ -30,7 +30,7 @@ export default function StoryList({ stories }) {
                   />
                 </div>
               </div>
-              <div className="flex gap-3 items-start px-2 border-b-1 border-gray-200 pb-4">
+              <div className="flex gap-3 items-start px-2 border-b-1 border-gray-200 pb-4 grow">
                 <span className="flex flex-col pb-1">
                   <span className="text-base flex gap-1.5 font-semibold mb-1">
                     {story.name}
