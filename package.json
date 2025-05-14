@@ -1,17 +1,27 @@
 {
   "name": "rs-lab",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "lab for rollingsagas",
   "type": "module",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm next dev",
     "build": "pnpm next build",
     "start": "pnpm next start",
     "lint": "pnpm next lint",
+    "commit": "git-cz",
     "pages:build": "pnpm prisma generate && npx @cloudflare/next-on-pages@1",
     "preview": "pnpm run pages:build && wrangler pages dev",
-    "deploy": "pnpm run pages:build && wrangler pages deploy"
+    "deploy": "pnpm run pages:build && wrangler pages deploy",
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:patch": "standard-version --release-as patch",
+    "release:major": "standard-version --release-as major"
   },
   "keywords": [
     "rollingsagas",
@@ -88,11 +98,14 @@
     "@prisma/adapter-d1": "^5.18.0",
     "@prisma/client": "^5.18.0",
     "autoprefixer": "^10.4.20",
+    "commitizen": "^4.3.1",
+    "cz-conventional-changelog": "^3.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
     "eslint-plugin-storybook": "^0.8.0",
     "postcss": "^8.4.41",
     "prisma": "^5.18.0",
+    "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.8"
   },
   "overrides": {

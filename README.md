@@ -18,6 +18,7 @@ Using Firebase to monitor this site.
 - [firebase performance dashboard: dev](https://console.firebase.google.com/project/rollingsagas/performance/app/web:MGEwMmRhMTAtZDJiMi00ZGQ4LWJiMGItYjM0NDlhNmRmYmMw/trends?hl=zh-cn)
 - [firebase performance dashboard: prod](https://console.firebase.google.com/project/rollingsagas/performance/app/web:ZjZkMTQwNGUtN2RjZS00M2ZhLWJkYzEtYTkwMTE3MTYzMTIz/trends?hl=zh-cn)
 
-## Version
+## Changelog
 
-- [V1.1.0: Add Search](./docs/v1.1.0_add_search.md)
+- [Changelog 使用说明书](./docs//Changelog%20使用说明书.md)
+- [CHANGELOG](./CHANGELOG.md)
