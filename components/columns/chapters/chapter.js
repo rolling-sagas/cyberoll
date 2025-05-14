@@ -393,7 +393,7 @@ export default function Chapter({ data }) {
 
               try {
                 // console.log("update", c.update)
-                // console.log('[oncall]', c)
+                console.log('[oncall]', c)
                 await createMessage(data.id, 'user', c.send[0]);
                 // const res = await generate(
                 //   [
@@ -405,23 +405,16 @@ export default function Chapter({ data }) {
                 //   c.update
                 // );
                 const { data: arr = [] } = await azure(
-                  formatMessages(
-                    [...messages].reverse().concat([
-                      {
-                        role: 'user',
-                        content: JSON.stringify({ data: c.send }),
-                      },
-                    ]),
-                    components,
-                    undefined,
-                    c.update
-                  )
+                  formatMessages([...messages].reverse().concat([{
+                    role: 'user',
+                    content: JSON.stringify({ data: c.send }),
+                  }]), components, undefined, c.update)
                 );
                 for (let m of arr) {
                   await createMessage(data.id, 'assistant', m);
                 }
                 if (c.update) {
-                  await updateComponentsWithName(data.id, c.update);
+                  await updateComponentsWithName(data.id, c.update)
                   await listComponents();
                 }
                 await listMessages();
@@ -431,14 +424,11 @@ export default function Chapter({ data }) {
                   icon: <CheckmarkCircle01Icon />,
                 });
               } catch (e) {
-                console.error(e);
+                console.error(e)
                 openAlert(
                   <Alert
                     title="Oops, something wrong!"
-                    message={
-                      (e.error?.message || e.toString) +
-                      ', please try it later.'
-                    }
+                    message={(e.error?.message || e.toString) + ', please try it later.'}
                     confirmLabel="OK"
                   />
                 );
@@ -618,7 +608,7 @@ export default function Chapter({ data }) {
                 const { data: arr = [] } = await azure(
                   formatMessages([...messages].reverse(), components)
                 );
-                // console.log('ai res', arr);
+                console.log('ai res', arr);
                 for (let m of arr) {
                   await createMessage(data.id, 'assistant', m);
                 }

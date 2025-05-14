@@ -1,28 +1,28 @@
 'use client';
 
+import { useState, useEffect } from 'react';
+import { useToggleStore } from '@/stores/pricing';
+import { PLAN } from '@/utils/credit';
+import { useRef } from 'react';
+import Link from 'next/link';
+import { capitalizeFirstLetter } from '@/utils/utils';
+import { PRICE_PLAN } from '@/utils/credit';
+import { updateSubscription } from '@/service/stripe';
+import { createCheckoutSession } from '@/service/stripe';
+import { getPricesByProductId } from '@/service/stripe';
+import { PRODUCT_ID_PLAN, convertPricesToPlanObject } from '@/utils/product';
+import dayjs from '@/utils/day';
 import { Button } from '@/app/components/ui/button';
+import './index.css';
+import { InformationCircleIcon } from '@hugeicons/react';
+import { createCustomerPortalSession } from '@/service/stripe';
+import { markChangeSubscription } from '@/service/subscription';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import {
-  createCheckoutSession,
-  createCustomerPortalSession,
-  getPricesByProductId,
-  updateSubscription,
-} from '@/service/stripe';
-import { markChangeSubscription } from '@/service/subscription';
-import { useToggleStore } from '@/stores/pricing';
-import { PLAN, PRICE_PLAN } from '@/utils/credit';
-import dayjs from '@/utils/day';
-import { PRODUCT_ID_PLAN, convertPricesToPlanObject } from '@/utils/product';
-import { capitalizeFirstLetter } from '@/utils/utils';
-import { InformationCircleIcon } from '@hugeicons/react';
-import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
-import './index.css';
 
 import { Tabs, TabsList, TabsTrigger } from '@/app/components/ui/tabs';
 
@@ -134,7 +134,8 @@ const StandardItem = (activeTab, subscription_list, subscription, onChange) => (
         )}
       </div>
       {subscription.plan === PLAN.STANDARD &&
-      subscription.interval === (activeTab === 'year' ? 'year' : 'month') ? (
+      subscription.interval ===
+        (activeTab === 'year' ? 'year' : 'month') ? (
         <Button className="!pointer-events-none !text-black !text-lg !border-transparent !h-14 btn-primary !bg-orange-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden">
           Active
         </Button>
@@ -245,7 +246,8 @@ const AdvancedItem = (activeTab, subscription_list, subscription, onChange) => (
           )}
         </div>
         {subscription.plan === PLAN.ADVANCED &&
-        subscription.interval === (activeTab === 'year' ? 'year' : 'month') ? (
+        subscription.interval ===
+          (activeTab === 'year' ? 'year' : 'month') ? (
           <Button className="!pointer-events-none !text-black !text-lg !border-transparent !h-14 btn-primary !bg-orange-400  active:translate-y-[0.0625rem] active:transform active:!bg-orange-500 disabled:active:translate-y-0 disabled:text-neutral-900 disabled:shadow-none disabled:cursor-default translate-y-0 [transition:color_500ms,background-color_500ms,border-color_500ms,text-decoration-color_500ms,fill_500ms,stroke_500ms,transform] disabled:opacity-50 dark:disabled:opacity-30 dark:disabled:text-background bg-primary-500 text-background hover:bg-primary-400 hover:shadow-[0_4px_15px_rgba(107,109,216,0.35)] dark:bg-primary-500 dark:text-background dark:hover:bg-primary-400 disabled:bg-neutral-100 dark:disabled:bg-neutral-700 rounded-xl px-5 py-3  mt-6 w-full [.modal_&]:hidden">
             Active
           </Button>
@@ -331,10 +333,9 @@ export default function PriceSubscription({ subscription }) {
     // changeCommit.current.showModal();
     if (typeof window !== 'undefined') {
       const url = window.location.href;
-      // eslint-disable-next-line no-console
       const currentPlan = subscription.plan;
-      console.log('currentPlan', currentPlan);
       const customerUrl = await createCustomerPortalSession(url);
+      console.log('onChangePlan', currentPlan, customerUrl);
       if (customerUrl) {
         markChangeSubscription();
         window.location.href = customerUrl;
@@ -361,6 +362,8 @@ export default function PriceSubscription({ subscription }) {
   const onClose = () => {
     successModalRef.current.close();
   };
+
+  console.log('priceEntity', priceEntity);
 
   return (
     <div className="flex w-full flex-col">

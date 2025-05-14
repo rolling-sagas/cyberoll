@@ -1,5 +1,5 @@
 import { getImageUrl } from '@/utils/utils';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function Avatar({
   image,
@@ -7,12 +7,19 @@ export default function Avatar({
   size = 32,
   className = 'cursor-pointer',
   uid,
-  href = '',
 }) {
+  const router = useRouter();
   const url = getImageUrl(image, '', 'avator');
 
+  const gotoUser = (e) => {
+    if (uid) {
+      e.stopPropagation();
+      router.push(`/u/${uid}`);
+    }
+  };
+
   return (
-    <Link
+    <div
       style={{
         width: `${size}px`,
         height: `${size}px`,
@@ -22,12 +29,12 @@ export default function Avatar({
       }}
       title={name}
       className={`rounded-full flex bg-no-repeat bg-center bg-cover align-bottom outline-[0.5px] outline-foreground/10 outline -outline-offset-[0.5px] justify-center items-center ${className}`}
-      href={href ? href : `/u/${uid}`}
+      onClick={gotoUser}
     >
       <span className="relative -z-10 uppercase font-bold">
         {name?.substring(0, 1)}
       </span>
-    </Link>
+    </div>
   );
 }
 

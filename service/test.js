@@ -4,5 +4,6 @@ import http from '@/utils/http';
 // test api
 export async function testApi() {
   const res = await http.get('/test');
+  console.log('[test]', res)
   return res;
 }

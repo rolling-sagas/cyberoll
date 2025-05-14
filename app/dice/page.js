@@ -1,10 +1,10 @@
-'use client';
+"use client"
 export const runtime = 'edge';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
 
 export default function Page() {
-  const db = useRef();
+  const db = useRef()
 
   useEffect(() => {
     async function init() {
@@ -18,10 +18,10 @@ export default function Page() {
       await diceBox.init();
       db.current = diceBox;
       const res = await db.current.roll('1d100');
-      console.log(res);
+      console.log(res)
     }
-    init();
-  }, []);
+    init()
+  }, [])
 
   return null;
 }
