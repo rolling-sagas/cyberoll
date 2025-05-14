@@ -1,6 +1,6 @@
 // import { NextResponse } from "next/server";
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
-import { ifetchWithoutToken } from '@/utils/ifetch';
+import ifetch from '@/utils/ifetch';
 
 export const runtime = 'edge';
 
@@ -9,42 +9,24 @@ export async function GET({ url, nextUrl }) {
   try {
     const token = searchParams.get(SSO_TOKEN_KEY);
     if (!token) throw '[sso] no session-token found';
-
-    const res = await ifetchWithoutToken(SSO_HOST + '/auth/session', {
+    const res = await ifetch(SSO_HOST + '/auth/session', {
       headers: {
         Cookie: `session-token=${token};`,
       },
     });
-    if (!res.ok) {
-      console.error("[sso] can't validate token");
-      return new Response("can't validate token 1", {
-        status: 500,
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      });
-    }
-
+    if (!res.ok) throw "[sso] can't validate token";
     const session = await res.json();
-    if (!session) {
-      console.error("[sso] can't validate token");
-      return new Response("can't validate token 2", {
-        status: 500,
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      });
-    }
+    if (!session) throw "[sso] can't validate token";
 
-    const expires = new Date(session.expires).toUTCString();
-    const cookieValue = `${SSO_TOKEN_KEY}=${token}; Path=/; Expires=${expires}; SameSite=Strict`;
+    const expires = new Date(session.expires).toUTCString(); //  确保 expires 是 UTC 格式
+    const cookieValue = `${SSO_TOKEN_KEY}=${token}; Path=/; Expires=${expires}; SameSite=Strict`; //  构建 Cookie 字符串
 
     const next = nextUrl.searchParams.get('next');
 
     return new Response(null, {
       status: 302,
       headers: {
-        Location: next || origin,
+        'Location': next || origin,
         'Set-Cookie': cookieValue,
       },
     });

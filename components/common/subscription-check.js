@@ -14,15 +14,10 @@ import { Button } from '@/app/components/ui/button';
 import useUserStore from '@/stores/user';
 
 export default function SubscriptionCheck() {
-  const userStore = useUserStore();
   const searchParams = useSearchParams();
   const [open, setOpen] = useState(false)
   const dailyCheck = useUserStore(state => state.dailyCheck)
   const userInfo = useUserStore(state => state.userInfo)
-
-  useEffect(() => {
-    userStore.getUserInfo();
-  }, []);
 
   useEffect(() => {
     const check = async () => {
