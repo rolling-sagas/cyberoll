@@ -1,45 +1,49 @@
 'use client';
 
-import { useDebounce } from '@/app/hooks/use-debounce';
 import StoryListSkeleton from '@/components/skeleton/story-list-skeleton';
 import { Input } from '@/components/ui/input';
-import { search } from '@/service/search';
 import { Search01Icon } from '@hugeicons/react';
-import { useCallback, useState } from 'react';
+import { useEffect, useRef } from 'react';
+import { useSearchController } from './ctrl';
 import StoryList from './story-list';
 
 export default function Search() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchResults, setSearchResults] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    searchTerm,
+    searchResults,
+    isInitialLoading,
+    isLoadingMore,
+    hasMore,
+    error,
+    handleSearch,
+    loadMore,
+  } = useSearchController();
 
-  const debouncedSearch = useDebounce(async (term) => {
-    if (!term) {
-      setSearchResults(null);
-      return;
+  const observerTarget = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const isIntersecting = entries[0].isIntersecting;
+
+        if (isIntersecting && hasMore && !isLoadingMore) {
+          loadMore();
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '100px', // 提前100px触发加载
+      }
+    );
+
+    if (observerTarget.current) {
+      observer.observe(observerTarget.current);
     }
 
-    try {
-      setIsLoading(true);
-      const results = await search(term);
-      setSearchResults(results);
-    } catch (error) {
-      console.error('Search error:', error);
-      setSearchResults(null);
-    } finally {
-      setIsLoading(false);
-    }
-  }, 500);
-
-  const handleSearch = useCallback(
-    (e) => {
-      const value = e.target.value;
-      console.log('value', value);
-      setSearchTerm(value);
-      debouncedSearch(value);
-    },
-    [debouncedSearch]
-  );
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, isLoadingMore, loadMore]);
 
   return (
     <div className="w-full space-y-4 p-4">
@@ -52,16 +56,37 @@ export default function Search() {
         icon={<Search01Icon size={20} />}
       />
 
-      {isLoading ? (
+      {error && <div className="text-sm text-red-500 text-center">{error}</div>}
+
+      {isInitialLoading ? (
         <StoryListSkeleton />
       ) : searchResults ? (
-        searchResults?.stories?.length > 0 ? (
+        <>
           <StoryList stories={searchResults.stories} />
-        ) : (
-          <div className="text-sm text-muted-foreground text-center">
-            No results found
-          </div>
-        )
+
+          {/* 加载更多触发器 */}
+          {hasMore && (
+            <div
+              ref={observerTarget}
+              className="h-4 w-full"
+              data-testid="load-more-trigger"
+            >
+              {isLoadingMore && <StoryListSkeleton />}
+            </div>
+          )}
+
+          {/* 状态提示 */}
+          {!hasMore && searchResults.stories.length > 0 && (
+            <div className="text-sm text-muted-foreground text-center">
+              No more results
+            </div>
+          )}
+          {!hasMore && searchResults.stories.length === 0 && (
+            <div className="text-sm text-muted-foreground text-center">
+              No results found
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-sm text-muted-foreground text-center">
           Explore the stories
