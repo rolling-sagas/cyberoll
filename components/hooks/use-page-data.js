@@ -12,10 +12,9 @@ export default function usePageData(
   getData,
   size,
   itemsKey = 'items',
-  totalKey = 'total',
-  fromPage = -1,
+  totalKey = 'total'
 ) {
-  const [page, setPage] = useState(fromPage);
+  const [page, setPage] = useState(-1);
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(-1);
   const [loading, setLoading] = useState(false);

@@ -1,7 +1,7 @@
 import BaseButton from '@/components/buttons/base-button';
 
 import { useModalStore } from '@/components/modal/dialog-placeholder';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Textarea } from '@/app/components/ui/textarea';
 import ImageAutoUploaderBtn from '@/components/columns/components/image-auto-uploader-btn';
@@ -38,6 +38,7 @@ export const ReportProblemDIalog = ({ title, type, basicData }) => {
         userId: userInfo.id,
         type,
       };
+      console.log({ reqData });
       await feedback(reqData);
       toast.success('Thank you for reporting this problem.');
     } catch (error) {
@@ -47,6 +48,10 @@ export const ReportProblemDIalog = ({ title, type, basicData }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    console.log({ image });
+  }, [image]);
 
   return (
     <Dialog

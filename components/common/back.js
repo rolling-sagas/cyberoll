@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowLeft02Icon } from '@hugeicons/react';
 import { useRouter } from 'next/navigation';
 import CircleIconButton from '../buttons/circle-icon-button';

@@ -1,9 +1,6 @@
 'use client';
 
-import {
-  changePaypalSubscription,
-  savePaypalSubscription,
-} from '@/service/paypal';
+import { changePaypalSubscription, savePaypalSubscription } from '@/service/paypal';
 import { markChangeSubscription } from '@/service/subscription';
 import useUserStore from '@/stores/user';
 import { goSso } from '@/utils/index';
@@ -41,7 +38,7 @@ export default function PaypalButton({
           });
         },
         onApprove: async function (data, _actions) {
-          // console.log('Subscription created successfully!', data);
+          console.log('Subscription created successfully!', data);
           await savePaypalSubscription(data.subscriptionID);
           toast.success('Success');
           location.reload();
@@ -57,6 +54,7 @@ export default function PaypalButton({
   const changePlan = useCallback(async () => {
     if (!userInfo) return goSso();
     if (!isChangePlan) return;
+    console.log('changePlan', planId);
     const res = await changePaypalSubscription(planId);
     markChangeSubscription();
     location.href = res.approveLink;
