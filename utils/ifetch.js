@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 // import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
 const baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
@@ -22,7 +21,7 @@ export default async function ifetch(url, options = {}) {
     // }
 
     if (res.ok) {
-      return await res.json()
+      return await res.json();
     } else {
       // await bi.error({
       //   status: res.status,
@@ -30,8 +29,33 @@ export default async function ifetch(url, options = {}) {
       //   url,
       //   options,
       // })
-      console.error(`[ifetch error]: ${res.statusText}`)
-      throw res.statusText
+      console.error(`[ifetch error]: ${res.statusText}`);
+      throw res.statusText;
+    }
+  } catch (e) {
+    console.error(`[ifetch error]: ${e?.message || e}`);
+    throw e.message;
+  }
+}
+
+// 这个是用于登录时严重鉴权，此时 cookie 不存在
+export async function ifetchWithoutToken(url, options = {}) {
+  try {
+    if (!url.startsWith('http')) {
+      url = baseURL + url;
+    }
+
+    console.log({ url });
+
+    const res = await fetch(url, options);
+
+    console.log({ res: res.ok });
+
+    if (res.ok) {
+      return res;
+    } else {
+      console.error(`[ifetch error]: ${res.statusText}`);
+      throw res.statusText;
     }
   } catch (e) {
     console.error(`[ifetch error]: ${e?.message || e}`);
