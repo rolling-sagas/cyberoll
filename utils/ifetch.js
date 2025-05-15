@@ -1,9 +1,10 @@
 'use server';
 
-import { redirect } from 'next/navigation';
-// import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
 const baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
+import NotFound from '@/app/not-found';
+import Error from '@/components/common/error';
+import NotLogin from '@/components/common/not-login';
 
 export default async function ifetch(url, options = {}) {
   try {
@@ -17,12 +18,8 @@ export default async function ifetch(url, options = {}) {
 
     const res = await fetch(url, options);
 
-    // if (res.status === 401) {
-    //   redirect('/login'); // 自动跳转前端到登录页
-    // }
-
     if (res.ok) {
-      return await res.json()
+      return [null, await res.json()];
     } else {
       // await bi.error({
       //   status: res.status,
@@ -30,11 +27,14 @@ export default async function ifetch(url, options = {}) {
       //   url,
       //   options,
       // })
-      console.error(`[ifetch error]: ${res.statusText}`)
-      throw res.statusText
+      console.error(`[ifetch error]: ${res.statusText}`);
+      const status = res.status;
+      if (status === 404) return [<NotFound />];
+      if (status === 401) return [<NotLogin />];
+      return [<Error />];
     }
   } catch (e) {
     console.error(`[ifetch error]: ${e?.message || e}`);
-    throw e.message;
+    return [<Error />];
   }
 }
