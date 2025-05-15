@@ -9,12 +9,12 @@ export async function GET({ url, nextUrl }) {
   try {
     const token = searchParams.get(SSO_TOKEN_KEY);
     if (!token) throw '[sso] no session-token found';
-    const res = await ifetch(SSO_HOST + '/auth/session', {
+    const [err, session] = await ifetch(SSO_HOST + '/auth/session', {
       headers: {
         Cookie: `session-token=${token};`,
       },
     });
-    if (!res.ok) {
+    if (err) {
       console.error("[sso] can't validate token");
       return new Response('can\'t validate token', {
         status: 500,
@@ -22,7 +22,6 @@ export async function GET({ url, nextUrl }) {
           'Content-Type': 'text/plain',
         }})
     }
-    const session = await res.json();
     if (!session) {
       console.error("[sso] can't validate token");
       return new Response('can\'t validate token', {
