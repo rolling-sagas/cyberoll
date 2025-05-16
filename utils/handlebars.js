@@ -1,4 +1,4 @@
-import Handlebars from 'handlebars';
+import Handlebars from 'handlebars/dist/handlebars';
 
 export function registerWithConfig(configs = {}) {
   Handlebars.unregisterHelper('withConfig');
