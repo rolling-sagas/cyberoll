@@ -1,11 +1,14 @@
 'use client';
 
+import { getAnalytics, logEvent } from 'firebase/analytics';
 import { initializeApp } from 'firebase/app';
-import { getPerformance } from 'firebase/performance';
+import { initializePerformance } from 'firebase/performance';
+
 import { useEffect } from 'react';
 
 let app;
 let perf;
+let analytics;
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -17,16 +20,25 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const disableFirebase = true;
-
 export default function FirebaseInit() {
   useEffect(() => {
     // 只在客户端初始化 Firebase
-    if (!app && !disableFirebase) {
+    if (!app) {
       app = initializeApp(firebaseConfig);
-      perf = getPerformance(app);
+      perf = initializePerformance(app, {
+        logTraceAfterSampling: false,
+        instrumentationEnabled: true,
+        dataCollectionEnabled: true,
+
+        // ✅ 关闭 DOM 属性记录
+        autoCollect: false,
+      });
+      analytics = getAnalytics(app);
       if (perf) {
-        console.log('Firebase Performance initialized');
+        console.log('Performance initialized');
+      }
+      if (analytics) {
+        console.log('Analytics initialized');
       }
     }
 
@@ -35,3 +47,5 @@ export default function FirebaseInit() {
 
   return null;
 }
+
+export { analytics, app, logEvent, perf };
