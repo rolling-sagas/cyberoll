@@ -21,6 +21,11 @@
     "rollingsagas",
     "lab.rollingsagas.com"
   ],
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
   "author": "aspirin2d@outlook.com",
   "license": "MIT",
   "dependencies": {
