@@ -133,7 +133,7 @@ export default function User({ uid }) {
             </span>
             <span className="whitespace-pre">{user?.description}</span>
           </div>
-          <Avatar image={user?.image} size={64} name={user?.name} />
+          <Avatar image={user?.image} size={64} name={user?.name} uid={uid} />
         </div>
       )}
       <div className="flex justify-between items-center mb-4">
