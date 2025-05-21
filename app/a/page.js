@@ -29,6 +29,10 @@ const ActivityDropdownItems = [
   //   label: 'Subscription',
   //   value: 'subscription',
   // },
+  {
+    label: 'Notification',
+    value: 'notification',
+  },
 ];
 
 export default function Page() {
