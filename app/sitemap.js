@@ -1,5 +1,7 @@
 import ifetch from '@/utils/ifetch';
 
+export const runtime = 'edge';
+
 export default async function sitemap() {
   const now = new Date();
   const baseUrl = 'https://rollingsagas.com';
@@ -11,9 +13,7 @@ export default async function sitemap() {
       priority: 1,
     },
   ];
-  const [error, res] = await ifetch(
-    '/s/_/public?take=100&skip=0'
-  );
+  const [error, res] = await ifetch('/s/_/public?take=100&skip=0');
   if (!error) {
     res.stories?.forEach((s) =>
       siteMap.push({
