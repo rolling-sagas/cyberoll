@@ -1,19 +1,20 @@
+import { AppealAlertDialog } from '@/components/columns/activity/appeal-alert-dialog';
+import InitialComponents from '@/components/common/initial-components';
 import NavBar from '@/components/navbar/navbar';
 import './global.css';
-import InitialComponents from '@/components/common/initial-components';
 
 export const metadata = {
   title: 'Roll your fate in AI-powered text adventures | Rollingsagas',
   applicationName: 'Rollingsagas',
   keywords: ['Rollingsagas', 'dice', 'AI-powered', 'creators'],
-  description: 'Play and create AI-powered text adventures with classic dice rolls. Discover imaginative stories with a community of creators',
+  description:
+    'Play and create AI-powered text adventures with classic dice rolls. Discover imaginative stories with a community of creators',
   icons: {
     icon: '/favicon.ico',
-  }
-}
+  },
+};
 
 export default function RootLayout({ children }) {
-
   // useEffect(() => {
   //   const handleRouteChange = (url) => {
   //     console.log(111, url);
@@ -57,6 +58,7 @@ export default function RootLayout({ children }) {
           </div>
         </div>
         <InitialComponents />
+        <AppealAlertDialog />
       </body>
     </html>
   );
