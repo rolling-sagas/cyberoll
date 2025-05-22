@@ -9,7 +9,9 @@ import { useEffect } from 'react';
 import { ActivityColumnCommentItem } from './activity-column-comment-item';
 import { ActivityColumnFollowItem } from './activity-column-follow-item';
 import { ActivityColumnLikeItem } from './activity-column-like-item';
+import { ActivityColumnNotificationItem } from './activity-column-notification-item';
 import { ActivityColumnSubscriptionItem } from './activity-column-subscription-item';
+
 export default function ActivityColumnWrap({ type }) {
   const userInfo = useUserStore((state) => state.userInfo);
   const [
@@ -84,6 +86,19 @@ export default function ActivityColumnWrap({ type }) {
                         key={item.createdAt}
                         data={item}
                         subType={item?.subType}
+                      />
+                    );
+                  case ACTIVITY_SUB_TYPE.BannedLogin:
+                  case ACTIVITY_SUB_TYPE.BannedComment:
+                  case ACTIVITY_SUB_TYPE.BannedPublish:
+                  case ACTIVITY_SUB_TYPE.BannedAComment:
+                  case ACTIVITY_SUB_TYPE.BannedAStory:
+                    return (
+                      <ActivityColumnNotificationItem
+                        key={item.createdAt}
+                        subType={item?.subType}
+                        s
+                        data={item}
                       />
                     );
                   default:
