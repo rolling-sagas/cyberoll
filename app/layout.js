@@ -3,16 +3,14 @@ import InitialComponents from '@/components/common/initial-components';
 import NavBar from '@/components/navbar/navbar';
 import './global.css';
 import MHeader from '@/components/navbar/m-header';
+import { DEFAULT_TDK } from '@/utils/const';
 
 export const metadata = {
-  title: 'Roll your fate in AI-powered text adventures | Rollingsagas',
   applicationName: 'Rollingsagas',
-  keywords: ['Rollingsagas', 'dice', 'AI-powered', 'creators'],
-  description:
-    'Play and create AI-powered text adventures with classic dice rolls. Discover imaginative stories with a community of creators',
   icons: {
     icon: '/favicon.ico',
   },
+  ...DEFAULT_TDK,
 };
 
 export const viewport = {

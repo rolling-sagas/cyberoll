@@ -38,3 +38,10 @@ export const PAYPAL_PLANS = {
     advanced: paypalPlans[3],
   },
 }
+
+export const DEFAULT_TDK = {
+  title: 'Roll your fate in AI-powered text adventures | Rollingsagas',
+  keywords: ['Rollingsagas', 'dice', 'AI-powered', 'creators'],
+  description:
+    'Play and create AI-powered text adventures with classic dice rolls. Discover imaginative stories with a community of creators',
+}

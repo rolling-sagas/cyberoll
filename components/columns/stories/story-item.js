@@ -80,7 +80,7 @@ export default function StoryItem({
         onUpdateClick={onUpdateClick}
       />
       <div className="flex flex-col w-full">
-        <span className="font-semibold text-base line-clamp-1">
+        <h2 className="font-semibold text-base line-clamp-1">
           {showPrivateStatus ? (
             story.keepPrivate ? (
               <ViewOffIcon className="inline-block mr-1 align-top" size="22" />
@@ -89,7 +89,7 @@ export default function StoryItem({
             )
           ) : null}
           {story.name}
-        </span>
+        </h2>
         <span
           className={`font-light text-sm ${showAllDesc ? '' : 'line-clamp-3'}`}
         >
