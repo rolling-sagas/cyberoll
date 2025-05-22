@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from '@/utils/day';
 
 export const ACTIVITY_SUB_TYPE = {
   Like: 'like',

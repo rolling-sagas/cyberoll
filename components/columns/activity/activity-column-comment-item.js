@@ -1,7 +1,7 @@
 import Avatar from '@/components/common/avatar';
 import UserName from '@/components/common/user-name';
 import { getImageUrl } from '@/utils/utils';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/day';
 import { useRouter } from 'next/navigation';
 import Image from '../../common/custom-image';
 

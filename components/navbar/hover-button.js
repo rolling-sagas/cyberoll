@@ -1,8 +1,10 @@
-export default function HoverButton({ children }) {
+export default function HoverButton({ children, className = '' }) {
   return (
     <div
-      className="group w-[60px] h-[60px] 
-      flex justify-center items-center relative"
+      className={
+        'group sm:w-[60px] w-10 sm:h-[60px] h-10 flex justify-center items-center relative ' +
+        className
+      }
     >
       <div
         className="group-hover:scale-110          

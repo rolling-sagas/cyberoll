@@ -1,8 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton"
 
-export default function ColumnSkeleton() {
+export default function ColumnSkeleton({px = false}) {
   return (
-    <div className="mt-40 w-full max-w-[640px] mx-auto flex flex-col gap-4 my-4">
+    <div className={`mt-40 w-full max-w-[640px] mx-auto flex flex-col gap-4 my-4 ${px ? 'px-5' : ''}`}>
       <Skeleton className="h-6 w-1/5" />
       <Skeleton className="h-6 w-1/3" />
       <Skeleton className="h-6 w-full" />

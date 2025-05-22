@@ -49,7 +49,7 @@ export default function Page() {
   }
 
   return (
-    <div className="w-full h-full py-4 2xl:py-10">
+    <div className="w-full h-full py-4 2xl:py-10 px-5">
       <section className="flex h-full min-w-0 flex-1 flex-col items-center justify-start overflow-y-auto scrollbar-none">
         <div className="mb-[34px] flex flex-col items-center justify-center gap-3">
           <h1 className="font-medium tracking-[0.0225rem] text-foreground text-3xl lg:text-5xl">

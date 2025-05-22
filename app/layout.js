@@ -2,6 +2,7 @@ import { AppealAlertDialog } from '@/components/columns/activity/appeal-alert-di
 import InitialComponents from '@/components/common/initial-components';
 import NavBar from '@/components/navbar/navbar';
 import './global.css';
+import MHeader from '@/components/navbar/m-header';
 
 export const metadata = {
   title: 'Roll your fate in AI-powered text adventures | Rollingsagas',
@@ -13,6 +14,13 @@ export const metadata = {
     icon: '/favicon.ico',
   },
 };
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export default function RootLayout({ children }) {
   // useEffect(() => {
@@ -47,15 +55,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <div className="flex h-svh relative z-10">
+        <div className="flex h-full relative z-10 sm:flex-row flex-col-reverse">
           <NavBar />
-          <div className="flex overflow-y-hidden overflow-x-auto px-5 w-full">
-            <div className="block min-w-[76px]" />
-            <div className="flex flex-row flex-grow gap-3 justify-center">
+          <div className="flex overflow-y-hidden overflow-x-auto w-full h-full flex-auto">
+            <div className="flex flex-row flex-grow justify-center">
               {children}
             </div>
-            <div className="block min-w-[76px]" />
+            <div className="min-w-[76px] sm:block hidden" />
           </div>
+          <MHeader />
         </div>
         <InitialComponents />
         <AppealAlertDialog />

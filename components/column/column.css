@@ -1,20 +1,36 @@
 .column {
-  @apply max-w-[640px] w-full h-full flex flex-col duration-150
+  @apply max-w-[640px] min-w-[420px] w-full h-full flex flex-col duration-150
   transition ease-in data-[enter]:data-[closed]:opacity-0 
-  data-[enter]:data-[closed]:scale-75 origin-center;
+  data-[enter]:data-[closed]:scale-75 origin-center
+  relative mr-3 last:mr-0;
+}
+.column:first-child {
+  @apply ml-5;
+}
+.column:last-child {
+  @apply mr-5;
 }
 
 .column:not(:only-child) {
-  @apply min-w-[420px] max-w-[640px] w-[34vw];
+  @apply w-[34vw];
 }
 
 .column-header {
   @apply w-full flex items-center font-semibold
     justify-center sticky top-0 min-h-[60px] z-[1];
 }
+.column:only-child .column-header {
+  @apply  sm:min-h-[60px] min-h-9 overflow-hidden sm:overflow-visible;
+}
 
 .column-header > .left-corner {
-  @apply block absolute -left-3 top-12 h-9 w-9 z-[1] overflow-hidden;
+  @apply absolute -left-3 top-12 h-9 w-9 z-[1] overflow-hidden block;
+}
+
+.column:only-child .column-header > .left-corner,
+.column:only-child .column-header > .right-corner,
+.column:only-child .column-header > .center {
+  @apply sm:block hidden;
 }
 
 .column-header > .left-corner > * {
@@ -69,18 +85,26 @@
 .header-grid > div:nth-child(3) {
   @apply flex items-center justify-end gap-x-2 pr-6;
 }
+.column:only-child .header-grid > div:nth-child(1) {
+  @apply pl-5 sm:pl-6;
+}
+.column:only-child .header-grid > div:nth-child(3) {
+  @apply pr-5 sm:pr-6;
+}
 
 .column-content {
   @apply flex flex-col border-x box-border shadow-top h-full
     overflow-y-auto overflow-x-hidden pt-2 w-full z-0 bg-rs-background-2;
 }
-
-.column {
-	@apply flex flex-col max-w-[640px] min-w-[420px] relative mr-3 last:mr-0 w-[21vw];
+.column:only-child .column-content {
+  @apply pt-0 sm:pt-2 sm:border-x border-x-0;
 }
 
 .column:only-child {
-	width: 100%;
+  @apply w-full sm:min-w-[420px] min-w-1 mx-0 sm:mx-5;
+}
+.column:only-child .header-grid {
+  @apply bg-rs-background-2 sm:bg-rs-background-1 border-b-1 border-gray-200 sm:border-none;
 }
 
 .column:first-child:nth-last-child(2),

@@ -2,9 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+html, body {
+  @apply w-full h-full p-0 m-0 overflow-hidden;
+}
 body {
   @apply transition-colors duration-200 bg-rs-background-1 text-rs-text-primary 
-  text-base antialiased w-screen h-screen;
+  text-base antialiased;
   overscroll-behavior-y: contain;
   font-family: system-ui, -apple-system, BlinkMacSystemFont, Roboto, Helvetica,
     Arial, sans-serif;

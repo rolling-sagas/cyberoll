@@ -3,7 +3,7 @@ import { featureCtrl } from '@/stores/ctrl';
 import { ACTIVITY_SUB_TYPE } from '@/utils/activity';
 import { parseJson } from '@/utils/utils';
 import { CrownIcon } from '@hugeicons/react';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/day';
 import { useRouter } from 'next/navigation';
 
 function getRenewAndExpireDate(data) {

@@ -79,8 +79,8 @@ export default function StoryItem({
         showComment={showComment}
         onUpdateClick={onUpdateClick}
       />
-      <div className="flex flex-col">
-        <span className="font-semibold text-nowrap text-base w-full overflow-hidden text-ellipsis">
+      <div className="flex flex-col w-full">
+        <span className="font-semibold text-base line-clamp-1">
           {showPrivateStatus ? (
             story.keepPrivate ? (
               <ViewOffIcon className="inline-block mr-1 align-top" size="22" />

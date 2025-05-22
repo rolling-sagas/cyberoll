@@ -3,7 +3,7 @@ import Avatar from '@/components/common/avatar';
 import UserName from '@/components/common/user-name';
 import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
 import { toggleFollowUser } from '@/service/relation';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/day';
 import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast/headless';
