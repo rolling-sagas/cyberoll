@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { initializePerformance } from 'firebase/performance';
 
 import { useEffect } from 'react';
+import { utmTrack } from '../utm-tracker';
 
 let app;
 let perf;
@@ -19,6 +20,10 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
+
+function isFirebaseInitialized() {
+  return app !== undefined;
+}
 
 export default function FirebaseInit() {
   useEffect(() => {
@@ -40,6 +45,7 @@ export default function FirebaseInit() {
       if (analytics) {
         console.log('Analytics initialized');
       }
+      utmTrack();
     }
 
     // 可以在这里添加其他 Firebase 初始化代码
@@ -48,4 +54,4 @@ export default function FirebaseInit() {
   return null;
 }
 
-export { analytics, app, logEvent, perf };
+export { analytics, app, isFirebaseInitialized, logEvent, perf };

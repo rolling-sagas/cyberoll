@@ -1,9 +1,8 @@
-import { AppealAlertDialog } from '@/components/columns/activity/appeal-alert-dialog';
 import InitialComponents from '@/components/common/initial-components';
-import NavBar from '@/components/navbar/navbar';
-import './global.css';
 import MHeader from '@/components/navbar/m-header';
+import NavBar from '@/components/navbar/navbar';
 import { DEFAULT_TDK } from '@/utils/const';
+import './global.css';
 
 export const metadata = {
   applicationName: 'Rollingsagas',
@@ -18,7 +17,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-}
+};
 
 export default function RootLayout({ children }) {
   // useEffect(() => {
@@ -64,7 +63,6 @@ export default function RootLayout({ children }) {
           <MHeader />
         </div>
         <InitialComponents />
-        <AppealAlertDialog />
       </body>
     </html>
   );
