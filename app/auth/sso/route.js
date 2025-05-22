@@ -1,7 +1,7 @@
 // import { NextResponse } from "next/server";
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
 import ifetch from '@/utils/ifetch';
-import { trackEvent } from '@/utils/trackEvent';
+import { logServerEvent } from '@/utils/track-event';
 
 export const runtime = 'edge';
 
@@ -42,10 +42,14 @@ export async function GET({ url, nextUrl }) {
     }
 
     // 发送登录成功事件
-    trackEvent('user_login', {
-      userId: session.user?.id,
-      email: session.user?.email,
-      adSource,
+    await logServerEvent({
+      client_id: `cyberoll-dev-${Date.now()}`,
+      event_name: 'rs_sign_in',
+      event_params: {
+        user_id: session.user?.id,
+        email: session.user?.email,
+        adSource,
+      },
     });
 
     const expires = new Date(session.expires).toUTCString();
