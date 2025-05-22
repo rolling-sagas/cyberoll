@@ -1,4 +1,3 @@
-import { analytics, logEvent } from '@/components/firbase/firebase-init';
 import { createServerEvent } from '@/service/event';
 
 const trackData2EventData = (eventName, eventData = {}) => {
@@ -18,28 +17,6 @@ const trackData2EventData = (eventName, eventData = {}) => {
   return data;
 };
 
-// rs_first_view call this function
-// TODO: add server
-export async function clientTrackEvent(eventName, eventData = {}) {
-  try {
-    const data = trackData2EventData(eventName, eventData);
-    const ret = await Promise.all([
-      createServerEvent([data]),
-      logEvent(analytics, eventName, {
-        ...eventData,
-        client_timestamp: new Date().toISOString(),
-      }),
-    ]);
-    console.log({ ret });
-    console.log('✅ Event tracked successfully:', eventName);
-  } catch (e) {
-    console.error('❌ Event tracking failed:', {
-      eventName,
-      error: e.message,
-    });
-  }
-}
-
 const MEASUREMENT_ID = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
 const API_SECRET = process.env.NEXT_PUBLIC_FIREBASE_API_SECRET;
 
@@ -55,6 +32,7 @@ export async function logServerEvent({
     });
 
     const url = `https://www.google-analytics.com/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
+
     const payload = {
       client_id,
       events: [
@@ -64,18 +42,24 @@ export async function logServerEvent({
             ...event_params,
             engagement_time_msec: 100,
           },
+          timestamp_micros: Date.now() * 1000,
         },
       ],
     };
 
-    const ret = await Promise.all([
+    const [eventResult, gaResult] = await Promise.all([
       createServerEvent([data]),
       fetch(url, {
         method: 'POST',
         body: JSON.stringify(payload),
       }),
     ]);
-    console.log({ ret });
+
+    console.log([eventResult, gaResult]);
+
+    if (!gaResult.ok) {
+      throw new Error(`HTTP error! status: ${gaResult.status}`);
+    }
 
     console.log('✅ Server event tracked successfully:', event_name);
     return true;

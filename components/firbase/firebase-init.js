@@ -21,10 +21,6 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-function isFirebaseInitialized() {
-  return app !== undefined;
-}
-
 export default function FirebaseInit() {
   useEffect(() => {
     // 只在客户端初始化 Firebase
@@ -50,4 +46,4 @@ export default function FirebaseInit() {
   return null;
 }
 
-export { analytics, app, isFirebaseInitialized, logEvent, perf };
+export { analytics, app, logEvent, perf };

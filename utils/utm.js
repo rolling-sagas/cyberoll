@@ -30,8 +30,7 @@ export function removeUtmParams() {
 
 // 将 UTM 参数存储到 localStorage
 export function storeUtmParams(utmParams) {
-  const adSource = getUtmParamsFromLocalStorage();
-  if (!adSource && Object.keys(utmParams).length > 0) {
+  if (Object.keys(utmParams).length > 0) {
     localStorage.setItem('ad_source', JSON.stringify(utmParams));
   }
 }

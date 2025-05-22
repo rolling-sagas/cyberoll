@@ -1,25 +1,22 @@
 // import { NextResponse } from "next/server";
 import { SSO_HOST, SSO_TOKEN_KEY } from '@/utils/const';
 import ifetch from '@/utils/ifetch';
-import { logServerEvent } from '@/utils/track-event';
+import { logServerEvent } from '@/utils/log-server-event';
 
 export const runtime = 'edge';
 
 export async function GET({ url, nextUrl }) {
   const { searchParams, origin } = new URL(url);
-  console.log('GET request received', url);
   try {
     const token = searchParams.get(SSO_TOKEN_KEY);
     if (!token) throw '[sso] no session-token found';
 
     // 获取广告来源参数
     const adSourceStr = searchParams.get('ad_source');
-    console.log('adSourceStr', adSourceStr);
     let adSource = null;
     if (adSourceStr) {
       try {
         adSource = JSON.parse(decodeURIComponent(adSourceStr));
-        console.log('adSource', adSource);
       } catch (e) {
         console.error('[sso] failed to parse ad_source', e);
       }
@@ -51,6 +48,27 @@ export async function GET({ url, nextUrl }) {
         adSource,
       },
     });
+
+    // 判断是否是注册事件
+    if (session?.createdAt) {
+      const createTime = new Date(session.createdAt);
+      const currentTime = new Date();
+      const timeDiff = currentTime.getTime() - createTime.getTime();
+      const twoMinutes = 2 * 60 * 1000; // 2分钟的毫秒数
+
+      if (timeDiff <= twoMinutes) {
+        // 如果是新注册用户（2分钟内创建的账号）
+        await logServerEvent({
+          client_id: `cyberoll-dev-${Date.now()}`,
+          event_name: 'rs_sign_up',
+          event_params: {
+            user_id: session.user?.id,
+            email: session.user?.email,
+            adSource,
+          },
+        });
+      }
+    }
 
     const expires = new Date(session.expires).toUTCString();
     const cookieValue = `${SSO_TOKEN_KEY}=${token}; Path=/; Expires=${expires}; SameSite=Strict`;
