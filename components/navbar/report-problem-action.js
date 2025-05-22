@@ -1,3 +1,5 @@
+'use client';
+
 import BaseButton from '@/components/buttons/base-button';
 
 import { useModalStore } from '@/components/modal/dialog-placeholder';

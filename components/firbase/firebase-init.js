@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { initializePerformance } from 'firebase/performance';
 
 import { useEffect } from 'react';
+import { utmTrack } from '../../utils/utm-tracker';
 
 let app;
 let perf;
@@ -29,8 +30,6 @@ export default function FirebaseInit() {
         logTraceAfterSampling: false,
         instrumentationEnabled: true,
         dataCollectionEnabled: true,
-
-        // ✅ 关闭 DOM 属性记录
         autoCollect: false,
       });
       analytics = getAnalytics(app);
@@ -40,9 +39,8 @@ export default function FirebaseInit() {
       if (analytics) {
         console.log('Analytics initialized');
       }
+      utmTrack();
     }
-
-    // 可以在这里添加其他 Firebase 初始化代码
   }, []);
 
   return null;

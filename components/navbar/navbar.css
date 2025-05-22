@@ -1,10 +1,11 @@
 .navbar {
-  @apply fixed left-0 top-0 h-full bg-rs-background-1/85 
-        w-[76px] z-10 backdrop-blur flex flex-col items-center;
+  @apply sm:h-full h-[48px] sm:w-[76px] w-full flex sm:flex-col flex-row sm:p-0 p-1
+  bg-rs-background-1/85 z-10 backdrop-blur
+  items-center flex-none;
 }
 
 .navbar > .logo {
-  @apply shrink-0 py-4;
+  @apply shrink-0 py-4 sm:static fixed left-0 top-0;
 }
 
 .navbar > .logo > svg {
@@ -12,5 +13,5 @@
 }
 
 .navbar > .nav {
-  @apply flex flex-col justify-center gap-1;
+  @apply flex sm:flex-col flex-row sm:justify-center gap-1 items-center justify-between sm:px-0 px-1.5;
 }

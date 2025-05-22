@@ -8,12 +8,12 @@ export default function NavButton({ href, children, active }) {
       <Link
         href={href}
         {...(active ? { "data-active": true } : {})}
-        className="group w-[60px] h-[60px] 
+        className="group sm:w-[60px] sm:h-[60px] w-10 h-10
         flex justify-center items-center relative"
       >
         <div
           className="group-data-[hover]:scale-110          
-          transition duration-200 h-6 w-6 z-[1] 
+          transition duration-200 w-6 h-6 z-[1] 
           text-rs-text-secondary group-data-[active]:text-rs-text-primary"
         >
           {children}

@@ -1,19 +1,25 @@
-import NavBar from '@/components/navbar/navbar';
-import './global.css';
 import InitialComponents from '@/components/common/initial-components';
+import MHeader from '@/components/navbar/m-header';
+import NavBar from '@/components/navbar/navbar';
+import { DEFAULT_TDK } from '@/utils/const';
+import './global.css';
 
 export const metadata = {
-  title: 'Roll your fate in AI-powered text adventures | Rollingsagas',
   applicationName: 'Rollingsagas',
-  keywords: ['Rollingsagas', 'dice', 'AI-powered', 'creators'],
-  description: 'Play and create AI-powered text adventures with classic dice rolls. Discover imaginative stories with a community of creators',
   icons: {
     icon: '/favicon.ico',
-  }
-}
+  },
+  ...DEFAULT_TDK,
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export default function RootLayout({ children }) {
-
   // useEffect(() => {
   //   const handleRouteChange = (url) => {
   //     console.log(111, url);
@@ -46,15 +52,15 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <div className="flex h-svh relative z-10">
+        <div className="flex h-full relative z-10 sm:flex-row flex-col-reverse">
           <NavBar />
-          <div className="flex overflow-y-hidden overflow-x-auto px-5 w-full">
-            <div className="block min-w-[76px]" />
-            <div className="flex flex-row flex-grow gap-3 justify-center">
+          <div className="flex overflow-y-hidden overflow-x-auto w-full h-full flex-auto">
+            <div className="flex flex-row flex-grow justify-center">
               {children}
             </div>
-            <div className="block min-w-[76px]" />
+            <div className="min-w-[76px] sm:block hidden" />
           </div>
+          <MHeader />
         </div>
         <InitialComponents />
       </body>

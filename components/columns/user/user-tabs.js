@@ -97,7 +97,7 @@ export default function UserTabs({ uid, isSelf = false }) {
                 <Button
                   className="rounded-xl"
                   variant="outline"
-                  onClick={onCreateClick}
+                  onClick={() => onCreateClick(undefined, router)}
                 >
                   Create your first story
                 </Button>

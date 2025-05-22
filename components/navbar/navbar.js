@@ -1,45 +1,27 @@
 'use client';
 
 import {
-  CinnamonRollIcon,
   CrownIcon,
   Home02Icon,
-  LinkSquare01Icon,
-  Menu08Icon,
   Notebook01Icon,
   PlusSignIcon,
   Search01Icon,
   UserIcon,
 } from '@hugeicons/react';
 
-import Link from 'next/link';
-
-import { docs } from '@/components/doc/help/setting-docs';
-import HoverButton from './hover-button';
 import NavButton from './nav-button';
+import Logo from './logo';
 import './navbar.css';
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import More from './more';
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from '@/app/components/ui/dropdown-menu';
-import DropdownDeleteSelfAccountItem from '@/components/dropdown/dropdown-delete-self-account-item/index';
 import { featureCtrl } from '@/stores/ctrl';
 import useUserStore from '@/stores/user';
 import { useRouter } from 'next/navigation';
 import { onCreateClick } from '../columns/stories/story-action';
 import ActivityIcon from './activity-icon';
-import { onLoginOut } from './login-out-action';
-import { onReportProblem } from './report-problem-action';
 
 export default function NavBar() {
   const pathname = usePathname();
@@ -55,9 +37,7 @@ export default function NavBar() {
 
   return (
     <div className="navbar">
-      <Link className="logo" href="/">
-        <CinnamonRollIcon strokeWidth="2.5" />
-      </Link>
+      <Logo className="sm:block hidden" />
       <div className="nav flex-1">
         <NavButton href="/" active={l1Pathname === ''}>
           <Home02Icon
@@ -78,13 +58,13 @@ export default function NavBar() {
           />
         </NavButton>
         <span
-          className="group w-[60px] h-[60px] 
+          className="group sm:w-[60px] sm:h-[60px] w-10 h-10
           flex justify-center items-center relative cursor-pointer"
           onClick={() => onCreateClick(null, router)}
         >
           <div
             className="group-hover:scale-110          
-            transition duration-200 h-6 w-6 z-[1] 
+            transition duration-200 w-6 h-6 z-[1] 
             text-rs-text-secondary group-active:text-rs-text-primary"
           >
             <PlusSignIcon strokeWidth="2" variant="solid" />
@@ -105,7 +85,7 @@ export default function NavBar() {
           />
         </NavButton>
       </div>
-      <div className="nav mb-6">
+      <div className={`nav sm:mb-6 ${featureCtrl.enablePricing ? '' : '!hidden sm:!flex'}`}>
         {featureCtrl.enablePricing && (
           <NavButton
             href={subscription?.type === 'free' ? '/pricing' : '/plan'}
@@ -117,75 +97,7 @@ export default function NavBar() {
             />
           </NavButton>
         )}
-        <DropdownMenu>
-          <DropdownMenuTrigger className="outline-none">
-            <HoverButton>
-              <Menu08Icon strokeWidth="2" />
-            </HoverButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            align="center"
-            side="right"
-            sideOffset={0}
-            className="rounded-2xl p-2 w-70"
-          >
-            <DropdownMenuGroup>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
-                  Settings
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent
-                  sideOffset={16}
-                  className="rounded-2xl p-2 w-70"
-                >
-                  <DropdownDeleteSelfAccountItem />
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-            <DropdownMenuGroup>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
-                  Help
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent
-                  sideOffset={16}
-                  className="rounded-2xl p-2 w-70"
-                >
-                  {docs.map((d) => (
-                    <DropdownMenuItem
-                      key={d.key}
-                      className="h-11 rounded-xl px-3 text-base text-rs-text-primary"
-                    >
-                      <div className="flex gap-10 justify-between w-full cursor-pointer">
-                        <Link href={d.url} target="_blank">
-                          {d.title}
-                        </Link>
-                        <LinkSquare01Icon size={20} className="mt-[1px]" />
-                      </div>
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-            </DropdownMenuGroup>
-            {/* <DropdownMenuSeparator /> */}
-            <DropdownMenuItem
-              className="h-11 rounded-xl px-3 text-base font-semibold"
-              onClick={() => onReportProblem({ type: 'app' })}
-            >
-              <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-rs-text-primary">
-                Report a problem
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="h-11 rounded-xl px-3 text-base font-semibold"
-              onClick={onLoginOut}
-            >
-              <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
-                Sign out
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <More className="sm:block hidden" />
       </div>
     </div>
   );

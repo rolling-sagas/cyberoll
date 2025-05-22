@@ -59,7 +59,7 @@ export default function Search() {
       {error && <div className="text-sm text-red-500 text-center">{error}</div>}
 
       {isInitialLoading ? (
-        <StoryListSkeleton />
+        <StoryListSkeleton px={false} />
       ) : searchResults ? (
         <>
           <StoryList stories={searchResults.stories} />
@@ -71,7 +71,7 @@ export default function Search() {
               className="h-4 w-full"
               data-testid="load-more-trigger"
             >
-              {isLoadingMore && <StoryListSkeleton />}
+              {isLoadingMore && <StoryListSkeleton px={false} />}
             </div>
           )}
 

@@ -2,7 +2,7 @@ import Avatar from '@/components/common/avatar';
 import UserName from '@/components/common/user-name';
 import { ACTIVITY_SUB_TYPE } from '@/utils/activity';
 import { getImageUrl } from '@/utils/utils';
-import dayjs from 'dayjs';
+import dayjs from '@/utils/day';
 import { useRouter } from 'next/navigation';
 import Image from '../../common/custom-image';
 export function ActivityColumnLikeItem({ data, subType }) {

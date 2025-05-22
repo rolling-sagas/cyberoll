@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import dayjs from '@/utils/day';
 
 export const ACTIVITY_SUB_TYPE = {
   Like: 'like',
@@ -10,7 +10,15 @@ export const ACTIVITY_SUB_TYPE = {
   SubscriptionWillExpire: 'subscription_will_expire',
   PublishStory: 'publish_story',
   FirstPlayStory: 'first_play_story',
+
+  BannedLogin: 'banned_login',
+  BannedComment: 'banned_comment',
+  BannedPublish: 'banned_publish',
+  BannedAComment: 'banned_a_comment',
+  BannedAStory: 'banned_a_story',
 };
+
+// Notification: 'notification',
 
 function groupActivityDataByDate(data) {
   // 将 data按时间分组，分成 4 组: Today,This week,This month,Earlier
@@ -26,9 +34,9 @@ function groupActivityDataByDate(data) {
     { duration: 'Earlier', items: [] },
   ];
 
-  // TODO: 这次只上social
+  // TODO: 暂时不上 subscription
   return data
-    .filter((item) => item.type === 'social')
+    .filter((item) => item.type !== 'subscription')
     .reduce((acc, item) => {
       const date = dayjs(item.createdAt);
       if (date >= today) {
