@@ -47,7 +47,7 @@ export async function logServerEvent({
       ],
     };
 
-    const [eventResult, gaResult] = await Promise.all([
+    const [_eventResult, gaResult] = await Promise.all([
       createServerEvent([data]),
       fetch(url, {
         method: 'POST',
@@ -55,7 +55,7 @@ export async function logServerEvent({
       }),
     ]);
 
-    console.log([eventResult, gaResult]);
+    // console.log([eventResult, gaResult]);
 
     if (!gaResult.ok) {
       throw new Error(`HTTP error! status: ${gaResult.status}`);
