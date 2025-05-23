@@ -31,8 +31,6 @@ export async function logServerEvent({
       client_id,
     });
 
-    const url = `https://www.google-analytics.com/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
-
     const payload = {
       client_id,
       events: [
@@ -47,15 +45,18 @@ export async function logServerEvent({
       ],
     };
 
-    const [eventResult, gaResult] = await Promise.all([
+    const url = `https://www.google-analytics.com/mp/collect?measurement_id=${MEASUREMENT_ID}&api_secret=${API_SECRET}`;
+
+    const [_eventResult, gaResult] = await Promise.all([
       createServerEvent([data]),
       fetch(url, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(payload),
       }),
     ]);
-
-    console.log([eventResult, gaResult]);
 
     if (!gaResult.ok) {
       throw new Error(`HTTP error! status: ${gaResult.status}`);
