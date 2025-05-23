@@ -1,16 +1,21 @@
 {
-  "applinks": {
-      "details": [
-           {
-             "appIDs": [ "9R75YDD9WA.com.rollingsagas.iosapp" ],
-             "components": [
-               {
-                  "#": "no_universal_links",
-                  "exclude": true,
-                  "comment": "Matches any URL with a fragment that equals no_universal_links and instructs the system not to open it as a universal link."
-               }
-             ]
-           }
-       ]
-   }
+    "applinks": {
+        "details": [
+            {
+                "appIDs": [
+                    "9R75YDD9WA.com.rollingsagas.iosapp"
+                ],
+                "components": [
+                    {
+                        "#": "no_universal_links",
+                        "exclude": true,
+                        "comment": "Matches any URL with a fragment that equals no_universal_links and instructs the system not to open it as a universal link."
+                    },
+                    {
+                        "/": "/*"
+                    }
+                ]
+            }
+        ]
+    }
 }
