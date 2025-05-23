@@ -10,9 +10,11 @@ export default function Avatar({
   href = '',
 }) {
   const url = getImageUrl(image, '', 'avator');
+  const link = href ? href : (uid ? `/u/${uid}` : undefined);
+  const Component = link ? Link : 'span';
 
   return (
-    <Link
+    <Component
       style={{
         width: `${size}px`,
         height: `${size}px`,
@@ -22,12 +24,12 @@ export default function Avatar({
       }}
       title={name}
       className={`rounded-full flex bg-no-repeat bg-center bg-cover align-bottom outline-[0.5px] outline-foreground/10 outline -outline-offset-[0.5px] justify-center items-center ${className}`}
-      href={href ? href : `/u/${uid}`}
+      href={link}
     >
       <span className="relative -z-10 uppercase font-bold">
         {name?.substring(0, 1)}
       </span>
-    </Link>
+    </Component>
   );
 }
 
