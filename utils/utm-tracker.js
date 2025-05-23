@@ -8,16 +8,15 @@ export async function utmTrack() {
     const utmParams = getUtmParams();
     const eventName = 'rs_first_view';
     const hasViewed = localStorage.getItem(eventName);
-    if (hasViewed) {
-      removeUtmParams();
-      return;
-    }
+
     if (Object.keys(utmParams).length > 0) {
       storeUtmParams(utmParams);
       removeUtmParams();
 
-      await clientTrackEvent(eventName, utmParams);
-      localStorage.setItem(eventName, String(new Date()));
+      if (!hasViewed) {
+        await clientTrackEvent(eventName, utmParams);
+        localStorage.setItem(eventName, String(new Date()));
+      }
     }
   } catch (error) {
     console.log('utm track failed: ', error);
