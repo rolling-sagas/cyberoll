@@ -44,7 +44,7 @@ export async function GET({ url, nextUrl }) {
         }
       }
       await logServerEvent({
-        client_id: `cyberoll-dev-${Date.now()}`,
+        client_id: session?.user?.id || `cyberoll-${Date.now()}`,
         event_name: 'rs_sign_in',
         event_params: {
           user_id: session.user?.id,
@@ -63,7 +63,7 @@ export async function GET({ url, nextUrl }) {
         if (timeDiff <= twoMinutes) {
           // 如果是新注册用户（2分钟内创建的账号）
           await logServerEvent({
-            client_id: `cyberoll-dev-${Date.now()}`,
+            client_id: session?.user?.id || `cyberoll-${Date.now()}`,
             event_name: 'rs_sign_up',
             event_params: {
               user_id: session.user?.id,
