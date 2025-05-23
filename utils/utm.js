@@ -17,12 +17,15 @@ export function getUtmParams() {
 export function removeUtmParams() {
   const url = new URL(window.location.href);
 
-  // 移除所有 UTM 参数
-  for (const key of url.searchParams.keys()) {
-    if (key.startsWith('utm_')) {
-      url.searchParams.delete(key);
-    }
-  }
+  // 先收集所有需要删除的 UTM 参数
+  const utmParams = Array.from(url.searchParams.keys()).filter((key) =>
+    key.startsWith('utm_')
+  );
+
+  // 然后统一删除
+  utmParams.forEach((key) => {
+    url.searchParams.delete(key);
+  });
 
   // 更新 URL 但不刷新页面
   window.history.replaceState({}, '', url.toString());
