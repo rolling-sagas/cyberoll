@@ -14,7 +14,7 @@ const trackData2EventData = (eventName, eventData = {}) => {
     data.utmCampaign = eventData.utm_campaign;
   }
   if (eventData?.user_id) {
-    data.user_id = eventData?.user_id;
+    data.userId = eventData?.user_id;
   }
   data.extraInfo = JSON.stringify(eventData);
   return data;
