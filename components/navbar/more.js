@@ -1,8 +1,5 @@
 'use client';
 
-import Link from 'next/link';
-import { docs } from '@/components/doc/help/setting-docs';
-import HoverButton from './hover-button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,19 +10,22 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
+import { docs } from '@/components/doc/help/setting-docs';
 import DropdownDeleteSelfAccountItem from '@/components/dropdown/dropdown-delete-self-account-item/index';
+import useUserStore from '@/stores/user';
+import { goSso } from '@/utils/index';
+import { LinkSquare01Icon, Menu08Icon } from '@hugeicons/react';
+import Link from 'next/link';
+import HoverButton from './hover-button';
 import { onLoginOut } from './login-out-action';
 import { onReportProblem } from './report-problem-action';
-import {
-  LinkSquare01Icon,
-  Menu08Icon,
-} from '@hugeicons/react';
 
-export default function More({className = ''}) {
+export default function More({ className = '' }) {
+  const userInfo = useUserStore((state) => state.userInfo);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className={`outline-none ${className}`}>
-        <HoverButton className='ml-4 sm:ml-0'>
+        <HoverButton className="ml-4 sm:ml-0">
           <Menu08Icon strokeWidth="2" />
         </HoverButton>
       </DropdownMenuTrigger>
@@ -35,19 +35,21 @@ export default function More({className = ''}) {
         sideOffset={0}
         className="rounded-2xl p-2 w-70"
       >
-        <DropdownMenuGroup>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
-              Settings
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent
-              sideOffset={16}
-              className="rounded-2xl p-2 w-70"
-            >
-              <DropdownDeleteSelfAccountItem />
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-        </DropdownMenuGroup>
+        {userInfo?.id && (
+          <DropdownMenuGroup>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
+                Settings
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent
+                sideOffset={16}
+                className="rounded-2xl p-2 w-70"
+              >
+                <DropdownDeleteSelfAccountItem />
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          </DropdownMenuGroup>
+        )}
         <DropdownMenuGroup>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger className="h-11 rounded-xl px-3 text-base font-semibold text-rs-text-primary">
@@ -82,14 +84,25 @@ export default function More({className = ''}) {
             Report a problem
           </div>
         </DropdownMenuItem>
-        <DropdownMenuItem
-          className="h-11 rounded-xl px-3 text-base font-semibold"
-          onClick={onLoginOut}
-        >
-          <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
-            Sign out
-          </div>
-        </DropdownMenuItem>
+        {userInfo?.id ? (
+          <DropdownMenuItem
+            className="h-11 rounded-xl px-3 text-base font-semibold"
+            onClick={onLoginOut}
+          >
+            <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+              Sign out
+            </div>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            className="h-11 rounded-xl px-3 text-base font-semibold"
+            onClick={() => goSso()}
+          >
+            <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold text-red-500">
+              Sign in
+            </div>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
