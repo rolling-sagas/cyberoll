@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/rolling-sagas/cyberoll/compare/v1.1.4...v1.2.0) (2025-05-26)
+
+
+### Features
+
+* **activity:** add notification type activity ([78bd5c0](https://github.com/rolling-sagas/cyberoll/commit/78bd5c081d540b795b087542f19063152e098400))
+* **activity:** add notificatoin type ([b6d5336](https://github.com/rolling-sagas/cyberoll/commit/b6d53363721df1a0a5922b91d120c2b23fc0d8dc))
+* add event log ([b90fc64](https://github.com/rolling-sagas/cyberoll/commit/b90fc64c02bb1f87b1b079e1f51be93135f20ace))
+* add more log event info ([4f14e66](https://github.com/rolling-sagas/cyberoll/commit/4f14e66d704c5c3db80ce9d592a7dadea41012c4))
+* **ban:** add 403 msg ([f600612](https://github.com/rolling-sagas/cyberoll/commit/f600612572ee1ee91824626c4d12d3c0afbeabfb))
+* **ban:** add banned user profile ([4e80ef2](https://github.com/rolling-sagas/cyberoll/commit/4e80ef242fdf83b1095e85b724bef1db50fabb0e))
+* deeplinking ([38fc36a](https://github.com/rolling-sagas/cyberoll/commit/38fc36aead78210993981f6984d0746e58fb33a2))
+* **deeplinking:** add apple deeplinking ([18c5d4e](https://github.com/rolling-sagas/cyberoll/commit/18c5d4ec8117d259718829fa28d973d058d4781c))
+* **deeplinking:** update ([ade1dd9](https://github.com/rolling-sagas/cyberoll/commit/ade1dd9b81f996df62a0566dfe13ee93af0a452d))
+* **deeplinking:** update apple file ([468b1ea](https://github.com/rolling-sagas/cyberoll/commit/468b1eac04cdf9f91081211fb805fe6edcf6ef7b))
+* **eventlog:** add event log ([4dcdf2a](https://github.com/rolling-sagas/cyberoll/commit/4dcdf2a4d06320b682589b711f6318fcf23412a7))
+* **eventlog:** fix event log ([3d6cd70](https://github.com/rolling-sagas/cyberoll/commit/3d6cd705a105c71e0020960539ae6f7a594dccc4))
+* **firebae:** add analytics and logevent ([9d06a35](https://github.com/rolling-sagas/cyberoll/commit/9d06a3569575a155afbdcdeded8a77f9db665070))
+* mobile screen style & robottxt sitemap ([fe861a0](https://github.com/rolling-sagas/cyberoll/commit/fe861a06341fa9b330c3f1e5373c04929c4d0731))
+* sitemap robots & fix some bugs ([bf274c3](https://github.com/rolling-sagas/cyberoll/commit/bf274c37404933e4598a213585b40c0d0f6a2ffa))
+* tdk ([163c179](https://github.com/rolling-sagas/cyberoll/commit/163c17917e82228b9fb9499f6659c05a066d6341))
+* update ([f4f91d9](https://github.com/rolling-sagas/cyberoll/commit/f4f91d9129267393b7336f5b432ee59c87a3e681))
+* update apple-app-site-association ([65c3af1](https://github.com/rolling-sagas/cyberoll/commit/65c3af1af8224f4a38f70ec5a557c8ec224256f8))
+* update event log ([a439a95](https://github.com/rolling-sagas/cyberoll/commit/a439a95418dfe3ff615b067d3efd89f61cbec340))
+* update logevent ([978f431](https://github.com/rolling-sagas/cyberoll/commit/978f43161e3eafd47c6cfcd6f3cd440126730dee))
+* update rs_first_view ([7addf2a](https://github.com/rolling-sagas/cyberoll/commit/7addf2a64a7da94cd67adffeffe134b9b355fe1f))
+* update: ([5a23415](https://github.com/rolling-sagas/cyberoll/commit/5a23415647dfa92ae05eea6a9c71ba4e0dc68aaf))
+* update: ([a841807](https://github.com/rolling-sagas/cyberoll/commit/a841807bb0f9b4d19faef29a50bbfc2f95ab4082))
+
+
+### Bug Fixes
+
+* avatar link ([9fa87e9](https://github.com/rolling-sagas/cyberoll/commit/9fa87e99b99c4345c453f51ed94486ec790b8852))
+* **sitemap:** add edge runtime ([6a67ec2](https://github.com/rolling-sagas/cyberoll/commit/6a67ec291eb0035a4cef45af323ec9c39ffb96f1))
+
 ### [1.1.4](https://github.com/rolling-sagas/cyberoll/compare/v1.1.3...v1.1.4) (2025-05-16)
 
 ### 1.1.3 (2025-05-16)
