@@ -16,7 +16,7 @@ const trackData2EventData = (eventName, eventData = {}) => {
   if (eventData?.user_id) {
     data.userId = eventData?.user_id;
   }
-  data.extraInfo = JSON.stringify(eventData);
+  data.extraInfo = JSON.stringify({ ...eventData, dataFrom: 'cyberoll' });
   return data;
 };
 
@@ -40,7 +40,7 @@ export async function logServerEvent({
         {
           name: event_name,
           params: {
-            ...event_params,
+            ...{ ...event_params, source_from: 'cyberoll' },
             engagement_time_msec: 100,
           },
           timestamp_micros: Date.now() * 1000,

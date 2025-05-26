@@ -14,7 +14,7 @@ const trackData2EventData = (eventName, eventData = {}) => {
   if (eventData?.utm_campaign) {
     data.utmCampaign = eventData.utm_campaign;
   }
-  data.extraInfo = JSON.stringify(eventData);
+  data.extraInfo = JSON.stringify({ ...eventData, dataFrom: 'cyberoll' });
   return data;
 };
 
@@ -23,10 +23,11 @@ const trackData2EventData = (eventName, eventData = {}) => {
 export async function clientTrackEvent(eventName, eventData = {}) {
   try {
     const data = trackData2EventData(eventName, eventData);
+    console.log(eventName, data);
     const ret = await Promise.all([
       createServerEvent([data]),
       logEvent(analytics, eventName, {
-        ...eventData,
+        ...{ ...eventData, source_from: 'cyberoll' },
         client_timestamp: new Date().toISOString(),
       }),
     ]);
