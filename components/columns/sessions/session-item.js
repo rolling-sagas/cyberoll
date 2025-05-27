@@ -106,7 +106,7 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
         />
         {lastPlayed && (
           <div className="absolute top-4 right-0 px-2 bg-gray-300 rounded-l-md text-base">
-            Last Played
+            Last played
           </div>
         )}
       </div>
