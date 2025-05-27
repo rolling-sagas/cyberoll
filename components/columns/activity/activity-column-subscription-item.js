@@ -1,9 +1,9 @@
 import { AvatarWithIcon } from '@/components/common/avatar';
 import { featureCtrl } from '@/stores/ctrl';
 import { ACTIVITY_SUB_TYPE } from '@/utils/activity';
+import dayjs from '@/utils/day';
 import { parseJson } from '@/utils/utils';
 import { CrownIcon } from '@hugeicons/react';
-import dayjs from '@/utils/day';
 import { useRouter } from 'next/navigation';
 
 function getRenewAndExpireDate(data) {
@@ -52,7 +52,7 @@ export function ActivityColumnSubscriptionItem({ data, subType }) {
         }
       }}
     >
-      <div className="flex gap-2 mr-[110px] items-center justify-between">
+      <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-3 items-center">
           <AvatarWithIcon
             icon={<CrownIcon className="text-amber-400" strokeWidth="2" />}

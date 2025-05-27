@@ -4,11 +4,11 @@ import dayjs from '@/utils/day';
 import { getImageUrl } from '@/utils/utils';
 import { ViewIcon, ViewOffIcon } from '@hugeicons/react';
 
+import Link from 'next/link';
 import Image from '../../common/custom-image';
 import StoryItemDropdown from './story-item-dropdown';
 import StoryItemIcons from './story-item-icons';
 import StoryItemPlayButton from './story-item-play-button';
-import Link from 'next/link';
 
 export default function StoryItem({
   story,
@@ -24,7 +24,6 @@ export default function StoryItem({
   coverGoEdit = false,
   showPrivateStatus = false,
 }) {
-
   return (
     <div className="px-6 py-4 border-b-1 border-gray-200 last:border-none">
       <div className="flex gap-2 items-center mb-3 justify-between">
@@ -69,7 +68,7 @@ export default function StoryItem({
         />
         {story.storySessions?.length ? (
           <div className="absolute top-4 right-0 px-2 bg-gray-300 rounded-l-md text-base">
-            Recently Played
+            Recently played
           </div>
         ) : null}
       </Link>

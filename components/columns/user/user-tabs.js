@@ -1,17 +1,17 @@
 'use-client';
 
-import { useState,useEffect, useCallback } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { getPublicStories, getLikedStories } from '@/service/story';
-import usePageData from '@/components/hooks/use-page-data';
-import Link from 'next/link';
-import Image from '../../common/custom-image';
-import { getImageUrl } from '@/utils/utils';
-import PageDataStatus from '@/components/common/page-data-status';
 import { Button } from '@/app/components/ui/button';
-import { onCreateClick } from '../stories/story-action';
+import PageDataStatus from '@/components/common/page-data-status';
+import usePageData from '@/components/hooks/use-page-data';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { createSession } from '@/service/session';
+import { getLikedStories, getPublicStories } from '@/service/story';
+import { getImageUrl } from '@/utils/utils';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import Image from '../../common/custom-image';
+import { onCreateClick } from '../stories/story-action';
 
 export default function UserTabs({ uid, isSelf = false }) {
   const [
@@ -21,22 +21,31 @@ export default function UserTabs({ uid, isSelf = false }) {
     _,
     hasMoreStory,
     loadmoreStories,
-  ] = usePageData(getPublicStories, 9, 'stories');
+  ] = usePageData(getPublicStories, 18, 'stories');
   const router = useRouter();
-  const [likes, likesTotal, likesLoading, __, hasMoreLikes, loadmoreLikes, ___, ____, pageData] =
-    usePageData(getLikedStories, 9, 'stories');
-  const [creatingSession, setCreatingSession] = useState(false)
+  const [
+    likes,
+    likesTotal,
+    likesLoading,
+    __,
+    hasMoreLikes,
+    loadmoreLikes,
+    ___,
+    ____,
+    pageData,
+  ] = usePageData(getLikedStories, 18, 'stories');
+  const [creatingSession, setCreatingSession] = useState(false);
 
   const play = useCallback(async () => {
-      setCreatingSession(true);
-      try {
-        const seid = await createSession(pageData.randomSid);
-        router.push(`/sess/${seid}`);
-      } catch (e) {
-        console.error(e);
-        setCreatingSession(false);
-      }
-    }, [pageData]);
+    setCreatingSession(true);
+    try {
+      const seid = await createSession(pageData.randomSid);
+      router.push(`/sess/${seid}`);
+    } catch (e) {
+      console.error(e);
+      setCreatingSession(false);
+    }
+  }, [pageData]);
 
   useEffect(() => {
     loadmoreStories(uid);
