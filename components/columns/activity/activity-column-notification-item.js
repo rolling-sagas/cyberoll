@@ -15,7 +15,7 @@ export function ActivityColumnNotificationItem({ data, subType }) {
       className="px-6 py-4 border-gray-200 bg-background hover:cursor-pointer hover:bg-rs-background-hover"
       onClick={showMsgModal}
     >
-      <div className="flex gap-2 mr-[110px] items-center justify-between">
+      <div className="flex gap-2 items-center justify-between">
         <div className="flex gap-3 items-center">
           <AvatarWithIcon
             icon={
