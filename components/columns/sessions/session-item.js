@@ -11,7 +11,6 @@ import { deleteSession } from '@/service/session';
 import dayjs from '@/utils/day';
 import { getImageUrl } from '@/utils/utils';
 import { Delete01Icon, MoreHorizontalIcon } from '@hugeicons/react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import toast from 'react-hot-toast/headless';
@@ -62,9 +61,8 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
               ) : null}
             </span>
             <span className="text-zinc-400 font-light text-sm">
-              {lastPlayed
-                ? 'Your last played story'
-                : `Last played: ${dayjs(session.updatedAt).fromNow()}`}
+              {!lastPlayed &&
+                `Last played: ${dayjs(session.updatedAt).fromNow()}`}
             </span>
           </span>
         </div>
@@ -94,7 +92,7 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
         )}
       </div>
       <div
-        className="w-full flex flex-col cursor-pointer mb-2"
+        className="w-full flex flex-col cursor-pointer mb-2 relative"
         onClick={() => router.push(`/sess/${session.id}`)}
       >
         <Image
@@ -106,6 +104,11 @@ export default function SessionItem({ session, onDelete, lastPlayed = false }) {
           alt={session.name}
           priority
         />
+        {lastPlayed && (
+          <div className="absolute top-4 right-0 px-2 bg-gray-300 rounded-l-md text-base">
+            Last Played
+          </div>
+        )}
       </div>
       <div className="inline post-info">
         <span className="font-semibold text-nowrap">{session.name}</span>
