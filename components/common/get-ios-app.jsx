@@ -59,14 +59,14 @@ function GoIosAppBtn() {
   const handleClick = () => {
     if (isSafari) {
       // 在 Safari 中广播当前链接
-      if (navigator.share) {
-        navigator
-          .share({
-            title: document.title,
-            url: window.location.href,
-          })
-          .catch(console.error);
-      }
+      // if (navigator.share) {
+      //   navigator
+      //     .share({
+      //       title: document.title,
+      //       url: window.location.href,
+      //     })
+      //     .catch(console.error);
+      // }
       window.open(window.location.href, '_blank');
     } else {
       // 非 Safari 浏览器，打开 App Store
