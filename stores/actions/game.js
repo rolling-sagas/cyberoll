@@ -7,6 +7,7 @@ import QuickJSManager from '@/utils/quickjs';
 import { componentsToMap } from '@/utils/utils';
 import { parse } from 'best-effort-json-parser';
 import useStore from '../editor';
+import { clearRoll } from './dice';
 import {
   addMessage,
   addMessages,
