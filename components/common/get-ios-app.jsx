@@ -68,7 +68,7 @@ function GoIosAppBtn() {
       //     .catch(console.error);
       // }
       const now = Date.now();
-      window.location.href = window.location.href;
+      window.location.href = 'https://dev.cyberoll.pages.dev/';
 
       setTimeout(() => {
         if (Date.now() - now < 2000) {
