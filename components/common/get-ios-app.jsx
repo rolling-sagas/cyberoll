@@ -67,7 +67,14 @@ function GoIosAppBtn() {
       //     })
       //     .catch(console.error);
       // }
-      window.open(window.location.href, '_blank');
+      const now = Date.now();
+      window.location.href = window.location.href;
+
+      setTimeout(() => {
+        if (Date.now() - now < 2000) {
+          window.open(appMagicUrl, '_blank');
+        }
+      }, 1500);
     } else {
       // 非 Safari 浏览器，打开 App Store
       window.open(appMagicUrl, '_blank');
