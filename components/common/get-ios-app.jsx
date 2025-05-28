@@ -7,31 +7,48 @@ const appMagicUrl = 'https://apps.apple.com/us/app/rolling-sagas/id6744714857';
 
 function FloatingImage() {
   const [isMobile, setIsMobile] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [shouldHideComponent, setShouldHideComponent] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 640);
     };
 
+    // Check if current path should hide the component
+    const path = window.location.pathname;
+    setShouldHideComponent(
+      (path?.startsWith('/st/') && path?.includes('/edit')) ||
+        path?.startsWith('/sess/')
+    );
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
 
-    return () => window.removeEventListener('resize', checkMobile);
+    // Auto-hide after 120 seconds
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, 120000);
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      clearTimeout(timer);
+    };
   }, []);
 
-  if (isMobile) return null;
+  if (isMobile || !isVisible || shouldHideComponent) return null;
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex flex-col items-center gap-1">
-      <span className="text-[9px] text-muted-foreground font-medium text-center">
+      <span className="text-[15px] text-muted-foreground font-medium text-center">
         Scan to get the app
       </span>
       <div className="rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-200">
         <Image
           src="/ios_app.png"
           alt="iOS App"
-          width={96}
-          height={96}
+          width={174}
+          height={174}
           className="hover:scale-105 transition-transform duration-200"
           priority
         />
