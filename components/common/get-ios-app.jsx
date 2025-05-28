@@ -67,6 +67,7 @@ function GoIosAppBtn() {
           })
           .catch(console.error);
       }
+      window.open(window.location.href, '_blank');
     } else {
       // 非 Safari 浏览器，打开 App Store
       window.open(appMagicUrl, '_blank');
