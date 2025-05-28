@@ -58,7 +58,7 @@ export default function StoryItemDropdown({
             {showViewActivity ? (
               <DropdownMenuItem
                 className="h-11 rounded-xl px-3 text-base font-semibold"
-                onClick={() => router.push('/st/' + story.id)}
+                onClick={() => router.push(`/st/${story.slug || story.id}`)}
               >
                 <div className="flex gap-10 justify-between w-full cursor-pointer font-semibold">
                   View Activity

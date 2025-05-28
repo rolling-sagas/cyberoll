@@ -13,7 +13,7 @@ export function ActivityColumnLikeItem({ data, subType }) {
     router.push(`/u/${data?.user?.id}`);
   };
   const goStory = () => {
-    router.push(`/st/${data?.story?.id}`);
+    router.push(`/st/${data?.story?.slug || data?.story?.id}`);
   };
   return (
     <div className="px-6 py-4 border-gray-200 bg-background hover:bg-rs-background-hover">

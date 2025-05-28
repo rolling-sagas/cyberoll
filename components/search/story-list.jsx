@@ -13,7 +13,7 @@ export default function StoryList({ stories }) {
             key={story.id}
             className="py-4 border-gray-200 bg-background hover:cursor-pointer border-radius-md"
             onClick={() => {
-              router.push(`/st/${story.id}`);
+              router.push(`/st/${story.slug || story.id}`);
             }}
           >
             <div className="flex gap-2 items-start justify-between">
