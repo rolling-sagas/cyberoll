@@ -95,8 +95,8 @@ export default function Comments({ sid }) {
               className="mt-2 flex-none cursor-pointer"
               uid={c.user.id}
             />
-            <div className="w-full mr-3">
-              <div className="flex justify-between">
+            <div className="w-full">
+              <div className="flex justify-between mr-3 mt-1 -mb-1s">
                 <div>
                   <UserName
                     name={c.user.name}
