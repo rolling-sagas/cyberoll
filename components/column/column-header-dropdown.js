@@ -29,7 +29,7 @@ export default function ColumnHeaderDropdown({
             />
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="rounded-2xl p-2 w-56">
+        <DropdownMenuContent align="center" className="rounded-2xl p-2 w-60">
           {options.map((item) => (
             <DropdownMenuItem
               key={item.label}

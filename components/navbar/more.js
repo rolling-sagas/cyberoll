@@ -20,7 +20,7 @@ import HoverButton from './hover-button';
 import { onLoginOut } from './login-out-action';
 import { onReportProblem } from './report-problem-action';
 
-export default function More({ className = '' }) {
+export default function More({ className = '', side = 'right' }) {
   const userInfo = useUserStore((state) => state.userInfo);
   return (
     <DropdownMenu>
@@ -31,9 +31,9 @@ export default function More({ className = '' }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="center"
-        side="right"
+        side={side}
         sideOffset={0}
-        className="rounded-2xl p-2 w-70"
+        className="rounded-2xl p-2 w-70 sm:mb-2 mb-0 sm:ml-0 ml-2"
       >
         {userInfo?.id && (
           <DropdownMenuGroup>
