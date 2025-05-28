@@ -55,7 +55,7 @@ export default function StoryItem({
       </div>
       <Link
         className="w-full flex flex-col cursor-pointer mb-2 relative"
-        href={`/st/${story.id}${coverGoEdit ? '/edit' : ''}`}
+        href={`/st/${coverGoEdit ? story.id : (story.slug || story.id)}${coverGoEdit ? '/edit' : ''}`}
       >
         <Image
           src={getImageUrl(story.image)}

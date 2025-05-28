@@ -74,7 +74,7 @@ export default function UserTabs({ uid, isSelf = false }) {
             <Link
               key={s.id}
               className="w-1/4 max-w-[33%] flex-grow -mb-1"
-              href={`/st/${s.id}`}
+              href={`/st/${s.slug || s.id}`}
             >
               <Image
                 src={getImageUrl(s.image)}
@@ -123,7 +123,7 @@ export default function UserTabs({ uid, isSelf = false }) {
             <Link
               key={l.story.id}
               className="w-1/4 max-w-[33%] flex-grow"
-              href={`/st/${l.story.id}`}
+              href={`/st/${l.story.slug || l.story.id}`}
             >
               <Image
                 src={getImageUrl(l.story.image)}
