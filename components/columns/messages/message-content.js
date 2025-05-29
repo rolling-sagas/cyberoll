@@ -9,7 +9,7 @@ import ImageView from './views/image-view';
 import { onUserAction } from '@/stores/actions/game';
 import { getImageUrlByName } from '@/utils/utils';
 
-export default function MessageContent({ content, components }) {
+export default function MessageContent({ content, components, playMode = true }) {
   return (
     <div className="message-content">
       {typeof content === 'object' ? (
@@ -17,7 +17,7 @@ export default function MessageContent({ content, components }) {
           {content.views?.map((view, key) => {
             switch (view.type) {
               case 'md':
-                return <MarkdownView view={view} key={key} id={key} />;
+                return <MarkdownView playMode={playMode} view={view} key={key} id={key} />;
               case 'input.text':
                 return (
                   <InputTextView

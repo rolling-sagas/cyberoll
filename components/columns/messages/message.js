@@ -122,7 +122,7 @@ function Message({ message, style = null }) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            <MessageContent content={message.content} components={components} />
+            <MessageContent playMode={playMode} content={message.content} components={components} />
             <div className="action-buttons flex -ml-[9px] -mt-2">
               {message.role === 'assistant' && !message.status ? (
                 <HoverButton
