@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/rolling-sagas/cyberoll/compare/v1.2.0...v1.3.0) (2025-05-29)
+
+
+### Features
+
+* **activity:** ui and click to profile ([552b3c3](https://github.com/rolling-sagas/cyberoll/commit/552b3c3b9593c1948b514edf672dc4b964f79d9c))
+* Add iOS download button & QR code ([610681e](https://github.com/rolling-sagas/cyberoll/commit/610681e2ad62e1dbcfe8195ced6b3088e64018e5))
+* **comment:** adjust avatar size ([fea640a](https://github.com/rolling-sagas/cyberoll/commit/fea640a7e6de137bb0cd43dcb88506833f7c21b3))
+* **fix:** show sign in and hide setting in not-login status ([8f257d8](https://github.com/rolling-sagas/cyberoll/commit/8f257d84a83b1b377f8577a34e38e8e7fdb64cbe))
+* refine some drowdown style ([295e34a](https://github.com/rolling-sagas/cyberoll/commit/295e34a4fab48120b90d7c74d20b5bdd98835f2d))
+* story slug ([dde4295](https://github.com/rolling-sagas/cyberoll/commit/dde42953150f648b4bf8c7748a4a6b1548b07793))
+* story slug links ([716b4a8](https://github.com/rolling-sagas/cyberoll/commit/716b4a8a2b83e68fa4585f8f65e9d7f7995c6310))
+* **ui:** adjust last played label ui ([86924c8](https://github.com/rolling-sagas/cyberoll/commit/86924c8cf034413bbec54e2ae251fd819605b236))
+* **ui:** update ([ece8f81](https://github.com/rolling-sagas/cyberoll/commit/ece8f81f82de74371b9fd6fdb2310dc0dbdf1dfb))
+* **ui:** upgrade ([85493d8](https://github.com/rolling-sagas/cyberoll/commit/85493d887b842797fd115013fb54b160df1079e1))
+* update ([eb80651](https://github.com/rolling-sagas/cyberoll/commit/eb80651912b55fed00fc22c9077abd44e272299b))
+* update ([619feb5](https://github.com/rolling-sagas/cyberoll/commit/619feb5459bd8a290c1cd166da6f7e45ae53e784))
+* update ([5025f36](https://github.com/rolling-sagas/cyberoll/commit/5025f36ec8deea808debedf05bee8d0b0e360b75))
+
+
+### Bug Fixes
+
+* follow button with ([8bc3cde](https://github.com/rolling-sagas/cyberoll/commit/8bc3cde9b65ea5779190c8e55c29336a06bb6784))
+
 ## [1.2.0](https://github.com/rolling-sagas/cyberoll/compare/v1.1.4...v1.2.0) (2025-05-26)
 
 
