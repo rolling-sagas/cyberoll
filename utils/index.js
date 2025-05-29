@@ -13,7 +13,6 @@ export function goSso() {
     const adSourceStr = encodeURIComponent(JSON.stringify(adSource));
     callbackUrl += `&ad_source=${adSourceStr}`;
   }
-  console.log('callbackUrl', callbackUrl);
 
   location.href =
     SSO_HOST + '/auth/signin?callbackUrl=' + encodeURIComponent(callbackUrl);

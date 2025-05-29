@@ -34,10 +34,10 @@ export default function FirebaseInit() {
       });
       analytics = getAnalytics(app);
       if (perf) {
-        console.log('Performance initialized');
+        console.log('perf initialized');
       }
       if (analytics) {
-        console.log('Analytics initialized');
+        console.log('analytics initialized');
       }
       utmTrack();
     }

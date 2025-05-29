@@ -16,7 +16,6 @@ export function ActivityColumnCommentItem({ data }) {
   const router = useRouter();
   const goProfile = (e) => {
     e?.stopPropagation();
-    console.log('click ', data?.user?.id);
     router.push(`/u/${data?.user?.id}`);
   };
   const goStory = () => {
