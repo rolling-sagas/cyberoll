@@ -139,7 +139,7 @@ export function formatMessages(
   }));
 }
 
-export function parseMarkdown(markdownText) {
+export function parseMarkdown(markdownText, playMode = true) {
   if (!markdownText) return '';
 
   // Helper function to escape special characters in regular expressions
@@ -148,6 +148,11 @@ export function parseMarkdown(markdownText) {
   };
 
   let text = markdownText;
+
+  // hide hint
+  if (playMode) {
+    text = text.replace(/^HINT:.*(?:\r?\n)?/gm, '');
+  }
 
   // Parse titles (supports h1 to h6)
   text = text.replace(/^(#{1,6})\s(.+)$/gm, (match, hashes, content) => {
