@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useState } from 'react';
 
 export default function ResumeSession({ story, onCancel, onStart }) {
   const [sessId, setSessId] = useState(story.storySessions[0].id);
@@ -26,7 +26,7 @@ export default function ResumeSession({ story, onCancel, onStart }) {
           <div className="flex items-center space-x-2" key={s.id}>
             <RadioGroupItem value={s.id} id={s.id} />
             <Label htmlFor={s.id} className="cursor-pointer">
-              Saved {i + 1}: Last Played: {new Date(s.updatedAt).toDateString()}
+              Saved {i + 1}: Last played: {new Date(s.updatedAt).toDateString()}
             </Label>
           </div>
         ))}

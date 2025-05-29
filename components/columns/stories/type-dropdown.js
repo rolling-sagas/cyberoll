@@ -1,17 +1,17 @@
 'use client';
 
-import { useSearchParams, useRouter } from 'next/navigation';
 import ColumnHeaderDropdown from '@/components/column/column-header-dropdown';
+import { useRouter, useSearchParams } from 'next/navigation';
 const tabs = [
   {
     label: 'Discover',
-    value: 'discover'
+    value: 'discover',
   },
   {
-    label: 'Rencently Played',
-    value: 'recently'
-  }
-]
+    label: 'Recently played',
+    value: 'recently',
+  },
+];
 
 export default function TypeDropdown() {
   const searchParams = useSearchParams();

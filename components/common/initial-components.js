@@ -1,6 +1,7 @@
 'use client';
 
 import { AppealAlertDialog } from '@/components/columns/activity/appeal-alert-dialog';
+import { FloatingImage } from '@/components/common/get-ios-app';
 import MatchTheme from '@/components/common/match-theme';
 import SubscriptionCheck from '@/components/common/subscription-check';
 import FirebaseInit from '@/components/firbase/firebase-init';
@@ -21,6 +22,7 @@ export default function InitialComponents() {
       </Suspense>
       <MatchTheme />
       <AppealAlertDialog />
+      <FloatingImage />
     </>
   );
 }

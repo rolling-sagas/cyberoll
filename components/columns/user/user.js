@@ -246,14 +246,14 @@ export default function User({ uid }) {
           ) : !isSelf ? (
             user?.followedByMe ? (
               <Button
-                className="rounded-xl"
+                className="rounded-xl w-full"
                 onClick={() => toggleFollow(false)}
                 variant="outline"
               >
                 Following
               </Button>
             ) : (
-              <Button className="rounded-xl" onClick={toggleFollow}>
+              <Button className="rounded-xl w-full" onClick={toggleFollow}>
                 Follow
               </Button>
             )

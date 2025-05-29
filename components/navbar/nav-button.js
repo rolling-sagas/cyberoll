@@ -1,13 +1,24 @@
-import { Button } from "@headlessui/react";
-import { Fragment } from "react";
-import Link from "next/link";
+import useUserStore from '@/stores/user';
+import { goSso } from '@/utils/index';
+import { Button } from '@headlessui/react';
+import Link from 'next/link';
+import { Fragment } from 'react';
+
+const loginCheckHrefs = ['/st', '/a', '/u/_'];
 
 export default function NavButton({ href, children, active }) {
+  const userInfo = useUserStore((state) => state.userInfo);
+
+  const loginJudeg = () => {
+    if (!userInfo?.id && loginCheckHrefs.includes(href)) {
+      goSso();
+    }
+  };
   return (
-    <Button as={Fragment}>
+    <Button as={Fragment} onClick={loginJudeg}>
       <Link
         href={href}
-        {...(active ? { "data-active": true } : {})}
+        {...(active ? { 'data-active': true } : {})}
         className="group sm:w-[60px] sm:h-[60px] w-10 h-10
         flex justify-center items-center relative"
       >

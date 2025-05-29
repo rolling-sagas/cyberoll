@@ -9,7 +9,7 @@ export default async function sitemap() {
     {
       url: baseUrl,
       lastModified: now,
-      changeFrequency: 'daily',
+      changeFrequency: 'hourly',
       priority: 1,
     },
   ];
@@ -17,9 +17,9 @@ export default async function sitemap() {
   if (!error) {
     res.stories?.forEach((s) =>
       siteMap.push({
-        url: `${baseUrl}/st/${s.id}`,
+        url: `${baseUrl}/st/${s.slug || s.id}`,
         lastModified: now,
-        changeFrequency: 'daily',
+        changeFrequency: 'hourly',
         priority: 0.7,
       })
     );

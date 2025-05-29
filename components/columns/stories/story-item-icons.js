@@ -51,7 +51,7 @@ export default function StoryItemIcons({
         </HoverButton>
       ) : null}
       {showComment ? (
-        <Link href={`/st/${story.id}`} passHref scroll={false}>
+        <Link href={`/st/${story.slug || story.id}`} passHref scroll={false}>
           <HoverButton count={story._count?.comments}>
             <Comment02Icon size={18} />
           </HoverButton>
@@ -69,7 +69,7 @@ export default function StoryItemIcons({
               <Share01Icon size={18} />
             </HoverButton>
           }
-          columns={[<CopyLinkItem key={story.id} />]}
+          columns={[<CopyLinkItem key={story.id} path={`/st/${story.slug || story.id}`} />]}
         />
       )}
     </div>

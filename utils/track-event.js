@@ -23,16 +23,13 @@ const trackData2EventData = (eventName, eventData = {}) => {
 export async function clientTrackEvent(eventName, eventData = {}) {
   try {
     const data = trackData2EventData(eventName, eventData);
-    console.log(eventName, data);
-    const ret = await Promise.all([
+    await Promise.all([
       createServerEvent([data]),
       logEvent(analytics, eventName, {
         ...{ ...eventData, source_from: 'cyberoll' },
         client_timestamp: new Date().toISOString(),
       }),
     ]);
-    console.log({ ret });
-    console.log('✅ Event tracked successfully:', eventName);
   } catch (e) {
     console.error('❌ Event tracking failed:', {
       eventName,
@@ -69,16 +66,13 @@ export async function logServerEvent({
       ],
     };
 
-    const ret = await Promise.all([
+    await Promise.all([
       createServerEvent([data]),
       fetch(url, {
         method: 'POST',
         body: JSON.stringify(payload),
       }),
     ]);
-    console.log({ ret });
-
-    console.log('✅ Server event tracked successfully:', event_name);
     return true;
   } catch (error) {
     console.error('❌ Server event tracking failed:', {

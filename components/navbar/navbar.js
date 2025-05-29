@@ -9,8 +9,8 @@ import {
   UserIcon,
 } from '@hugeicons/react';
 
-import NavButton from './nav-button';
 import Logo from './logo';
+import NavButton from './nav-button';
 import './navbar.css';
 
 import { usePathname } from 'next/navigation';
@@ -19,6 +19,7 @@ import More from './more';
 
 import { featureCtrl } from '@/stores/ctrl';
 import useUserStore from '@/stores/user';
+import { goSso } from '@/utils/index';
 import { useRouter } from 'next/navigation';
 import { onCreateClick } from '../columns/stories/story-action';
 import ActivityIcon from './activity-icon';
@@ -27,8 +28,17 @@ export default function NavBar() {
   const pathname = usePathname();
   const [l1Pathname, setL1Pathname] = useState('');
   const router = useRouter();
+  const userInfo = useUserStore((state) => state.userInfo);
 
   const subscription = useUserStore((state) => state.subscription);
+
+  const createNewStory = (cb, r) => {
+    if (!userInfo?.id) {
+      goSso();
+      return;
+    }
+    onCreateClick(cb, r);
+  };
 
   useEffect(() => {
     const match = pathname.match(/\/([^/]+)/) || [];
@@ -60,7 +70,7 @@ export default function NavBar() {
         <span
           className="group sm:w-[60px] sm:h-[60px] w-10 h-10
           flex justify-center items-center relative cursor-pointer"
-          onClick={() => onCreateClick(null, router)}
+          onClick={() => createNewStory(null, router)}
         >
           <div
             className="group-hover:scale-110          
@@ -85,7 +95,11 @@ export default function NavBar() {
           />
         </NavButton>
       </div>
-      <div className={`nav sm:mb-6 ${featureCtrl.enablePricing ? '' : '!hidden sm:!flex'}`}>
+      <div
+        className={`nav sm:mb-6 ${
+          featureCtrl.enablePricing ? '' : '!hidden sm:!flex'
+        }`}
+      >
         {featureCtrl.enablePricing && (
           <NavButton
             href={subscription?.type === 'free' ? '/pricing' : '/plan'}

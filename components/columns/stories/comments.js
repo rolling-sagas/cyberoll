@@ -5,6 +5,7 @@ import Avatar from '@/components/common/avatar';
 import NoData from '@/components/common/no-data';
 import UserName from '@/components/common/user-name';
 import { useAlertStore } from '@/components/modal/alert-placeholder';
+import { onReportProblem } from '@/components/navbar/report-problem-action';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,16 +13,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { deleteComment, getComments } from '@/service/comment';
+import { FEEDBACK_TYPE } from '@/service/feedback';
 import useUserStore from '@/stores/user';
 import dayjs from '@/utils/day';
-import { Delete01Icon, MoreHorizontalIcon } from '@hugeicons/react';
+import {
+  AlertSquareIcon,
+  Delete01Icon,
+  MoreHorizontalIcon,
+} from '@hugeicons/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 import Spinner from '../spinner';
 import AddComment from './add-comment';
-import { onReportProblem } from '@/components/navbar/report-problem-action';
-import { FEEDBACK_TYPE } from '@/service/feedback';
-import { AlertSquareIcon } from '@hugeicons/react';
 
 export default function Comments({ sid }) {
   const userInfo = useUserStore((state) => state.userInfo);
@@ -88,12 +91,12 @@ export default function Comments({ sid }) {
             <Avatar
               image={c.user.image}
               name={c.user.name}
-              size={24}
+              size={36}
               className="mt-2 flex-none cursor-pointer"
               uid={c.user.id}
             />
-            <div className="w-full mr-3">
-              <div className="flex justify-between">
+            <div className="w-full">
+              <div className="flex justify-between mr-3 mt-1 -mb-1s h-[23px]">
                 <div>
                   <UserName
                     name={c.user.name}

@@ -5,6 +5,7 @@ import { AlertDialog, AlertDialogContent } from '@/components/ui/alert-dialog';
 import { toggleFollowUser } from '@/service/relation';
 import dayjs from '@/utils/day';
 import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast/headless';
 
@@ -13,6 +14,11 @@ export function ActivityColumnFollowItem({ data }) {
   const [isFollowing, setIsFollowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showUnfollowDialog, setShowUnfollowDialog] = useState(false);
+  const router = useRouter();
+  const goProfile = (e) => {
+    e?.stopPropagation();
+    router.push(`/u/${data?.user?.id}`);
+  };
 
   // 1、ctrl
   useEffect(() => {
@@ -56,13 +62,15 @@ export function ActivityColumnFollowItem({ data }) {
       <div className="px-6 py-4 border-gray-200 bg-background  hover:bg-rs-background-hover">
         <div className="flex gap-2 items-center justify-between">
           <div className="flex gap-3 items-center">
-            <Avatar
-              className="cursor-pointer mt-1"
-              image={data.user.image}
-              size={40}
-              name={data.user.name}
-              uid={data?.user?.id}
-            />
+            <div onClick={(e) => goProfile(e)}>
+              <Avatar
+                className="cursor-pointer mt-1"
+                image={data.user.image}
+                size={40}
+                name={data.user.name}
+                uid={data?.user?.id}
+              />
+            </div>
             <span className="flex flex-col">
               <span className="text-base flex gap-1.5">
                 <UserName
