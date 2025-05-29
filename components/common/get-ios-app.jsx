@@ -74,28 +74,31 @@ function GoIosAppBtn() {
   }, []);
 
   const handleClick = () => {
-    if (isSafari) {
-      // 在 Safari 中广播当前链接
-      // if (navigator.share) {
-      //   navigator
-      //     .share({
-      //       title: document.title,
-      //       url: window.location.href,
-      //     })
-      //     .catch(console.error);
-      // }
-      const now = Date.now();
-      window.location.href = 'https://dev.cyberoll.pages.dev/';
+    window.open(appMagicUrl, '_blank');
 
-      setTimeout(() => {
-        if (Date.now() - now < 2000) {
-          window.open(appMagicUrl, '_blank');
-        }
-      }, 1500);
-    } else {
-      // 非 Safari 浏览器，打开 App Store
-      window.open(appMagicUrl, '_blank');
-    }
+    console.log('isSafari', isSafari);
+    // if (isSafari) {
+    //   // 在 Safari 中广播当前链接
+    //   // if (navigator.share) {
+    //   //   navigator
+    //   //     .share({
+    //   //       title: document.title,
+    //   //       url: window.location.href,
+    //   //     })
+    //   //     .catch(console.error);
+    //   // }
+    //   const now = Date.now();
+    //   window.location.href = 'https://dev.cyberoll.pages.dev/';
+
+    //   setTimeout(() => {
+    //     if (Date.now() - now < 2000) {
+    //       window.open(appMagicUrl, '_blank');
+    //     }
+    //   }, 1500);
+    // } else {
+    //   // 非 Safari 浏览器，打开 App Store
+    //   window.open(appMagicUrl, '_blank');
+    // }
   };
 
   if (!isAppleDevice) return null;

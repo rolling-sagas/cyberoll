@@ -65,7 +65,6 @@ export async function logServerEvent({
       throw new Error(`HTTP error! status: ${gaResult.status}`);
     }
 
-    console.log('✅ Server event tracked successfully:', event_name);
     return true;
   } catch (error) {
     console.error('❌ Server event tracking failed:', {
