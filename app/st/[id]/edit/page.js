@@ -13,11 +13,46 @@ import Spinner from '@/components/columns/spinner';
 import CreateStoryForm from '@/components/columns/stories/create-story-form';
 import StoryGuideOverlay from '@/components/columns/stories/story-guide-overlay';
 import Back from '@/components/common/back';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { updateStory } from '@/service/story';
 import { initStory } from '@/stores/actions/story';
 import useStore from '@/stores/editor';
 import { CheckmarkCircle01Icon, HelpCircleIcon } from '@hugeicons/react';
 import toast from 'react-hot-toast/headless';
+
+const EditorHeader = () => {
+  return (
+    <div className="flex items-center gap-1">
+      <span>Editor</span>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <a
+              href="https://helps.rollingsagas.com/#/build_story"
+              target="_blank"
+              className="cursor-help"
+            >
+              <HelpCircleIcon size={18} variant="solid" />
+            </a>
+          </TooltipTrigger>
+          <TooltipContent>
+            <a
+              href="https://helps.rollingsagas.com/#/build_story"
+              target="_blank"
+            >
+              Check Story Creation Guide here
+            </a>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  );
+};
 
 export default function Page({ params }) {
   const id = params.id;
@@ -95,19 +130,7 @@ export default function Page({ params }) {
       <Column headerCenter="Messages">
         <MessagesView />
       </Column>
-      <Column
-        headerCenter={
-          <div className="flex items-center gap-1">
-            <span>Editor</span>
-            <a
-              href="https://helps.rollingsagas.com/#/build_story"
-              target="_blank"
-            >
-              <HelpCircleIcon size={18} variant="solid" />
-            </a>
-          </div>
-        }
-      >
+      <Column headerCenter={<EditorHeader />}>
         <Editor />
       </Column>
     </PinnedColumns>
