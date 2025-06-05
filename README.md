@@ -3,13 +3,13 @@
 The front-end repo of rollingsagas ([dev domain](https://dev.cyberoll.pages.dev/)).
 Based on NextJS.
 
-## Install
+- [dev](https://dev.cyberoll.pages.dev/)
+- [online](https://rollingsagas.com/w)
 
-1. Install nodejs and pnpm
-1. Create `.npmrc` for hugeicons, and add the following line: `//registry.npmjs.org/:_authToken=YOUR_NPM_TOKEN` (quick action: use `npm login` can quick gen this file and content).
+## Start
+
 1. Install dependencies: `pnpm i`
-1. Create database: `pnpm wrangler d1 migrations apply rsDb`. You may need login to your Cloudflare via OAuth.
-1. Create `.env` file, and input secres here.
+2. Create `.env` file, and input secres here.
 
 ## Monitor
 
@@ -22,3 +22,11 @@ Using Firebase to monitor this site.
 
 - [Changelog](./CHANGELOG.md)
 - [Changelog 使用说明书](./docs//Changelog%20使用说明书.md)
+
+## Tech Stack
+
+- pnpm
+- Shadcn UI
+- tailwindcss
+- Nextjs
+- zustand
