@@ -65,7 +65,7 @@ export default function Page() {
             </span>
           </div>
           <div className="text-sm md:text-base text-muted-foreground font-normal tracking-normal text-center">
-            Your story. Your rules. Your Game Master.
+            Your story. Your rules. Your game master.
           </div>
         </div>
         {/* 下载按钮 */}
