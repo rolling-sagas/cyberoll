@@ -41,6 +41,13 @@ export default function Page() {
     <div className="min-h-screen flex flex-col justify-between bg-background text-foreground">
       <Head>
         <title>Download - Rolling Sagas</title>
+        <meta name="description" content="Download Rolling Sagas for iOS" />
+        <meta name="keywords" content="Rolling Sagas, iOS, Download" />
+        <meta name="author" content="Rolling Sagas" />
+        <meta name="robots" content="index, follow" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="apple-itunes-app" content="app-id=6744714857" />
+        <meta name="apple-itunes-app" content="app-id=6744714857" />
         <link
           href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap"
           rel="stylesheet"
@@ -97,7 +104,7 @@ export default function Page() {
             </Link>
           ))}
         </nav>
-        <div className="text-xs text-muted-foreground text-center max-w-xl mb-[90px] sm:mb-[5px]">
+        <div className="text-xs text-muted-foreground text-center max-w-xl mb-[90px] sm:mb-[5px] px-4">
           <div>©{new Date().getFullYear()} ROLLINGSAGAS PTE. LTD.</div>
           <div>
             Rolling Sagas, the Rolling Sagas logo, and all related trademarks,
