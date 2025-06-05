@@ -19,7 +19,8 @@ function FloatingImage() {
     const path = window.location.pathname;
     setShouldHideComponent(
       (path?.startsWith('/st/') && path?.includes('/edit')) ||
-        path?.startsWith('/sess/')
+        path?.startsWith('/sess/') ||
+        path?.includes('/download')
     );
 
     checkMobile();
