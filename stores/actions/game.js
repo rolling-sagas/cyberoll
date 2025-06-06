@@ -8,6 +8,7 @@ import { componentsToMap } from '@/utils/utils';
 import { parse } from 'best-effort-json-parser';
 import useStore from '../editor';
 import { clearRoll } from './dice';
+import logs from '@/utils/logs';
 import {
   addMessage,
   addMessages,
@@ -133,6 +134,11 @@ export const generate = async (skipCache = false, defaultMsg) => {
       finalContent = JSON.parse(resText);
       if (finalContent.error) {
         console.error('[ai error]:', finalContent.error);
+        logs.error({
+          key: 'generateError',
+          message: finalContent.error,
+          resRaw: JSON.stringify(finalContent),
+        });
         return updateMessage(message.id, {
           content:
             finalContent.code !== 1001 ? finalContent.error : 'Generate error!',
@@ -148,6 +154,11 @@ export const generate = async (skipCache = false, defaultMsg) => {
       });
     } catch (e) {
       console.error('[ai parse json error]:', e);
+      logs.error({
+        key: 'generateError',
+        message: String(e),
+        resRaw: resText,
+      });
       return updateMessage(message.id, {
         status: MESSAGE_STATUS.error,
       });
