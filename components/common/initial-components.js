@@ -9,8 +9,16 @@ import { AlertPlaceholder } from '@/components/modal/alert-placeholder';
 import { DialogPlaceholder } from '@/components/modal/dialog-placeholder';
 import { ToastPlaceholder } from '@/components/modal/toast-placeholder';
 import { Suspense } from 'react';
+import { save } from '@/utils/logs';
+import { useEffect } from 'react';
 
 export default function InitialComponents() {
+
+  useEffect(() => {
+    const t = setInterval(save, 5000);
+    return () => clearInterval(t);
+  }, [])
+
   return (
     <>
       <FirebaseInit />
