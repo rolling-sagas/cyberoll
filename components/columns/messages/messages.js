@@ -4,6 +4,7 @@ import { onUserAction } from '@/stores/actions/game';
 import useStore from '@/stores/editor';
 import { MESSAGE_STATUS } from '@/utils/const';
 import { ArrowDown01Icon } from '@hugeicons/react';
+import ErrorBoundary from './error-boundary';
 import Message from './message';
 import './messages.css';
 
@@ -121,50 +122,52 @@ function Messages() {
   }, [bottomRef]);
 
   return (
-    <div className="h-full !flex-1 relative -mx-6">
-      <div ref={scrollContainer} className="message-container">
-        <div className="flex flex-col">
-          {renderMessages?.map((message, i) => (
-            <Message
-              message={message}
-              key={message.id}
-              style={
-                i === renderMessages?.length - 1 && message.role !== 'divider'
-                  ? { minHeight }
-                  : null
-              }
-            />
-          ))}
-        </div>
-        {renderMessages?.length ? (
-          <div ref={bottomRef} className="hidden"></div>
-        ) : null}
-      </div>
-      <div
-        ref={diceBoxRef}
-        id="dice-box"
-        className={`dice-box ${rolling > 0 ? 'active' : ''}`}
-        onClick={async () => {
-          if (rolling === 2) {
-            await clearRoll();
-            onUserAction({ name: 'roll', params: lastRoll });
-          }
-        }}
-      >
-        {lastRoll?.value && (
-          <div className="roll-result">
-            <div className="number">{lastRoll.value}</div>
+    <ErrorBoundary>
+      <div className="h-full !flex-1 relative -mx-6">
+        <div ref={scrollContainer} className="message-container">
+          <div className="flex flex-col">
+            {renderMessages?.map((message, i) => (
+              <Message
+                message={message}
+                key={message.id}
+                style={
+                  i === renderMessages?.length - 1 && message.role !== 'divider'
+                    ? { minHeight }
+                    : null
+                }
+              />
+            ))}
           </div>
-        )}
+          {renderMessages?.length ? (
+            <div ref={bottomRef} className="hidden"></div>
+          ) : null}
+        </div>
+        <div
+          ref={diceBoxRef}
+          id="dice-box"
+          className={`dice-box ${rolling > 0 ? 'active' : ''}`}
+          onClick={async () => {
+            if (rolling === 2) {
+              await clearRoll();
+              onUserAction({ name: 'roll', params: lastRoll });
+            }
+          }}
+        >
+          {lastRoll?.value && (
+            <div className="roll-result">
+              <div className="number">{lastRoll.value}</div>
+            </div>
+          )}
+        </div>
+        <CircleIconButton
+          onClick={scrollToBottom}
+          className={`absolute bottom-2 left-1/2 h-7 w-7 -ml-3.5 z-2 ${
+            showGoBottom ? '' : 'hidden'
+          }`}
+          icon={<ArrowDown01Icon type="sharp" size={20} />}
+        />
       </div>
-      <CircleIconButton
-        onClick={scrollToBottom}
-        className={`absolute bottom-2 left-1/2 h-7 w-7 -ml-3.5 z-2 ${
-          showGoBottom ? '' : 'hidden'
-        }`}
-        icon={<ArrowDown01Icon type="sharp" size={20} />}
-      />
-    </div>
+    </ErrorBoundary>
   );
 }
 
