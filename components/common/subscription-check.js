@@ -33,7 +33,6 @@ export default function SubscriptionCheck() {
           if (changed) {
             setOpen(true)
           }
-          return
         }
       }
       dailyCheck()
