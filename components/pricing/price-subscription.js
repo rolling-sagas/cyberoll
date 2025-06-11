@@ -371,7 +371,7 @@ export default function PriceSubscription({ subscription }) {
       >
         <Tabs
           value={activeTab}
-          className="w-[400px]"
+          className="sm:w-[400px] w-full"
           onValueChange={setActiveTab}
         >
           <TabsList className="grid w-full grid-cols-2">
